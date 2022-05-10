@@ -1,0 +1,312 @@
+/*
+ * Copyright (C) 2022 UnionTech Technology Co., Ltd.
+ *
+ * Author:     yeshanshan <yeshanshan@uniontech.com>
+ *
+ * Maintainer: yeshanshan <yeshanshan@uniontech.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+#include "instancemodel.h"
+#include "pluginspec.h"
+#include "widgethandler.h"
+#include "widgetmanager.h"
+
+#include <QSettings>
+#include <QDir>
+#include <QDebug>
+
+namespace Store {
+static const char *Instances = "instances";
+static const char *Positions = "positions";
+static const char *PluginId = "pluginId";
+static const char *Version = "version";
+static const char *Type = "type";
+}
+
+InstanceModel::InstanceModel(WidgetManager *manager, QObject *parent)
+    : QObject(parent)
+    , m_manager(manager)
+    , m_dataStore(m_manager->dataStore())
+{
+}
+
+InstanceModel::~InstanceModel()
+{
+}
+
+void InstanceModel::loadPrePanelInstances()
+{
+    QVariantMap savedInstances = m_dataStore->value(Store::Instances).toMap();
+    const auto &savedPositions = m_dataStore->value(Store::Positions).toMap();
+    // recode existed instance and it's order.
+    QMap<InstancePos, Instance *> existedInstances;
+    for (auto iter = savedInstances.begin(); iter != savedInstances.end(); iter++) {
+        const auto &item = iter.value();
+        const InstanceId &key = iter.key();
+        const QVariantMap &info = item.toMap();
+        const auto &pluginId = info[Store::PluginId].toString();
+
+        Instance *instance = nullptr;
+        do {
+            // plugin changed.
+            auto plugin = m_manager->getPlugin(pluginId);
+            if (!plugin) {
+                m_manager->clearDataStore(pluginId);
+                qDebug(dwLog()) << "plugin has not exist." << pluginId;
+                break;
+            }
+
+            const auto &version = info[Store::Version].toString();
+            // plugin's Version changed.
+            if (!m_manager->matchVersion(version)) {
+                qWarning(dwLog()) << QString("plugin's version [%1] has not matched by [%2].").arg(version).arg(m_manager->currentVersion()) << pluginId;
+                break;
+            }
+
+            auto type = static_cast<IWidget::Type>(info[Store::Type].toInt());
+            // plugin's Type changed.
+            instance = plugin->createWidget(type, key);
+            if (!instance)
+                break;
+        } while (false);
+
+        if (!instance) {
+            // clear the cache of not existed instance.
+            removeMapItem(Store::Instances, key);
+            removeMapItem(Store::Positions, key);
+            m_manager->clearDataStore(pluginId, key);
+            continue;
+        }
+
+        InstancePos position = savedPositions[key].toInt();
+        existedInstances[position] = instance;
+    }
+
+    const auto &failedInstances = m_manager->initialize(existedInstances.values().toVector());
+    qDeleteAll(failedInstances);
+
+    // save instance.
+    m_instances.resize(existedInstances.size() - failedInstances.size());
+    InstancePos position = 0;
+    for (auto instance : existedInstances.values()) {
+        if (failedInstances.contains(instance))
+            continue;
+
+        m_instances[position] = instance;
+        ++position;
+    }
+
+    // update position's cache.
+    const bool positionChanged = savedPositions.size() != existedInstances.size();
+    if (positionChanged)
+        updatePositions();
+
+    loadOrCreateResidentInstance();
+
+    loadOrCreateAloneInstance();
+}
+
+QVector<Instance *> InstanceModel::instances() const
+{
+    return m_instances;
+}
+
+void InstanceModel::moveInstance(const InstanceId &source, InstancePos index)
+{
+    InstancePos sourceIndex = instancePosition(source);
+    if (sourceIndex < 0)
+        return;
+
+    auto instance = m_instances.takeAt(sourceIndex);
+
+    InstancePos targetIndex = index < 0 || index >= m_instances.count() ? m_instances.count() : index;
+    m_instances.insert(targetIndex, instance);
+    updatePositions();
+
+    qDebug(dwLog()) << QString("model move instance from [%1] to [%2]").arg(sourceIndex).arg(targetIndex);
+    Q_EMIT moved(sourceIndex, targetIndex);
+}
+
+Instance *InstanceModel::replaceInstance(const InstanceId &key, const IWidget::Type &type)
+{
+    auto instance = getInstance(key);
+    Q_ASSERT(instance);
+    if (type == instance->handler()->type())
+        return instance;
+
+    const InstancePos pos = instancePosition(key);
+    const IWidget::Type oldType = instance->handler()->type();
+    m_manager->typeChanged(key, type);
+    updateContentItem(key, Store::Type, type);
+
+    qDebug(dwLog()) << QString("model replace instance from [%1] to [%2]").arg(WidgetHandlerImpl::typeString(oldType)).arg(WidgetHandlerImpl::typeString(type));
+    Q_EMIT replaced(key, pos);
+    return instance;
+}
+
+void InstanceModel::addInstance(Instance *instance, InstancePos index)
+{
+    QVariantMap info;
+    info[Store::Type] = instance->handler()->type();
+    info[Store::PluginId] = instance->handler()->pluginId();
+    info[Store::Version] = m_manager->currentVersion();
+    addMapItem(Store::Instances, instance->handler()->id(), info);
+
+    index = index < 0 ? m_instances.count() : index;
+    addMapItem(Store::Positions, instance->handler()->id(), index);
+    m_instances.insert(index, instance);
+    updatePositions();
+
+    Q_EMIT added(instance->handler()->id(), index);
+}
+
+void InstanceModel::removeInstance(const InstanceId &key)
+{
+    InstancePos position = instancePosition(key);
+
+    if (position >= 0) {
+
+        m_instances.remove(position);
+        updatePositions();
+        Q_EMIT removed(key, position);
+    }
+
+    removeMapItem(Store::Instances, key);
+    removeMapItem(Store::Positions, key);
+
+    auto instance = m_manager->getInstance(key);
+    WidgetHandlerImpl::get(instance->handler())->clear();
+    m_manager->removeWidget(key);
+}
+
+void InstanceModel::removeMapItem(const QString &dataStoreKey, const InstanceId &key)
+{
+    QVariantMap saved = m_dataStore->value(dataStoreKey).toMap();
+    saved.remove(key);
+    m_dataStore->setValue(dataStoreKey, saved);
+}
+
+void InstanceModel::addMapItem(const QString &dataStoreKey, const InstanceId &key, const QVariant &value)
+{
+    QVariantMap saved = m_dataStore->value(dataStoreKey).toMap();
+    saved[key] = value;
+    m_dataStore->setValue(dataStoreKey, saved);
+}
+
+void InstanceModel::updateContentItem(const InstanceId &key, const QString &contentKey, const QVariant &value)
+{
+    QVariantMap saved = m_dataStore->value(Store::Instances).toMap();
+    auto item = saved[key].toMap();
+    item[contentKey] = value;
+    saved[key] = item;
+    m_dataStore->setValue(Store::Instances, saved);
+}
+
+void InstanceModel::updatePositions()
+{
+    QVariantMap saved = m_dataStore->value(Store::Positions).toMap();
+    for (int i = 0; i < m_instances.count(); i++) {
+        const auto instance = m_instances[i];
+        saved[instance->handler()->id()] = i;
+    }
+    m_dataStore->setValue(Store::Positions, saved);
+}
+
+void InstanceModel::loadOrCreateResidentInstance()
+{
+    for (auto plugin : m_manager->plugins(IWidgetPlugin::Resident)) {
+
+        if (existInstance(plugin->id()))
+            continue;
+
+        const auto types = plugin->supportTypes();
+        if (types.empty()) {
+            qWarning(dwLog()) << "Resident plugins not existed any types widget." << plugin->id();
+            continue;
+        }
+        const IWidget::Type type = types.first();
+        addInstance(plugin->id(), type, 0);
+    }
+}
+
+void InstanceModel::loadOrCreateAloneInstance()
+{
+    for (auto plugin : m_manager->plugins(IWidgetPlugin::Alone)) {
+
+        if (existInstance(plugin->id()))
+            continue;
+
+        const auto types = plugin->supportTypes();
+        if (types.empty()) {
+            qWarning(dwLog()) << "Alone plugins not existed any types widget." << plugin->id();
+            continue;
+        }
+        const IWidget::Type type = types.first();
+        addInstance(plugin->id(), type, 0);
+    }
+}
+
+InstancePos InstanceModel::instancePosition(const InstanceId &key)
+{
+    bool ok = false;
+    InstancePos position = m_dataStore->value(Store::Positions).toMap()[key].toInt(&ok);
+    if (ok)
+        return position;
+
+    return -1;
+}
+
+Instance *InstanceModel::addInstance(const PluginId &pluginId, const IWidget::Type &type, InstancePos index)
+{
+    if (auto instance = m_manager->createWidget(pluginId, type)) {
+        addInstance(instance, index);
+        return instance;
+    }
+    return nullptr;
+}
+
+Instance *InstanceModel::getInstance(const InstancePos pos) const
+{
+    return m_instances[pos];
+}
+
+Instance *InstanceModel::getInstance(const InstanceId &key) const
+{
+    for (auto item : qAsConst(m_instances)) {
+        if (item->handler()->id() == key)
+            return item;
+    }
+    return nullptr;
+}
+
+bool InstanceModel::existInstance(const PluginId &pluginId)
+{
+    for (auto item : qAsConst(m_instances)) {
+        if (item->handler()->pluginId() == pluginId)
+            return true;
+    }
+    return false;
+}
+
+QVector<IWidget::Type> InstanceModel::pluginTypes(const PluginId &pluginId) const
+{
+    return m_manager->getPlugin(pluginId)->supportTypes();
+}
+
+int InstanceModel::count() const
+{
+    return m_instances.count();
+}

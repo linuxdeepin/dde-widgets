@@ -1,0 +1,8 @@
+<interface name='org.deepin.dde.Widgets'>
+    <method name='Toggle'>
+    </method>
+    <method name='Show'>
+    </method>
+    <method name='Hide'>
+    </method>
+</interface>

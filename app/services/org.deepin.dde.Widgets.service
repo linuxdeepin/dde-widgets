@@ -1,0 +1,3 @@
+[D-BUS Service]
+Name=org.deepin.dde.Widgets
+Exec=/usr/bin/dde-widgets
