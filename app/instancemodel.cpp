@@ -175,6 +175,9 @@ void InstanceModel::addInstance(Instance *instance, InstancePos index)
 
 void InstanceModel::removeInstance(const InstanceId &key)
 {
+    if (!existInstanceByInstanceId(key))
+        return;
+
     InstancePos position = instancePosition(key);
 
     if (position >= 0) {
@@ -292,6 +295,16 @@ Instance *InstanceModel::getInstance(const InstanceId &key) const
     return nullptr;
 }
 
+bool InstanceModel::existInstanceByInstanceId(const InstanceId &key) const
+{
+    for (auto item : qAsConst(m_instances)) {
+        if (item->handler()->id() == key)
+            return true;
+    }
+    qWarning(dwLog()) << "not exist instance:" << key;
+    return false;
+}
+
 bool InstanceModel::existInstance(const PluginId &pluginId)
 {
     for (auto item : qAsConst(m_instances)) {
@@ -304,6 +317,16 @@ bool InstanceModel::existInstance(const PluginId &pluginId)
 QVector<IWidget::Type> InstanceModel::pluginTypes(const PluginId &pluginId) const
 {
     return m_manager->getPlugin(pluginId)->supportTypes();
+}
+
+void InstanceModel::removePlugin(const PluginId &pluginId)
+{
+    const auto tmpInstances = m_instances;
+    for (auto item : tmpInstances) {
+        if (item->handler()->pluginId() == pluginId) {
+            removeInstance(item->handler()->id());
+        }
+    }
 }
 
 int InstanceModel::count() const

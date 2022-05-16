@@ -26,11 +26,16 @@
 
 class WidgetManager;
 
+struct PluginInfo {
+    WIDGETS_NAMESPACE::IWidgetPlugin *plugin = nullptr;
+    PluginId id;
+    QString fileName;
+};
 WIDGETS_BEGIN_NAMESPACE
 
 class WidgetPluginSpec {
 public:
-    explicit WidgetPluginSpec(const PluginId &id, IWidgetPlugin *plugin);
+    explicit WidgetPluginSpec(const PluginInfo &info);
     ~WidgetPluginSpec();
 
     PluginId id() const;
@@ -52,6 +57,7 @@ private:
     IWidgetPlugin *m_plugin = nullptr;
     PluginId m_pluginId;
     DataStore *m_dataStore = nullptr;
+    QString m_fileName;
 
     friend class ::WidgetManager;
 };

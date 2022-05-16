@@ -28,6 +28,7 @@
 
 DWIDGET_USE_NAMESPACE
 
+class QScrollArea;
 class InstanceModel;
 class WidgetManager;
 class InstancePanelCell : public DragDropWidget {
@@ -55,6 +56,7 @@ public:
     explicit InstancePanel (WidgetManager *manager, QWidget *parent = nullptr);
     virtual ~InstancePanel() override;
     void setModel(InstanceModel *model);
+    QScrollArea *scrollView();
 
     bool isEnabledMode() const { return m_mode;}
     void setEnabledMode(bool mode);
@@ -89,4 +91,5 @@ protected:
 private:
     DFlowLayout *m_layout = nullptr;
     bool m_mode = false;
+    QScrollArea *m_scrollView = nullptr;
 };

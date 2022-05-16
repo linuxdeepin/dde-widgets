@@ -29,6 +29,7 @@
 
 #include <QDebug>
 #include <QHBoxLayout>
+#include <QScrollArea>
 #include <DFontManager>
 #include <DPlatformWindowHandle>
 DGUI_USE_NAMESPACE
@@ -42,10 +43,9 @@ MainView::MainView( WidgetManager *manager, QWidget *parent)
 {
     setParent(m_animationContainer);
 
-    // TODO it's temporary in dbug.
-//    DPlatformWindowHandle handler(parentWidget());
-//    handler.setEnableSystemResize(false);
-//    handler.setEnableSystemMove(false);
+    DPlatformWindowHandle handler(parentWidget());
+    handler.setEnableSystemResize(false);
+    handler.setEnableSystemMove(false);
 
     setBlendMode(DBlurEffectWidget::BehindWindowBlend);
     setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
@@ -61,7 +61,6 @@ MainView::MainView( WidgetManager *manager, QWidget *parent)
 
     m_editModeView = new EditModePanel(m_manager, this);
     m_editModeView->setFixedWidth(UI::Edit::panelWidth);
-    m_editModeView->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
 
     connect(m_editModeView, &EditModePanel::editCompleted, this, [this] () {
         switchToDisplayMode();
@@ -139,11 +138,11 @@ void MainView::switchToEditMode()
     if (hasComposite()) {
         setBlurEnabled(true);
     }
-    m_storeView->setVisible(true);
-    m_layout->addWidget(m_storeView);
+    m_storeView->scrollView()->setVisible(true);
+    m_layout->addWidget(m_storeView->scrollView());
 
-    m_layout->removeWidget(m_displayModeView);
-    m_layout->addWidget(m_editModeView);
+    m_layout->removeWidget(m_displayModeView->scrollView());
+    m_layout->addWidget(m_editModeView->scrollView());
     m_editModeView->setEnabledMode(true);
     m_displayModeView->setEnabledMode(false);
 
@@ -161,14 +160,29 @@ void MainView::switchToDisplayMode()
     if (hasComposite()) {
         setBlurEnabled(false);
     }
-    m_storeView->setVisible(false);
-    m_layout->removeWidget(m_storeView);
-    m_layout->removeWidget(m_editModeView);
-    m_layout->addWidget(m_displayModeView);
+    m_storeView->scrollView()->setVisible(false);
+    m_layout->removeWidget(m_storeView->scrollView());
+    m_layout->removeWidget(m_editModeView->scrollView());
+    m_layout->addWidget(m_displayModeView->scrollView());
     m_editModeView->setEnabledMode(false);
     m_displayModeView->setEnabledMode(true);
 
     Q_EMIT displayModeChanged();
+}
+
+void MainView::removePlugin(const PluginId &pluginId)
+{
+    m_instanceModel->removePlugin(pluginId);
+    m_storeView->removePlugin(pluginId);
+
+    m_manager->removePlugin(pluginId);
+}
+
+void MainView::addPlugin(const PluginPath &pluginPath)
+{
+    auto spec = m_manager->loadPlugin(pluginPath);
+
+    m_storeView->addPlugin(spec->id());
 }
 
 int MainView::expectedWidth() const

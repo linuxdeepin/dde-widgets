@@ -30,9 +30,10 @@
 
 WIDGETS_BEGIN_NAMESPACE
 
-WidgetPluginSpec::WidgetPluginSpec(const PluginId &id, IWidgetPlugin *plugin)
-    : m_plugin (plugin)
-    , m_pluginId(id)
+WidgetPluginSpec::WidgetPluginSpec(const PluginInfo &info)
+    : m_plugin (info.plugin)
+    , m_pluginId(info.id)
+    , m_fileName(info.fileName)
 {
 
 }

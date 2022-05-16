@@ -54,21 +54,19 @@ void DisplayModePanel::init()
 {
     auto layout = new QVBoxLayout(this);
     layout->setContentsMargins(UI::defaultMargins);
+    layout->setSpacing(0);
     m_views->setFixedWidth(width());
-    m_views->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-    auto scrollArea = new QScrollArea();
-    scrollArea->setWidget(m_views);
-    scrollArea->setWidgetResizable(true);
-    scrollArea->setFrameStyle(QFrame::NoFrame);
-
-    layout->addWidget(scrollArea);
+    layout->addWidget(m_views);
 
     auto button = new QPushButton();
     button->setText(tr("edit"));
     button->setFixedSize(UI::Display::EditSize);
     connect(button, &QPushButton::clicked, this, &DisplayModePanel::editClicked);
+    layout->addSpacing(UI::Ins::button2FlowPanelTopMargin);
     layout->addWidget(button, 0, Qt::AlignHCenter);
+
+    layout->addStretch();
 }
 
 DisplayModePanelCell *DisplayModePanel::createWidget(Instance *instance)

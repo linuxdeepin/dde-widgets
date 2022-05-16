@@ -31,6 +31,7 @@ WIDGETS_USE_NAMESPACE
 
 class QLabel;
 class QVBoxLayout;
+class QScrollArea;
 class QStackedLayout;
 class WidgetManager;
 class WidgetStoreCell;
@@ -79,12 +80,19 @@ public:
     explicit WidgetStore (WidgetManager *manager, QWidget *parent = nullptr);
     void init();
 
+    void addPlugin(const PluginId &pluginId);
+    void removePlugin(const PluginId &pluginId);
+    QScrollArea *scrollView();
+
 private:
     void load();
+    PluginCell *addPluginCell(const PluginId &pluginId);
 Q_SIGNALS:
     void addWidget(const PluginId &pluginId, int type);
 private:
     WidgetManager* m_manager = nullptr;
     QWidget *m_views = nullptr;
     QVBoxLayout *m_layout = nullptr;
+    QMap<PluginId, PluginCell *> m_pluginCells;
+    QScrollArea *m_scrollView = nullptr;
 };

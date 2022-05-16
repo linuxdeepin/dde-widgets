@@ -43,8 +43,11 @@ public:
     Instance *replaceInstance(const InstanceId &key, const IWidget::Type &type);
     Instance *getInstance(const InstancePos pos) const;
     Instance *getInstance(const InstanceId &key) const;
+    bool existInstanceByInstanceId(const InstanceId &key) const;
     bool existInstance(const PluginId &pluginId);
+
     QVector<IWidget::Type> pluginTypes(const PluginId &pluginId) const;
+    void removePlugin(const PluginId &pluginId);
 
     int count() const;
 

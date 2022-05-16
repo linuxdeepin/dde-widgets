@@ -33,6 +33,7 @@ class IWidget;
 WIDGETS_END_NAMESPACE
 
 using PluginId = QString;
+using PluginPath = QString;
 using InstanceId = QString;
 using InstancePos = int;
 using WidgetPlugin = WIDGETS_NAMESPACE::WidgetPluginSpec;
@@ -60,7 +61,7 @@ namespace Widget {
 namespace Store {
     static const QSize TypeBtnSize(28, 24);
     static const QSize TypeBoxSize(84, 24);
-    static const QSize AddSize(30, 30);
+    static const QSize AddIconSize(17, 17);
     static const int leftMargin = 0;
     static const int rightMargin = 0;
     static const int topMargin = 18;
@@ -73,9 +74,11 @@ namespace Store {
 }
 namespace Ins {
     static const int spacing = 20;
+    static const int button2FlowPanelTopMargin = 20;
 }
 namespace Edit {
     static const QSize CompleteSize(140, 36);
+    static const QSize DeleteIconSize(17, 17);
     static const int leftMargin = 0;
     static const int rightMargin = 0;
     static const int topMargin = 0;

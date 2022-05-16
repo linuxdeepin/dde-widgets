@@ -34,6 +34,7 @@
 #include <QDrag>
 #include <QLabel>
 #include <QMenu>
+#include <QScrollArea>
 
 #include <DIconButton>
 
@@ -105,7 +106,7 @@ void InstancePanelCell::startDrag(const QPoint &pos)
 InstancePanel::InstancePanel(WidgetManager *manager, QWidget *parent)
     : QWidget(parent)
     , m_manager(manager)
-    , m_views(new QWidget(this))
+    , m_views(new QWidget())
     , m_layout(new DFlowLayout(m_views))
 {
     setAcceptDrops(true);
@@ -116,6 +117,9 @@ InstancePanel::InstancePanel(WidgetManager *manager, QWidget *parent)
     setAutoFillBackground(true);
     m_layout->setContentsMargins(UI::defaultMargins);
     m_layout->setSpacing(UI::Ins::spacing);
+
+    // TODO DFlowLayout seems to have the smallest size, it causes extra space even though add stretch.
+    // and it's ok replaced `QVBoxLayout`, it maybe a `DFlowLayout` bug.
 }
 
 InstancePanel::~InstancePanel()
@@ -142,7 +146,30 @@ void InstancePanel::setEnabledMode(bool mode)
     if (m_mode) {
         setView();
     }
-    setVisible(m_mode);
+    if (m_scrollView) {
+        m_scrollView->setVisible(m_mode);
+    } else {
+        setVisible(m_mode);
+    }
+}
+
+QScrollArea *InstancePanel::scrollView()
+{
+    if (!m_scrollView) {
+        auto scrollArea = new QScrollArea();
+        QPalette pt = scrollArea->palette();
+        pt.setColor(QPalette::Window, Qt::transparent);
+        scrollArea->setPalette(pt);
+        scrollArea->setAutoFillBackground(true);
+        scrollArea->setWidget(this);
+        scrollArea->setWidgetResizable(true);
+        scrollArea->setFrameStyle(QFrame::NoFrame);
+        scrollArea->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
+        scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        m_scrollView = scrollArea;
+    }
+
+    return m_scrollView;
 }
 
 void InstancePanel::addWidget(const InstanceId &key, InstancePos pos)

@@ -97,3 +97,19 @@ void WidgetsServer::Hide()
 
     m_mainView->hideView();
 }
+
+void WidgetsServer::SyncWidgets()
+{
+    qDebug(dwLog()) << "SyncWidgets";
+    const auto removedPluginIds = m_manager->removingPlugins();
+    for (auto pluginId : removedPluginIds) {
+        m_mainView->removePlugin(pluginId);
+    }
+
+    const auto addedPluginIds = m_manager->addingPlugins();
+    for (auto pluginId : addedPluginIds) {
+        m_mainView->addPlugin(pluginId);
+    }
+    qDebug(dwLog()) << " removedPlugins:" << removedPluginIds
+                    << "addedPlugins:" << addedPluginIds;
+}

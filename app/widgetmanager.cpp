@@ -93,37 +93,12 @@ void WidgetManager::loadPlugins()
     qDeleteAll(m_plugins);
     m_plugins.clear();
 
-    // The same pluginid will be overwritten by later, `DDE_WIDGETS_PLUGIN_DIRS` > `./plugins` > `/usr`
-    QStringList dirs;
-    dirs << "/usr/lib/dde-widgets/plugins";
-    dirs << QCoreApplication::applicationDirPath() + "/plugins";
-    const QString &envPaths = qEnvironmentVariable("DDE_WIDGETS_PLUGIN_DIRS");
-    if (!envPaths.isEmpty()) {
-        QStringList list = envPaths.split(':');
-        std::reverse(list.begin(), list.end());
-        dirs << list;
-    }
+    for (QString fileName : pluginPaths()) {
 
-    qDebug(dwLog()) << "load plugins from those dir:" << dirs;
-    QStringList pluginPaths;
-    for (auto dir : qAsConst(dirs)) {
-        auto pluginsDir = QDir(dir);
-        if (!pluginsDir.exists())
-            continue;
-
-        const auto entryList = pluginsDir.entryList(QDir::Files);
-        for (const QString &fileName : qAsConst(entryList)) {
-            pluginPaths << pluginsDir.absoluteFilePath(fileName);
-        }
-    }
-
-    for (QString fileName : qAsConst(pluginPaths)) {
-        if (auto spec = loadPlugin(fileName)) {
+        const auto &info = parsePluginInfo(fileName);
+        if (info.plugin) {
+            auto spec = loadPlugin(info);
             qDebug(dwLog()) << "load the plugin [" << spec->id() << "] successful." << fileName;
-
-            auto store = new DataStore(dataStorePath(spec->id()), QSettings::NativeFormat);
-            spec->setDataStore(store);
-            m_plugins.insert(spec->id(), spec);
         }
     }
 }
@@ -151,64 +126,12 @@ QMultiMap<PluginId, Instance *> WidgetManager::loadWidgetStoreInstances()
         if (plugin->type() != IWidgetPlugin::Normal) {
             continue;
         }
-
-        static const QVector<IWidget::Type> Types{IWidget::Large, IWidget::Middle, IWidget::Small};
-        for (auto type : Types) {
-            auto instance = plugin->createWidgetForWidgetStore(type);
-            if (!instance)
-                continue;
-
+        for (auto instance : createWidgetStoreInstances(plugin->id())) {
             instances.insert(plugin->id(), instance);
         }
     }
     initialize(instances.values().toVector());
     return instances;
-}
-
-WidgetPluginSpec *WidgetManager::loadPlugin(const QString &fileName)
-{
-    QPluginLoader loader(fileName);
-    const auto &meta = loader.metaData();
-
-    QString id;
-    IWidgetPlugin *plugin = nullptr;
-    do {
-        const auto iid = meta["IID"].toString();
-        if (iid.isEmpty())
-            break;
-
-        if (iid != QString(qobject_interface_iid<IWidgetPlugin *>()))
-            break;
-
-        id = meta["MetaData"]["pluginId"].toString();
-        if (id.isEmpty()) {
-            qWarning(dwLog()) << "pluginId not existed in MetaData for the plugin." << fileName;
-            break;
-        }
-        const auto version = meta["MetaData"]["version"].toString();
-        if (!matchVersion(version)) {
-            qWarning(dwLog()) << QString("plugin version [%1] is not matched by [%2].").arg(version).arg(currentVersion()) << fileName;
-            break;
-        }
-        if (!loader.instance()) {
-            qWarning(dwLog()) << "load the plugin error." << loader.errorString();
-            break;
-        }
-        plugin = qobject_cast<IWidgetPlugin *>(loader.instance());
-        if (!plugin) {
-            qWarning(dwLog()) << "the plugin isn't a IWidgetPlugin." << fileName;
-            break;
-        }
-    } while (false);
-
-    if (plugin) {
-        auto spec = new WidgetPluginSpec (id, plugin);
-
-        return spec;
-    }
-
-    loader.unload();
-    return nullptr;
 }
 
 WidgetPlugin *WidgetManager::getPlugin(const PluginId &key) const
@@ -246,9 +169,6 @@ void WidgetManager::removeWidget(const InstanceId &instanceId)
 {
     if (auto instance = m_widgets.take(instanceId)) {
         aboutToShutdown(instance);
-        if (auto view = instance->view()) {
-            view->deleteLater();
-        }
         delete instance;
     }
 }
@@ -347,4 +267,186 @@ QString WidgetManager::dataStorePath(const PluginId &pluginId) const
     const QDir dir(fileInfo.absoluteDir());
     const QString &baseName = fileInfo.baseName();
     return dir.absoluteFilePath(QString("%1-%2.json").arg(baseName).arg(pluginId));
+}
+
+QList<PluginPath> WidgetManager::addingPlugins()
+{
+    QList<PluginPath> newPluginIds;
+    const QList<PluginId> prePluginIds = m_plugins.keys();
+
+    for (QString fileName : pluginPaths()) {
+        const auto &info = parsePluginInfo(fileName);
+        if (info.plugin) {
+            if (prePluginIds.contains(info.id)) {
+                continue;
+            }
+            auto spec = loadPlugin(info);
+            qDebug(dwLog()) << "load new plugin [" << spec->id() << "] successful." << fileName;
+
+            newPluginIds << info.fileName;
+        }
+    }
+    return newPluginIds;
+}
+
+QList<Instance *> WidgetManager::createWidgetStoreInstances(const PluginId &key)
+{
+    QList<Instance *> instances;
+    if (auto plugin = getPlugin(key)) {
+        static const QVector<IWidget::Type> Types{IWidget::Small, IWidget::Middle, IWidget::Large};
+        for (auto type : Types) {
+            auto instance = plugin->createWidgetForWidgetStore(type);
+            if (!instance)
+                continue;
+
+            instances << instance;
+        }
+    }
+    initialize(instances.toVector());
+    return instances;
+}
+
+WidgetPluginSpec *WidgetManager::loadPlugin(const PluginPath &pluginPath)
+{
+    const auto info = parsePluginInfo(pluginPath);
+    if (info.plugin) {
+        return loadPlugin(info);
+    }
+    return nullptr;
+}
+
+WidgetPluginSpec *WidgetManager::loadPlugin(const PluginInfo &info)
+{
+    Q_ASSERT(info.plugin);
+
+    auto spec = new WidgetPluginSpec (info);
+
+    auto store = new DataStore(dataStorePath(spec->id()), QSettings::NativeFormat);
+    spec->setDataStore(store);
+    m_plugins.insert(spec->id(), spec);
+
+    return spec;
+}
+
+bool WidgetManager::isPlugin(const QString &fileName) const
+{
+    const auto &info = parsePluginInfo(fileName);
+    return info.plugin;
+}
+
+PluginInfo WidgetManager::parsePluginInfo(const QString &fileName) const
+{
+    PluginInfo info;
+
+    QPluginLoader loader(fileName);
+    const auto &meta = loader.metaData();
+
+    do {
+        const auto iid = meta["IID"].toString();
+        if (iid.isEmpty())
+            break;
+
+        if (iid != QString(qobject_interface_iid<IWidgetPlugin *>()))
+            break;
+
+        info.id = meta["MetaData"]["pluginId"].toString();
+        if (info.id.isEmpty()) {
+            qWarning(dwLog()) << "pluginId not existed in MetaData for the plugin." << fileName;
+            break;
+        }
+        const auto version = meta["MetaData"]["version"].toString();
+        if (!matchVersion(version)) {
+            qWarning(dwLog()) << QString("plugin version [%1] is not matched by [%2].").arg(version).arg(currentVersion()) << fileName;
+            break;
+        }
+        if (!loader.instance()) {
+            qWarning(dwLog()) << "load the plugin error." << loader.errorString();
+            break;
+        }
+        info.plugin = qobject_cast<IWidgetPlugin *>(loader.instance());
+        if (!info.plugin) {
+            qWarning(dwLog()) << "the plugin isn't a IWidgetPlugin." << fileName;
+            break;
+        }
+        info.fileName = fileName;
+    } while (false);
+
+    if (!info.plugin) {
+        loader.unload();
+    }
+
+    return info;
+}
+
+void WidgetManager::removePlugin(const PluginId &key)
+{
+    auto plugin = m_plugins.take(key);
+    Q_ASSERT(plugin);
+
+    delete plugin;
+}
+
+QList<PluginId> WidgetManager::removingPlugins() const
+{
+    QList<PluginId> removePluginIds;
+    const QList<PluginId> prePluginIds = m_plugins.keys();
+    for (auto pluginId : prePluginIds) {
+        auto plugin = getPlugin(pluginId);
+        if (isPlugin(plugin->m_fileName)) {
+            continue;
+        }
+        removePluginIds << pluginId;
+    }
+    return removePluginIds;
+}
+
+QStringList WidgetManager::pluginPaths() const
+{
+    // The same pluginid will be overwritten by later, `DDE_WIDGETS_PLUGIN_DIRS` > `./plugins` > `/usr`
+    QStringList dirs;
+    dirs << "/usr/lib/dde-widgets/plugins";
+    dirs << QCoreApplication::applicationDirPath() + "/plugins";
+    const QString &envPaths = qEnvironmentVariable("DDE_WIDGETS_PLUGIN_DIRS");
+    if (!envPaths.isEmpty()) {
+        QStringList list = envPaths.split(':');
+        std::reverse(list.begin(), list.end());
+        dirs << list;
+    }
+
+    qDebug(dwLog()) << "load plugins from those dir:" << dirs;
+    QStringList pluginPaths;
+    for (auto dir : qAsConst(dirs)) {
+        auto pluginsDir = QDir(dir);
+        if (!pluginsDir.exists())
+            continue;
+
+        const auto entryList = pluginsDir.entryList(QDir::Files);
+        for (const QString &fileName : qAsConst(entryList)) {
+            const auto path = pluginsDir.absoluteFilePath(fileName);
+            if (!QLibrary::isLibrary(path))
+                continue;
+
+            if (!isPlugin(path))
+                continue;
+
+            pluginPaths << path;
+        }
+    }
+    return pluginPaths;
+}
+
+QList<Instance *> WidgetManager::getInstances(const PluginId &key) const
+{
+    QList<Instance *> result;
+    for (auto instance : m_widgets) {
+        if (instance->handler()->pluginId() == key) {
+            result << instance;
+        }
+    }
+    return result;
+}
+
+QList<Instance *> WidgetManager::instances() const
+{
+    return m_widgets.values();
 }

@@ -44,6 +44,9 @@ class Q_DECL_EXPORT IWidget
 {
 public:
     explicit IWidget();
+    IWidget(const IWidget &w) = delete;
+    IWidget(const IWidget &&w) = delete;
+    IWidget &operator =(const IWidget &w) = delete;
     virtual ~IWidget();
 
     /**
@@ -70,7 +73,7 @@ public:
     /**
      * @brief 组件获得信息的处理器
      */
-    WidgetHandler *handler();
+    WidgetHandler *handler() const;
 
     /**
      * @brief 组件创建后被调用

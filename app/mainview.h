@@ -63,6 +63,8 @@ public Q_SLOTS:
     void switchToEditMode();
     void switchToDisplayMode();
 
+    void removePlugin(const PluginId &pluginId);
+    void addPlugin(const PluginPath &pluginPath);
 Q_SIGNALS:
     void displayModeChanged();
 

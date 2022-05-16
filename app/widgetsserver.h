@@ -41,6 +41,7 @@ public Q_SLOTS:
     void Toggle();
     void Show();
     void Hide();
+    void SyncWidgets();
 
 private:
     WidgetManager *m_manager;

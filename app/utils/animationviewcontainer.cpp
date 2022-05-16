@@ -74,8 +74,7 @@ void AnimationViewContainer::regionMonitorHide(const QPoint &p)
     auto m_scale = qApp->primaryScreen()->devicePixelRatio();
     QPoint pScale(int(qreal(p.x() / m_scale)), int(qreal(p.y() / m_scale)));
     if (!geometry().contains(pScale)){
-        // TODO it's temporary in dbug.
-//        Q_EMIT outsideAreaReleased();
+        Q_EMIT outsideAreaReleased();
     }
 }
 

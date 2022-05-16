@@ -45,7 +45,7 @@ IWidget::~IWidget()
     d = nullptr;
 }
 
-WidgetHandler *IWidget::handler()
+WidgetHandler *IWidget::handler() const
 {
     Q_ASSERT(d->handler);
     return d->handler;

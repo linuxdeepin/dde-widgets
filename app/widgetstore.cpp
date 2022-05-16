@@ -57,12 +57,7 @@ WidgetStore::WidgetStore(WidgetManager *manager, QWidget *parent)
     layout->setContentsMargins(UI::defaultMargins);
     layout->setSpacing(UI::Store::spacing);
 
-    auto scrollArea = new QScrollArea();
-    scrollArea->setWidget(m_views);
-    scrollArea->setWidgetResizable(true);
-    scrollArea->setFrameStyle(QFrame::NoFrame);
-
-    layout->addWidget(scrollArea);
+    layout->addWidget(m_views);
     layout->addStretch();
 }
 
@@ -74,25 +69,69 @@ void WidgetStore::init()
     load();
 }
 
+QScrollArea *WidgetStore::scrollView()
+{
+    if (!m_scrollView) {
+        auto scrollArea = new QScrollArea();
+
+        QPalette pt = scrollArea->palette();
+        pt.setColor(QPalette::Window, Qt::transparent);
+        scrollArea->setPalette(pt);
+        scrollArea->setWidget(this);
+        scrollArea->setWidgetResizable(true);
+        scrollArea->setAutoFillBackground(true);
+        scrollArea->setFrameStyle(QFrame::NoFrame);
+        m_scrollView = scrollArea;
+    }
+
+    return m_scrollView;
+}
+
+void WidgetStore::addPlugin(const PluginId &pluginId)
+{
+    auto pluginCell = addPluginCell(pluginId);
+    m_layout->addWidget(pluginCell);
+    m_pluginCells.insert(pluginId, pluginCell);
+}
+
+PluginCell *WidgetStore::addPluginCell(const PluginId &pluginId)
+{
+    auto plugin = m_manager->getPlugin(pluginId);
+    auto pluginCell = new PluginCell(this);
+    pluginCell->setTitle(plugin->title());
+    pluginCell->setDescription(plugin->description());
+    for (auto instance: m_manager->createWidgetStoreInstances(pluginId)) {
+        auto view = instance->view();
+        Q_ASSERT(view);
+        auto cell = new WidgetStoreCell(instance->handler(), this);
+        connect(cell, &WidgetStoreCell::addWidget, this, &WidgetStore::addWidget);
+        cell->setView(view);
+        pluginCell->addCell(cell);
+    }
+    const int selectedCell = 0;
+    pluginCell->setChecked(selectedCell);
+    return pluginCell;
+}
+
+void WidgetStore::removePlugin(const PluginId &pluginId)
+{
+    for (auto iter = m_pluginCells.begin(); iter != m_pluginCells.end();) {
+        if (iter.key() == pluginId) {
+            m_layout->removeWidget(iter.value());
+            iter.value()->deleteLater();
+            iter = m_pluginCells.erase(iter);
+        } else {
+            iter++;
+        }
+    }
+}
+
 void WidgetStore::load()
 {
-    const auto &instances = m_manager->loadWidgetStoreInstances();
-    for (auto item : instances.uniqueKeys()) {
-        auto plugin = m_manager->getPlugin(item);
-        auto pluginCell = new PluginCell(this);
-        pluginCell->setTitle(plugin->title());
-        pluginCell->setDescription(plugin->description());
-        for (auto instance: instances.values(item)) {
-            auto view = instance->view();
-            Q_ASSERT(view);
-            auto cell = new WidgetStoreCell(instance->handler(), this);
-            connect(cell, &WidgetStoreCell::addWidget, this, &WidgetStore::addWidget);
-            cell->setView(view);
-            pluginCell->addCell(cell);
-        }
-        const int selectedCell = 0;
-        pluginCell->setChecked(selectedCell);
-        m_layout->addWidget(pluginCell);
+    const auto plugins = m_manager->plugins(IWidgetPlugin::Normal);
+    for (auto plugin : plugins) {
+        const auto pluginId = plugin->id();
+        addPlugin(pluginId);
     }
     m_layout->addStretch();
 }
@@ -196,7 +235,7 @@ void WidgetStoreCell::setView(QWidget *view)
 
     auto action = new DIconButton(DStyle::SP_AddButton);
     action->setParent(this);
-    action->setFixedSize(UI::Store::AddSize);
+    action->setIconSize(UI::Store::AddIconSize);
     action->setFlat(true);
     action->setVisible(false);
     connect(this, &WidgetStoreCell::enterChanged, action, &QWidget::setVisible);
@@ -211,7 +250,7 @@ void WidgetStoreCell::setView(QWidget *view)
     actionAnchors->setRight(cellAnchors->right());
     viewAnchors->setBottom(cellAnchors->bottom());
 
-    setFixedSize(m_handler->size() + (UI::Store::AddSize / 2));
+    setFixedSize(m_handler->size() + (UI::Store::AddIconSize / 2));
 }
 
 void WidgetStoreCell::startDrag(const QPoint &pos)

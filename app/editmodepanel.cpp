@@ -71,6 +71,7 @@ void EditModePanelCell::init(const QString &title)
     if (!isFixted()) {
         auto action = new DIconButton(DStyle::SP_DeleteButton, this);
         action->setFlat(true);
+        action->setIconSize(UI::Edit::DeleteIconSize);
         topLayout->addWidget(action);
         connect(action, &DIconButton::clicked, this, [this](){
             Q_EMIT removeWidget(m_instance->handler()->id());
@@ -95,22 +96,20 @@ EditModePanel::EditModePanel(WidgetManager *manager, QWidget *parent)
 void EditModePanel::init()
 {
     auto layout = new QVBoxLayout(this);
+    layout->setSpacing(0);
     layout->setContentsMargins(UI::defaultMargins);
     m_views->setFixedWidth(width());
-    m_views->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-    auto scrollArea = new QScrollArea();
-    scrollArea->setWidget(m_views);
-    scrollArea->setWidgetResizable(true);
-    scrollArea->setFrameStyle(QFrame::NoFrame);
-
-    layout->addWidget(scrollArea);
+    layout->addWidget(m_views);
 
     auto button = new QPushButton();
     button->setText(tr("complete"));
     button->setFixedSize(UI::Edit::CompleteSize);
     connect(button, &QPushButton::clicked, this, &EditModePanel::editCompleted);
+    layout->addSpacing(UI::Ins::button2FlowPanelTopMargin);
     layout->addWidget(button, 0, Qt::AlignHCenter);
+
+    layout->addStretch();
 }
 
 InstancePanelCell *EditModePanel::createWidget(Instance *instance)
