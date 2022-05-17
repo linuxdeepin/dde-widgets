@@ -29,3 +29,9 @@ Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: deepin desktop-environment - widgets module development files
  widgets module development files of deepin desktop-environment
+
+Package: dde-widgets-example
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: deepin desktop-environment - widgets module example plugin
+ widgets module example plugin of deepin desktop-environment
