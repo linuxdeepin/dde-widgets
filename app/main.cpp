@@ -23,6 +23,7 @@
 #include "widgetmanager.h"
 #include "widgetsserver.h"
 #include "displaymodepanel.h"
+#include "accessible/accessible.h"
 
 #include <DWidgetUtil>
 #include <DApplication>
@@ -37,6 +38,9 @@ int main(int argc, char *argv[])
     a.setApplicationVersion("1.0.0");
     a.setOrganizationName("deepin");
     a.setApplicationName("dde-widgets");
+
+    // enable accessible
+    QAccessible::installFactory(accessibleFactory);
 
     // TODO it's temporay in dbug.
 //    Dtk::Core::DLogManager::registerConsoleAppender();

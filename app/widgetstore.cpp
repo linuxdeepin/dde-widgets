@@ -147,6 +147,7 @@ PluginCell::PluginCell(QWidget *parent)
     layout->setContentsMargins(UI::Store::leftMargin, UI::Store::topMargin, UI::Store::rightMargin, UI::Store::bottomMargin);
     layout->setAlignment(Qt::AlignHCenter);
     m_title = new QLabel();
+    m_title->setObjectName("store-title-label");
     {
         QFont font;
         font.setBold(true);
@@ -155,6 +156,7 @@ PluginCell::PluginCell(QWidget *parent)
     m_title->setAlignment(Qt::AlignHCenter);
     layout->addWidget(m_title);
     m_description = new QLabel();
+    m_title->setObjectName("store-description-label");
     m_description->setAlignment(Qt::AlignHCenter);
     {
         m_description->setFont(DFontSizeManager::instance()->t8());
@@ -234,6 +236,7 @@ void WidgetStoreCell::setView(QWidget *view)
     m_view->setParent(this);
 
     auto action = new DIconButton(DStyle::SP_AddButton);
+    action->setObjectName("add-button");
     action->setParent(this);
     action->setIconSize(UI::Store::AddIconSize);
     action->setFlat(true);

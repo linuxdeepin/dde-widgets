@@ -56,6 +56,7 @@ void EditModePanelCell::init(const QString &title)
     topMargin.setLeft(UI::Edit::titleLeftMargin);
     topLayout->setContentsMargins(topMargin);
     auto topTitle = new QLabel(title);
+    topTitle->setObjectName("edit-title-label");
     {
         QFont font;
         font.setBold(true);
@@ -70,6 +71,7 @@ void EditModePanelCell::init(const QString &title)
 
     if (!isFixted()) {
         auto action = new DIconButton(DStyle::SP_DeleteButton, this);
+        action->setObjectName("delete-button");
         action->setFlat(true);
         action->setIconSize(UI::Edit::DeleteIconSize);
         topLayout->addWidget(action);
@@ -103,6 +105,7 @@ void EditModePanel::init()
     layout->addWidget(m_views);
 
     auto button = new QPushButton();
+    button->setObjectName("complete-button");
     button->setText(tr("complete"));
     button->setFixedSize(UI::Edit::CompleteSize);
     connect(button, &QPushButton::clicked, this, &EditModePanel::editCompleted);

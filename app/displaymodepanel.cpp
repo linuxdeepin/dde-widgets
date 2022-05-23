@@ -60,6 +60,7 @@ void DisplayModePanel::init()
     layout->addWidget(m_views);
 
     auto button = new QPushButton();
+    button->setObjectName("edit-button");
     button->setText(tr("edit"));
     button->setFixedSize(UI::Display::EditSize);
     connect(button, &QPushButton::clicked, this, &DisplayModePanel::editClicked);
