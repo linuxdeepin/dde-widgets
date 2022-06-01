@@ -26,6 +26,8 @@
 #include <QWidget>
 #include <QLayoutItem>
 #include <QPropertyAnimation>
+#include <QBasicTimer>
+#include <QMouseEvent>
 
 class DragDropFilter : public QObject {
     Q_OBJECT
@@ -43,16 +45,13 @@ public:
     explicit DragDropWidget(QWidget *parent = nullptr);
 
 protected:
-    virtual void mousePressEvent(QMouseEvent *event) override;
-    virtual void mouseMoveEvent(QMouseEvent *event) override;
+    virtual void customEvent(QEvent *event) override;
 
     virtual void startDrag(const QPoint &pos) { Q_UNUSED(pos);}
     virtual void gobackDrag(const QPixmap &pixmap, const QPoint &pos);
 
 protected:
     QPoint m_startDrag;
-private:
-    bool m_pressFlag = false;
 };
 class AnimationWidgetItem : public QObject, public QWidgetItemV2 {
     Q_OBJECT
@@ -69,3 +68,37 @@ private:
 };
 
 bool hasComposite();
+
+class LongPressDragEvent : public QMouseEvent {
+public:
+    explicit LongPressDragEvent(const QMouseEvent &me);
+
+    static int Type;
+};
+
+class LongPressEventFilter : public QObject {
+    Q_OBJECT
+public:
+    explicit LongPressEventFilter(QWidget *topWidget);
+
+protected:
+    virtual bool eventFilter(QObject *obj, QEvent *event) override;
+    virtual void timerEvent(QTimerEvent *event) override;
+
+private:
+    void resetLongPressStatus();
+
+private:
+    QWidget *m_topWidget = nullptr;
+    bool m_isLongPress = false;
+    QBasicTimer m_longPressTimer;
+    int m_longPressInterval = 300;
+    struct LeftPressInfo {
+        QObject *obj = nullptr;
+        QPointF local;
+        Qt::MouseButton button;
+        Qt::MouseButtons buttons;
+        Qt::KeyboardModifiers modifiers;
+    };
+    LeftPressInfo m_leftPressInfo;
+};

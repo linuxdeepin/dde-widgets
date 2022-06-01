@@ -46,6 +46,7 @@ MainView::MainView( WidgetManager *manager, QWidget *parent)
     DPlatformWindowHandle handler(parentWidget());
     handler.setEnableSystemResize(false);
     handler.setEnableSystemMove(false);
+    qApp->installEventFilter(new LongPressEventFilter(this));
 
     setBlendMode(DBlurEffectWidget::BehindWindowBlend);
     setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);

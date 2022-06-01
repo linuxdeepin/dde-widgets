@@ -30,6 +30,7 @@
 #include <QPropertyAnimation>
 #include <QLabel>
 #include <DWindowManagerHelper>
+#include <QPointer>
 DGUI_USE_NAMESPACE
 
 DragDropFilter::DragDropFilter(QObject *parent)
@@ -63,27 +64,6 @@ DragDropWidget::DragDropWidget(QWidget *parent)
 {
 }
 
-void DragDropWidget::mousePressEvent(QMouseEvent *event)
-{
-    m_pressFlag = (event->button() == Qt::LeftButton && event->type() == QEvent::MouseButtonPress);
-
-    QWidget::mousePressEvent(event);
-}
-
-void DragDropWidget::mouseMoveEvent(QMouseEvent *event)
-{
-    do {
-        // drag event.
-        if (!m_pressFlag) {
-            break;
-        }
-        m_pressFlag = false;
-        startDrag(event->pos());
-    } while (false);
-
-    QWidget::mouseMoveEvent(event);
-}
-
 void DragDropWidget::gobackDrag(const QPixmap &pixmap, const QPoint &pos)
 {
     qDebug() << "gobackDrag" << pos << m_startDrag;
@@ -105,6 +85,16 @@ void DragDropWidget::gobackDrag(const QPixmap &pixmap, const QPoint &pos)
     currentXAni->start();
     connect(currentXAni, &QPropertyAnimation::finished, currentXAni, &QWidget::deleteLater);
     connect(currentXAni, &QPropertyAnimation::finished, widget, &QWidget::deleteLater);
+}
+
+void DragDropWidget::customEvent(QEvent *event)
+{
+    if (event->type() == LongPressDragEvent::Type) {
+        auto le = dynamic_cast<LongPressDragEvent *>(event);
+        qDebug() << "DragDropWidget() deal with LongPessDragEvent";
+
+        startDrag(le->pos());
+    }
 }
 
 AnimationWidgetItem::AnimationWidgetItem(QWidget *widget)
@@ -133,4 +123,93 @@ void AnimationWidgetItem::updateGeometry(const QRect &rect)
 bool hasComposite()
 {
     return DWindowManagerHelper::instance()->hasComposite();
+}
+
+int LongPressDragEvent::Type = QEvent::registerEventType(QEvent::User + 10);
+LongPressDragEvent::LongPressDragEvent(const QMouseEvent &me)
+    : QMouseEvent(static_cast<QEvent::Type>(Type), me.localPos(), me.button(), me.buttons(), me.modifiers())
+{
+
+}
+
+LongPressEventFilter::LongPressEventFilter(QWidget *topWidget)
+    : m_topWidget (topWidget)
+    , QObject (topWidget)
+{
+    Q_ASSERT(m_topWidget);
+}
+
+bool LongPressEventFilter::eventFilter(QObject *obj, QEvent *event)
+{
+    switch (event->type()) {
+    case QEvent::MouseButtonPress: {
+        auto me = dynamic_cast<QMouseEvent *>(event);
+        if (me->button() == Qt::LeftButton) {
+            m_longPressTimer.start(m_longPressInterval, this);
+
+            // store the presseEvent to restore lower widget's status if it's a long press.
+            m_leftPressInfo.obj = obj;
+            m_leftPressInfo.local = me->localPos();
+            m_leftPressInfo.button = me->button();
+            m_leftPressInfo.buttons = me->buttons();
+            m_leftPressInfo.modifiers = me->modifiers();
+        }
+    } break;
+    case QEvent::MouseMove: {
+        if (m_isLongPress) {
+            auto me = dynamic_cast<QMouseEvent *>(event);
+            auto target = m_topWidget->childAt(m_topWidget->mapFromGlobal(me->globalPos()));
+            while (target) {
+                // get correct object by class type, customEvent can't be distributed like MouseEvent
+                // when using sendEvent, it's not passed to parent class when not processed.
+                if (qobject_cast<DragDropWidget *>(target)) {
+                    break;
+                }
+                target = target->parentWidget();
+            }
+            if (target && target->isWidgetType()) {
+                qDebug() << "LongPressEventFilter() send LongPressDrag" << target;
+                auto pos = target->mapFromGlobal(me->globalPos());
+                LongPressDragEvent le(*me);
+                le.setLocalPos(pos);
+                qApp->sendEvent(target, &le);
+            }
+        }
+        resetLongPressStatus();
+    } break;
+    case QEvent::MouseButtonRelease: {
+        resetLongPressStatus();
+    } break;
+    }
+
+    return QObject::eventFilter(obj, event);
+}
+
+void LongPressEventFilter::timerEvent(QTimerEvent *event)
+{
+    if (event->timerId() == m_longPressTimer.timerId()) {
+        QPointer<QObject> obj(m_leftPressInfo.obj);
+        if (obj) {
+            QMouseEvent e(QEvent::MouseButtonRelease,
+                          m_leftPressInfo.local,
+                          m_leftPressInfo.button,
+                          m_leftPressInfo.buttons,
+                          m_leftPressInfo.modifiers);
+
+            // blockSignals avoid to emitting composition signal of press and release.
+            // emit release event to cancle MouseButtonPress.
+            obj->blockSignals(true);
+            qApp->sendEvent(obj.data(), &e);
+            obj->blockSignals(false);
+        }
+        resetLongPressStatus();
+        m_isLongPress = true;
+    }
+}
+
+void LongPressEventFilter::resetLongPressStatus()
+{
+    m_longPressTimer.stop();
+    m_isLongPress = false;
+    m_leftPressInfo.obj = nullptr;
 }
