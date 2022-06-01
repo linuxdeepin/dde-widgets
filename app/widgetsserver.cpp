@@ -83,8 +83,7 @@ void WidgetsServer::Show()
         m_mainView->init();
     }
 
-//    m_mainView->switchToDisplayMode();
-    m_mainView->switchToEditMode();
+    m_mainView->switchToDisplayMode();
     m_mainView->showView();
 }
 
