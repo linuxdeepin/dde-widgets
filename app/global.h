@@ -80,7 +80,7 @@ namespace Edit {
     static const QSize CompleteSize(140, 36);
     static const QSize DeleteIconSize(17, 17);
     static const int leftMargin = 0;
-    static const int rightMargin = 0;
+    static const int rightMargin = 10;
     static const int topMargin = 0;
     static const int bottomMargin = 0;
     static const int panelWidth = leftMargin + rightMargin + Widget::MiddleSize.width() + 1;
@@ -90,7 +90,7 @@ namespace Edit {
 namespace Display {
     static const QSize EditSize(140, 36);
     static const int leftMargin = 0;
-    static const int rightMargin = 0;
+    static const int rightMargin = 10;
     static const int topMargin = 0;
     static const int bottomMargin = 0;
     // TODO it would wrap if two Cell's Width add spacing is equal DFlowLayout's width, it maybe DFlowLayout's bug.
@@ -99,13 +99,13 @@ namespace Display {
 
 namespace DisMode {
     static const int leftMargin = 0;
-    static const int rightMargin = 10;
+    static const int rightMargin = 0;
     static const int width = leftMargin + rightMargin + Display::panelWidth;
 }
 
 namespace EditMode {
     static const int leftMargin = 22;
-    static const int rightMargin = 21;
+    static const int rightMargin = 11;
     static const int width = 742;
     static const int spacing = 37;
 }
