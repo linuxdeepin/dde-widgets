@@ -69,6 +69,8 @@ private:
 
 bool hasComposite();
 
+bool releaseMode();
+
 class LongPressDragEvent : public QMouseEvent {
 public:
     explicit LongPressDragEvent(const QMouseEvent &me);

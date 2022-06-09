@@ -20,6 +20,7 @@
  */
 
 #include "animationviewcontainer.h"
+#include "utils.h"
 #include <widgetsinterface.h>
 
 #include <QTimer>
@@ -74,7 +75,9 @@ void AnimationViewContainer::regionMonitorHide(const QPoint &p)
     auto m_scale = qApp->primaryScreen()->devicePixelRatio();
     QPoint pScale(int(qreal(p.x() / m_scale)), int(qreal(p.y() / m_scale)));
     if (!geometry().contains(pScale)){
-        Q_EMIT outsideAreaReleased();
+        if (releaseMode()) {
+            Q_EMIT outsideAreaReleased();
+        }
     }
 }
 

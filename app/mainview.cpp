@@ -43,10 +43,12 @@ MainView::MainView( WidgetManager *manager, QWidget *parent)
 {
     setParent(m_animationContainer);
 
-    DPlatformWindowHandle handler(parentWidget());
-    handler.setEnableSystemResize(false);
-    handler.setEnableSystemMove(false);
     qApp->installEventFilter(new LongPressEventFilter(this));
+    if (releaseMode()) {
+        DPlatformWindowHandle handler(parentWidget());
+        handler.setEnableSystemResize(false);
+        handler.setEnableSystemMove(false);
+    }
 
     setBlendMode(DBlurEffectWidget::BehindWindowBlend);
     setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);

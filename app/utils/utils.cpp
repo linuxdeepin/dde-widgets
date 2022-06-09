@@ -125,6 +125,18 @@ bool hasComposite()
     return DWindowManagerHelper::instance()->hasComposite();
 }
 
+bool releaseMode()
+{
+    static bool on = qEnvironmentVariableIsSet("DDE_WIDGETS_DBUG_MODE");
+    if (on)
+        return true;
+
+#if (defined QT_DEBUG)
+    return false;
+#endif
+    return true;
+}
+
 int LongPressDragEvent::Type = QEvent::registerEventType(QEvent::User + 10);
 LongPressDragEvent::LongPressDragEvent(const QMouseEvent &me)
     : QMouseEvent(static_cast<QEvent::Type>(Type), me.localPos(), me.button(), me.buttons(), me.modifiers())

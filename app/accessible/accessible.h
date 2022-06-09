@@ -35,6 +35,7 @@
 #include <DListView>
 #include <DSwitchButton>
 #include <DSpinner>
+#include <DLabel>
 #include <dloadingindicator.h>
 
 #include <QScrollBar>
@@ -42,8 +43,7 @@
 #include <QAccessibleWidget>
 #include <DButtonBox>
 
-DWIDGET_USE_NAMESPACE
-WIDGETS_USE_NAMESPACE
+DWIDGET_BEGIN_NAMESPACE
 
 // 添加accessible
 SET_FORM_ACCESSIBLE(MainView, "mainview")
@@ -63,6 +63,7 @@ SET_BUTTON_ACCESSIBLE(DIconButton, m_w->objectName().isEmpty() ? "imagebutton" :
 SET_BUTTON_ACCESSIBLE(DButtonBox, "ButtonBox")
 SET_BUTTON_ACCESSIBLE(DSwitchButton, m_w->text().isEmpty() ? "switchbutton" : m_w->text())
 SET_BUTTON_ACCESSIBLE(DButtonBoxButton, m_w->objectName().isEmpty() ? "boxbutton" : m_w->objectName())
+SET_LABEL_ACCESSIBLE(DLabel, m_w->objectName().isEmpty() ? "DLabel" : m_w->objectName())
 SET_FORM_ACCESSIBLE(DBlurEffectWidget, "DBlurEffectWidget")
 SET_FORM_ACCESSIBLE(DListView, "DListView")
 SET_FORM_ACCESSIBLE(DLoadingIndicator, "DLoadingIndicator")
@@ -101,6 +102,7 @@ QAccessibleInterface *accessibleFactory(const QString &classname, QObject *objec
             ELSE_USE_ACCESSIBLE(QString(classname).replace("Dtk::Widget::", ""), DIconButton)
             ELSE_USE_ACCESSIBLE(QString(classname).replace("Dtk::Widget::", ""), DButtonBox)
             ELSE_USE_ACCESSIBLE(QString(classname).replace("Dtk::Widget::", ""), DButtonBoxButton)
+            ELSE_USE_ACCESSIBLE(QString(classname).replace("Dtk::Widget::", ""), DLabel)
             ELSE_USE_ACCESSIBLE(classname, QMenu)
             ELSE_USE_ACCESSIBLE(classname, QPushButton)
             ELSE_USE_ACCESSIBLE(classname, QSlider)
@@ -118,3 +120,5 @@ QAccessibleInterface *accessibleFactory(const QString &classname, QObject *objec
 
     return interface;
 }
+
+DWIDGET_END_NAMESPACE
