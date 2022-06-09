@@ -179,9 +179,12 @@ void InstancePanel::addWidget(const InstanceId &key, InstancePos pos)
 
     auto view = instance->view();
     Q_ASSERT(view);
-    view->setMaximumSize(instance->handler()->size());
     auto cell = createWidget(instance);
     Q_ASSERT(cell);
+
+    if (!cell->isCustom()) {
+        view->setMaximumSize(instance->handler()->size());
+    }
 
     if (isEnabledMode()) {
         cell->setView();
@@ -232,7 +235,10 @@ void InstancePanel::replaceWidget(const InstanceId &id, InstancePos /*pos*/)
 
     auto instance = m_model->getInstance(id);
     cell->setInstance(instance);
-    instance->view()->setMaximumSize(instance->handler()->size());
+    if (!cell->isCustom()) {
+        instance->view()->setMaximumSize(instance->handler()->size());
+    }
+
     if (isEnabledMode()) {
         cell->setView();
     }

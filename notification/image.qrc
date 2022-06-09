@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/">
+        <file>icons/notifications.svg</file>
+        <file>icons/list_icon_clear.svg</file>
+        <file>icons/list_icon_clear_dark.svg</file>
+    </qresource>
+</RCC>
