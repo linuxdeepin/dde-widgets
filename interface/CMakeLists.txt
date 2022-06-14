@@ -43,9 +43,6 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 
 install(TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/${CMAKE_LIBRARY_ARCHITECTURE})
 
-install(FILES ${INTERFACES}
-    DESTINATION include/dde-widgets)
+install(FILES ${INTERFACES} DESTINATION include/dde-widgets)
 
-install(FILES "DdeWidgetsConfig.cmake"
-    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/DdeWidgets)
-
+install(FILES "DdeWidgetsConfig.cmake" DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/${CMAKE_LIBRARY_ARCHITECTURE}/cmake/DdeWidgets)

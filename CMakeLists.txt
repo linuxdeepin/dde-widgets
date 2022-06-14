@@ -4,8 +4,20 @@ set(VERSION 3.7)
 
 project(dde-widgets)
 
+if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+    set(CMAKE_INSTALL_PREFIX /usr)
+endif ()
+
 add_subdirectory(interface)
 add_subdirectory(app)
 add_subdirectory(example)
 add_subdirectory(notification)
 add_subdirectory(tests)
+
+file(GLOB QM_FILES "translations/*.qm")
+install(FILES ${QM_FILES} DESTINATION ${CMAKE_INSTALL_PREFIX}/share/dde-widgets/translations)
+
+# copy plugin's translation to app/translations for dbug.
+set(PLUGIN_QM_FILES ${QM_FILES})
+list(FILTER PLUGIN_QM_FILES EXCLUDE REGEX dde-widgets_)
+file(COPY ${PLUGIN_QM_FILES} DESTINATION ${PROJECT_BINARY_DIR}/app/translations)

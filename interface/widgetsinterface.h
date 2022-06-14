@@ -109,6 +109,11 @@ public:
      * @brief 右键自定义配置菜单的响应事件
      */
     virtual void settings() {}
+
+    /**
+     * @brief 本地语言
+     */
+    static QString userInterfaceLanguage();
 private:
     class Private;
     Private *d = nullptr;

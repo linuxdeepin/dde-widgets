@@ -22,6 +22,8 @@
 #include "widgetsinterface.h"
 #include "widgetsinterface_p.h"
 
+#include <QCoreApplication>
+
 WIDGETS_BEGIN_NAMESPACE
 
 #ifndef QT_DEBUG
@@ -49,6 +51,11 @@ WidgetHandler *IWidget::handler() const
 {
     Q_ASSERT(d->handler);
     return d->handler;
+}
+
+QString IWidget::userInterfaceLanguage()
+{
+    return qApp->property("dapp_locale").toString();
 }
 
 WIDGETS_END_NAMESPACE

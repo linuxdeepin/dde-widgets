@@ -15,10 +15,6 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(AUTOMOC_COMPILER_PREDEFINES ON)
 
-if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-    set(CMAKE_INSTALL_PREFIX /usr)
-endif ()
-
 include(src.cmake)
 
 ADD_EXECUTABLE(${PROJECT_NAME} main.cpp ${HEADERS} ${SOURCES} ${DBUS_XML})
@@ -49,6 +45,3 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 install(FILES services/org.deepin.dde.Widgets.service DESTINATION ${CMAKE_INSTALL_PREFIX}/share/dbus-1/services)
 
 install(TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
-
-file(GLOB QM_FILES "translations/*.qm")
-install(FILES ${QM_FILES} DESTINATION ${CMAKE_INSTALL_PREFIX}/share/dde-widgets/translations)

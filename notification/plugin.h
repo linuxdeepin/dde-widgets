@@ -50,6 +50,8 @@ public:
         m_persistence->deleteLater();
     }
 private:
+    bool loadTranslator(const QString &fileNamePrefix);
+
     NotifyCenterWidget *m_view = nullptr;
     AbstractPersistence *m_persistence = nullptr;
 

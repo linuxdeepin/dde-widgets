@@ -43,4 +43,4 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 include_directories(../interface/)
 include_directories(../app/accessible)
 
-install(TARGETS ${PROJECT_NAME} DESTINATION /usr/lib/dde-widgets/plugins)
+install(TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/dde-widgets/plugins)

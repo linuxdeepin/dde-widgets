@@ -28,6 +28,6 @@ target_link_libraries(${PROJECT_NAME} PUBLIC ${COMMON_LIBS})
 include_directories(../interface/)
 
 # user need to replace the code with `install_dde_widgets_plugin(${PROJECT_NAME})`
-install(TARGETS ${PROJECT_NAME} DESTINATION /usr/lib/dde-widgets/plugins)
+install(TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/dde-widgets/plugins)
 # find_package(DdeWidgets REQUIRED)
 # install_dde_widgets_plugin(${PROJECT_NAME})
