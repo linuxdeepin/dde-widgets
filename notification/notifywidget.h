@@ -41,7 +41,7 @@ class NotifyWidget : public QWidget
     Q_OBJECT
 public:
     explicit NotifyWidget(QWidget *parent = nullptr, AbstractPersistence *database = nullptr);
-    QListView *view() { return m_mainList; }
+    NotifyListView *view() { return m_mainList; }
     NotifyModel *model() { return m_model; }
 
     NotifyListView *m_mainList = nullptr;

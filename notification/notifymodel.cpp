@@ -43,7 +43,7 @@ ListItem NotifyModel::getAppData(QString appName) const
 {
 
     foreach (auto item, m_notifications) {
-        if (item.appName == appName)
+        if (item.appName() == appName)
             return item;
     }
     Q_UNREACHABLE();
@@ -53,10 +53,9 @@ int NotifyModel::rowCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent)
     int count = 0;
-    foreach (auto item, m_notifications) {
-        count += item.showList.size();
+    for (int i = 0; i < showCount(); i++) {
+        count += 1 + m_notifications[i].showCount();
     }
-    count += m_notifications.size();
     return count;
 }
 
@@ -72,6 +71,7 @@ QVariant NotifyModel::data(const QModelIndex &index, int role) const
 
     EntityPtr entity = getEntityByRow(index.row());
     if (entity) {
+        entity->setCurrentIndex(index.row());
         return QVariant::fromValue(entity);
     }
     return QVariant();
@@ -84,6 +84,20 @@ Qt::ItemFlags NotifyModel::flags(const QModelIndex &index) const
         return QAbstractListModel::flags(index) | Qt::ItemIsEditable;
     }
     return QAbstractListModel::flags(index);
+}
+
+int NotifyModel::remainNotificationCount() const
+{
+    // 剩余条数 = 显示项的隐藏条数 + 未显示项的所有条数
+    int count = 0;
+    int i = 0;
+    while (i < showCount()) {
+        count += m_notifications[i++].hideCount();
+    }
+    while (i < m_notifications.count()) {
+        count += m_notifications[i++].count();
+    }
+    return count;
 }
 
 void NotifyModel::addNotify(EntityPtr entity)
@@ -101,29 +115,14 @@ void NotifyModel::removeNotify(EntityPtr entity)
     beginResetModel();
     for (int i = 0; i < m_notifications.size(); i++) {
         ListItem &AppGroup = m_notifications[i];
-        if (AppGroup.appName == entity->appName()
-                && AppGroup.showList.contains(entity)) {
-            AppGroup.showList.removeOne(entity);
+        if (AppGroup.appName() == entity->appName()) {
+            AppGroup.remove(entity);
 
-            if (AppGroup.showList.isEmpty() || (!AppGroup.hideList.isEmpty()
-                    && !checkTimeOut(AppGroup.hideList.first(), OVERLAPTIMEOUT_4_HOUR))) {
-                if (!AppGroup.showList.isEmpty()){
-                    AppGroup.showList.last()->setHideCount(0);
-                }
-                if (!AppGroup.hideList.isEmpty()) {
-                    AppGroup.showList.push_back(AppGroup.hideList.first());
-                    AppGroup.hideList.pop_front();
-                }
-                if (!AppGroup.showList.isEmpty()) {
-                    AppGroup.showList.last()->setHideCount(AppGroup.hideList.size() > 2 ? 2 : AppGroup.hideList.size());
-                }
-            }
-            if (AppGroup.showList.isEmpty()) {
+            if (AppGroup.isEmpty()) {
                 m_notifications.removeAt(i);
                 break;
             }
         }
-
     }
     endResetModel();
 
@@ -140,8 +139,8 @@ void NotifyModel::removeAppGroup(QString appName)
         return;
     QList<EntityPtr> removedEntities;
     for (int i = 0; i < m_notifications.size(); i++) {
-        if (m_notifications[i].appName == appName) {
-            removedEntities << m_notifications[i].hideList << m_notifications[i].showList;
+        if (m_notifications[i].appName() == appName) {
+            removedEntities = m_notifications[i].take();
             m_notifications.removeAt(i);
             // it's unique item with same appName in m_notifications, so we can break,
             // otherwise, it maybe error remove more than one item.
@@ -163,84 +162,64 @@ void NotifyModel::removeAllData()
     m_database->removeAll();
 }
 
-void NotifyModel::expandData(QString appName)
+void NotifyModel::expandDataByAppName(const QString &appName)
 {
     beginResetModel();
     for (int i = 0; i < m_notifications.size(); i++) {
         ListItem &AppGroup = m_notifications[i];
-        if (AppGroup.appName == appName) {
-            AppGroup.showList.last()->setHideCount(0);
-            AppGroup.showList.append(AppGroup.hideList);
-            AppGroup.hideList.clear();
+        if (appName.isEmpty() || AppGroup.appName() == appName) {
+            AppGroup.toggleFolding(false);
         }
     }
     endResetModel();
 }
 
+void NotifyModel::expandData()
+{
+    m_isCollapse = false;
+    expandDataByAppName(QString());
+}
+
 void NotifyModel::collapseData()
 {
+    m_isCollapse = true;
     beginResetModel();
     for (int i = 0; i < m_notifications.size(); i++) {
         ListItem &AppGroup = m_notifications[i];
-        int collapseRow;
-        for(collapseRow = 0; collapseRow < AppGroup.showList.size(); collapseRow ++) {
-            if (checkTimeOut(AppGroup.showList[collapseRow], OVERLAPTIMEOUT_4_HOUR) || collapseRow >= 3) {
-                break;
-            }
-        }
-        if (collapseRow == 0) {
-            collapseRow = 1;
-        }
-
-        if (AppGroup.showList.size() == collapseRow) {
-            continue;
-        }
-        QList<EntityPtr> showList = AppGroup.showList.mid(0, collapseRow);
-        QList<EntityPtr> hideList = AppGroup.showList.mid(collapseRow,  AppGroup.showList.size() - collapseRow);
-        AppGroup.showList = showList;
-        AppGroup.hideList = hideList;
+        AppGroup.toggleFolding(true);
     }
     endResetModel();
 }
 
 void NotifyModel::removeTimeOutNotify()
 {
-    for (int i = 0; i < m_notifications.size(); i++) {
-        ListItem &AppGroup = m_notifications[i];
-        QList<EntityPtr> notifyList;
-        if (checkTimeOut(AppGroup.showList.last(), OVERLAPTIMEOUT_7_DAY)) {
-            beginResetModel();
-            for (int j = 0; j < AppGroup.hideList.size(); j++) {
-                m_database->removeOne(QString::number(AppGroup.hideList[j]->id()));
-            }
-            for (int j = 0; j < AppGroup.showList.size(); j++) {
-                if(checkTimeOut(AppGroup.showList[j], OVERLAPTIMEOUT_7_DAY)) {
-                    m_database->removeOne(QString::number(AppGroup.showList[j]->id()));
-                } else {
-                    notifyList.append(AppGroup.showList[j]);
-                }
-            }
-            AppGroup.hideList = notifyList;
-            if (notifyList.isEmpty()) {
-                m_notifications.removeAt(i);
-            }
-            endResetModel();
-            return;
-        } else {
-            for (int j = 0; j < AppGroup.hideList.size(); j++) {
-                if(checkTimeOut(AppGroup.hideList[j], OVERLAPTIMEOUT_7_DAY)) {
-                    m_database->removeOne(QString::number(AppGroup.hideList[j]->id()));
-                } else {
-                    notifyList.append(AppGroup.hideList[j]);
-                }
-            }
-
-            if (AppGroup.hideList.size() != notifyList.size()) {
-                beginResetModel();
-                AppGroup.hideList = notifyList;
-                endResetModel();
-            }
+    QList<EntityPtr> notifyList;
+    for (int i = m_notifications.size() - 1; i >= 0; i--) {
+        const auto &data = m_notifications[i].data();
+        // it's timer order, so we can check last item rough first.
+        Q_ASSERT(!data.isEmpty());
+        if (!checkTimeOut(data.last(), OVERLAPTIMEOUT_7_DAY)) {
+            continue;
         }
+
+        auto iter = std::find_if(data.begin(), data.end(), [this](const EntityPtr &entity) {
+            return checkTimeOut(entity, OVERLAPTIMEOUT_7_DAY);
+        });
+        if (iter == data.end()) {
+            continue;
+        }
+        const int index = iter - data.begin();
+
+        beginResetModel();
+        notifyList << m_notifications[i].take(index);
+        if (index == 0) {
+            m_notifications.removeAt(i);
+        }
+        endResetModel();
+    }
+
+    for (int j = 0; j < notifyList.size(); j++) {
+        m_database->removeOne(QString::number(notifyList[j]->id()));
     }
 }
 
@@ -258,7 +237,7 @@ void NotifyModel::cacheData(EntityPtr entity)
 
 void NotifyModel::freeData()
 {
-    if (!m_notifications.isEmpty() && m_notifications.first().appName == m_cacheList.first()->appName()) {
+    if (!m_notifications.isEmpty() && m_notifications.first().appName() == m_cacheList.first()->appName()) {
         m_view->createAddedAnimation(m_cacheList.first(), getAppData(m_cacheList.first()->appName()));
     } else {
         addNotify(m_cacheList.first());
@@ -285,7 +264,6 @@ void NotifyModel::initData()
             m_database->removeOne(QString::number(notify->id()));
         }
     }
-
 }
 
 void NotifyModel::initConnect()
@@ -294,74 +272,48 @@ void NotifyModel::initConnect()
     connect(m_freeTimer, &QTimer::timeout, this, &NotifyModel::freeData);
     connect(m_view, &NotifyListView::addedAniFinished, this, &NotifyModel::addNotify);
     connect(m_view, &NotifyListView::removeAniFinished, this, &NotifyModel::removeNotify);
-    connect(m_view, &NotifyListView::expandAniFinished, this, &NotifyModel::expandData);
+    connect(m_view, &NotifyListView::expandAniFinished, this, &NotifyModel::expandDataByAppName);
     connect(m_view, &NotifyListView::refreshItemTime, this, &NotifyModel::removeTimeOutNotify);
 }
 
 void NotifyModel::addAppData(EntityPtr entity)
 {
-    bool isNewApp = true;
-    bool entityTimeout = checkTimeOut(entity, OVERLAPTIMEOUT_4_HOUR);
-    for (int i = 0; i < m_notifications.size(); i++) {
-        ListItem &AppGroup = m_notifications[i];
-        if (AppGroup.appName == entity->appName()) {
-            isNewApp = false;
-            if (entityTimeout) { //超时通知添加到隐藏列表
-                if (checkTimeOut(AppGroup.showList.last(), OVERLAPTIMEOUT_4_HOUR)) {
-                    AppGroup.showList.push_front(entity);
-                    AppGroup.hideList.push_front(AppGroup.showList.last());
-                    AppGroup.showList.removeLast();
-                }
-            } else if ((!entityTimeout && AppGroup.showList.size() == 3)
-                       || checkTimeOut(AppGroup.showList.first(), OVERLAPTIMEOUT_4_HOUR)) { //通知未超时，显示列表已满
-                AppGroup.showList.last()->setHideCount(0);
-                AppGroup.showList.push_front(entity);
-                AppGroup.hideList.push_front(AppGroup.showList.last());
-                AppGroup.showList.removeLast();
-                AppGroup.lastTimeStamp = entity->ctime();
-            } else {
-                AppGroup.showList.push_front(entity);
-                AppGroup.lastTimeStamp = entity->ctime();
+    if (contains(entity->appName())) {
+        for (int i = 0; i < m_notifications.size(); i++) {
+            ListItem &AppGroup = m_notifications[i];
+            if (AppGroup.appName() == entity->appName()) {
+                AppGroup.push(entity);
+                m_notifications.move(i, 0);
+                break;
             }
-            m_notifications.move(i, 0);
         }
-    }
-
-    if (isNewApp) {
-        ListItem AppGroup;
-        AppGroup.appName = entity->appName();
-        AppGroup.lastTimeStamp = entity->ctime();
-        AppGroup.showList.push_front(entity);
+    } else {
+        ListItem AppGroup(entity->appName());
+        AppGroup.push(entity);
         m_notifications.append(AppGroup);
     }
 
     std::sort(m_notifications.begin(), m_notifications.end(), [=](const ListItem & item1, const ListItem & item2) {
-        return item1.lastTimeStamp.toLongLong() > item2.lastTimeStamp.toLongLong();
+        return item1.title()->ctime().toLongLong() > item2.title()->ctime().toLongLong();
     });
 }
 
 EntityPtr NotifyModel::getEntityByRow(int row) const
 {
-    Q_ASSERT(row <= rowCount(QModelIndex()) - 1);
-    int index = 0;
-    for (int i = 0; i < m_notifications.size(); ++i) {
+    Q_ASSERT(row < rowCount(QModelIndex()));
+
+    for (int i = 0, index = 0; i < showCount(); ++i) {
         const auto &item = m_notifications[i];
-        item.showList.last()->setHideCount(item.hideList.size() > 2 ? 2 : item.hideList.size());
+        const int nextIndex = index + 1 + item.showCount();
+        if (nextIndex <= row) {
+            index = nextIndex;
+            continue;
+        }
+
         if (index == row) {
-            EntityPtr ptr = std::make_shared<NotificationEntity>(item.appName);
-            ptr->setTime(item.lastTimeStamp);
-            ptr->setIsTitle(true);
-            ptr->setCurrentIndex(row);
-            return ptr;
+            return item.title();
         }
-        index++;
-        for (int j = 0; j < item.showList.size(); ++j) {
-            if (index == row) {
-                item.showList[j]->setCurrentIndex(row);
-                return item.showList.at(j);
-            }
-            index ++;
-        }
+        return item.showAt(row - index - 1);
     }
     Q_UNREACHABLE();
 }
@@ -372,3 +324,107 @@ bool NotifyModel::checkTimeOut(EntityPtr ptr, int sec)
     return t.secsTo(QDateTime::currentDateTime()) > sec;
 }
 
+bool NotifyModel::contains(const QString &appName)
+{
+    for (auto item : m_notifications) {
+        if (item.appName() == appName)
+            return true;
+    }
+    return false;
+}
+
+int NotifyModel::showCount() const
+{
+    return m_isCollapse ? qMin(NotifyShowMaxCount, m_notifications.count()) : m_notifications.count();
+}
+
+ListItem::ListItem(const QString &appName)
+{
+    m_title = std::make_shared<NotificationEntity>(appName);
+    m_title->setIsTitle(true);
+}
+
+void ListItem::push(const EntityPtr &entity)
+{
+    const qlonglong ctime = entity->ctime().toLongLong();
+    auto iter = std::find_if(m_data.begin(), m_data.end(), [ctime](const EntityPtr &entity) {
+        return entity->ctime().toLongLong() < ctime;
+    });
+
+    resetShowLastHideCount();
+    if (iter == m_data.end()) {
+        m_data.append(entity);
+    } else {
+        m_data.insert(iter, entity);
+    }
+    updateShowLastHideCount();
+    updateShowTitleTime();
+}
+
+void ListItem::remove(const EntityPtr &entity)
+{
+    auto index = m_data.indexOf(entity);
+    if (index >= 0 && index < showCount()) {
+        resetShowLastHideCount();
+        m_data.removeOne(entity);
+
+        if (showCount() > 0) {
+            updateShowLastHideCount();
+            updateShowTitleTime();
+        }
+    }
+}
+
+QList<EntityPtr> ListItem::take()
+{
+    QList<EntityPtr> tmp;
+    tmp.swap(m_data);
+    return tmp;
+}
+
+QList<EntityPtr> ListItem::take(const int from)
+{
+    Q_ASSERT(0 <= from && from < count());
+
+    QList<EntityPtr> tmp = m_data.mid(from);
+    auto iter = m_data.begin() + from;
+    while (iter != m_data.end()) {
+        resetShowLastHideCount();
+        iter = m_data.erase(iter);
+        updateShowLastHideCount();
+        updateShowTitleTime();
+    }
+    return tmp;
+}
+
+void ListItem::toggleFolding(const bool collapse)
+{
+    resetShowLastHideCount();
+    m_isCollapse = collapse;
+    if (m_isCollapse) {
+        updateShowLastHideCount();
+    } else {
+        resetShowLastHideCount();
+    }
+}
+
+void ListItem::resetShowLastHideCount()
+{
+    if (showCount() > 0) {
+        showLast()->setHideCount(0);
+    }
+}
+
+void ListItem::updateShowLastHideCount()
+{
+    if (showCount() > 0) {
+        showLast()->setHideCount(qMin(2, hideCount()));
+    }
+}
+
+void ListItem::updateShowTitleTime()
+{
+    if (showCount() > 0) {
+        m_title->setTime(showFirst()->ctime());
+    }
+}

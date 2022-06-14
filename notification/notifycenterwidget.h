@@ -39,11 +39,15 @@
 DWIDGET_USE_NAMESPACE
 DGUI_USE_NAMESPACE
 
+DWIDGET_BEGIN_NAMESPACE
+class DIconButton;
+DWIDGET_END_NAMESPACE
 class AbstractPersistence;
 class QVariantAnimation;
 class QPropertyAnimation;
 class QSequentialAnimationGroup;
 class IconButton;
+class QPushButton;
 /*!
  * \~chinese \class NotifyCenterWidget
  * \~chinese \brief 继承于DBlurEffectWidget,DBlurEffectWidget是DTK库中的类,继承自QWidget.
@@ -60,14 +64,24 @@ private:
     void initConnections();     //初始化信号槽连接
     void refreshTheme();        //系统主题改变时,刷新主题
 
+Q_SIGNALS:
+    void notificationFoldingChanged(bool isExpand);
+
 private Q_SLOTS:
     void CompositeChanged();   //用来设置是否开启窗口特效
+    void updateDisplayOfRemainingNotification();
+    void expandNotificationFolding();
+    void collapesNotificationFolding();
+    void toggleNotificationFolding();
 
 private:
     QWidget *m_headWidget;
     NotifyWidget *m_notifyWidget;
     DLabel *title_label = nullptr;
     IconButton *m_clearButton;
+    QPushButton *m_expandRemaining = nullptr;
+    DIconButton *m_toggleNotificationFolding = nullptr;
+    bool m_isCollapesNotificationFolding = true;
     QRect m_notifyRect;
     QRect m_dockRect;
     DWindowManagerHelper *m_wmHelper;

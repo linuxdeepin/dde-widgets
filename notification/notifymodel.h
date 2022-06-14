@@ -33,18 +33,94 @@
 #define OVERLAPTIMEOUT_4_HOUR       (4 * 60 * 60)
 #define OVERLAPTIMEOUT_7_DAY        (7 * 24 * 60 * 60)
 #define TIMEOUT_CHECK_TIME          1000
+static int AppShowMaxCount = 1;
+static int NotifyShowMaxCount = 3;
 
 class QTimer;
 class PersistenceObserver;
 class AbstractPersistence;
 class NotifyListView;
 
-typedef struct{
-    QString appName;                // 应用名称
-    QString lastTimeStamp;          // 此组应用最新的时间组
-    QList<EntityPtr> showList;      // 显示列表
-    QList<EntityPtr> hideList;      // 隐藏列表
-} ListItem;
+/**
+ * @brief App 表示的数据及操作
+ */
+class ListItem {
+public:
+    explicit ListItem(const QString &appName);
+    // 按时间顺序插入到队列中
+    void push(const EntityPtr &entity);
+    void remove(const EntityPtr &entity);
+    QList<EntityPtr> take();
+    QList<EntityPtr> take(const int from);
+    // 展开或折叠此应用数据
+    void toggleFolding(const bool collapse);
+    inline EntityPtr at(const int index) const
+    {
+        return m_data.at(index);
+    }
+    inline int count() const
+    {
+        return m_data.count();
+    }
+    inline bool isEmpty() const
+    {
+        return m_data.isEmpty();
+    }
+    inline const QList<EntityPtr> &data() const
+    {
+        return m_data;
+    }
+    inline int showCount() const
+    {
+        return m_isCollapse ? qMin(AppShowMaxCount, m_data.count()) : m_data.count();
+    }
+    // 最后一个显示项
+    inline EntityPtr showLast() const
+    {
+        Q_ASSERT(showCount() > 0);
+        return m_data.at(showCount() - 1);
+    }
+    inline EntityPtr showAt(const int index) const
+    {
+        Q_ASSERT(0 <= index && index < showCount());
+        return m_data.at(index);
+    }
+    // 第一个显示项
+    inline EntityPtr showFirst() const
+    {
+        return m_data.at(0);
+    }
+    inline int hideCount() const
+    {
+        return m_data.count() - showCount();
+    }
+    inline EntityPtr hideFirst() const
+    {
+        return hideAt(0);
+    }
+    inline EntityPtr hideAt(const int index) const
+    {
+        return at(index + showCount());
+    }
+    inline EntityPtr title() const
+    {
+        return m_title;
+    }
+    inline QString appName() const
+    {
+        return m_title->appName();
+    }
+private:
+    void resetShowLastHideCount();
+    void updateShowLastHideCount();
+    void updateShowTitleTime();
+
+private:
+    EntityPtr m_title;
+    bool m_isCollapse = true;
+    using TimerQueue = QList<EntityPtr>;
+    TimerQueue m_data;
+};
 
 class NotifyModel : public QAbstractListModel
 {
@@ -55,16 +131,18 @@ public:
     ListItem getAppData(QString appName) const;
 
 public:
-    int rowCount(const QModelIndex &parent) const override;
+    int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     QVariant data(const QModelIndex &index, int role) const override;
     Qt::ItemFlags flags(const QModelIndex &index) const override;
+    int remainNotificationCount() const;
 
 public slots:
     void addNotify(EntityPtr entity);                   // 添加一条通知，并更新视图
     void removeNotify(EntityPtr entity);                // 删除一条通知，并更新视图
     void removeAppGroup(QString appName);               // 移除一组通知
     void removeAllData();                               // 清除所有通知
-    void expandData(QString appName);                   // 展开通知
+    void expandDataByAppName(const QString &appName);   // 展开通知
+    void expandData();                               // 展开通知
     void collapseData();                                // 折叠通知
     void removeTimeOutNotify();                         // 移除超过7天的通知
     void cacheData(EntityPtr entity);                   // 缓存暂未处理的通知
@@ -80,6 +158,8 @@ private:
     void addAppData(EntityPtr entity);                  // 添加一条数据
     EntityPtr getEntityByRow(int row) const;            // 根据row获取数据
     bool checkTimeOut(EntityPtr ptr, int sec);          // 检查通知是否超时
+    bool contains(const QString &appName);
+    int showCount() const;
 
 private:
     NotifyListView *m_view = nullptr;
@@ -87,6 +167,7 @@ private:
     QList<ListItem> m_notifications;                    //外层为app,内层为此app的消息
     QList<EntityPtr> m_cacheList;
     QTimer *m_freeTimer;
+    bool m_isCollapse = true;
 };
 
 #endif // NotifyModel_H

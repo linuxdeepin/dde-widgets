@@ -96,10 +96,10 @@ void NotifyListView::createRemoveAnimation(BubbleItem *item)
     ListItem appGroup = notifyModel->getAppData(item->getEntity()->appName());
 
     int moveValue = -bubbleItemHeight - BubbleSpacing;
-    if (!appGroup.hideList.isEmpty() && appGroup.showList.size() == 1) {
+    if (appGroup.hideCount() > 0 && appGroup.showCount() == 1) {
         moveValue = 0;
     }
-    if (!appGroup.hideList.isEmpty() && canShow(appGroup.hideList.first())) {
+    if (appGroup.hideCount() > 0 && canShow(appGroup.hideFirst())) {
         moveValue = 0;
     }
     for (int i = item->indexRow() + 1; i < this->model()->rowCount(QModelIndex()); ++i) {
@@ -132,16 +132,16 @@ void NotifyListView::createExpandAnimation(int idx, const ListItem appItem)
 
     connect(insertAniGroup, &QParallelAnimationGroup::finished, this, [ = ] {
         m_aniState = false;
-        Q_EMIT expandAniFinished(appItem.appName);
+        Q_EMIT expandAniFinished(appItem.appName());
     });
 
     QPoint startPos = currentWidget->pos();
     const int bubbleItemHight = BubbleItem::bubbleItemHeight();
     int maxCount = (height() - startPos.y()) / (bubbleItemHight + BubbleSpacing);
-    int needCount = appItem.hideList.size() > maxCount ? maxCount : appItem.hideList.size();
+    int needCount = appItem.hideCount() > maxCount ? maxCount : appItem.hideCount();
 
     for (int i = 0; i < needCount; i++) {
-        BubbleItem *item = new BubbleItem(this, appItem.hideList[i]);
+        BubbleItem *item = new BubbleItem(this, appItem.hideAt(i));
         item->setAccessibleName("BubbleItem");
         QPoint itemStartPos = startPos + QPoint(0, (bubbleItemHight + BubbleSpacing) * i);
         QPoint itemEndPos = itemStartPos + QPoint(0, bubbleItemHight + BubbleSpacing);
@@ -207,7 +207,7 @@ void NotifyListView::createAddedAnimation(EntityPtr entity, const ListItem appIt
     addAni->setDuration(AnimationTime);
     addedAniGroup->addAnimation(addAni);
 
-    if (appItem.showList.size() != 3 && canShow(appItem.showList.last())) {
+    if (appItem.showCount() != 3 && canShow(appItem.showLast())) {
         for (int i = 1; i < this->model()->rowCount(QModelIndex()); ++i) {
             QWidget *widget = this->indexWidget(this->model()->index(i, 0));
             if (!widget) {
@@ -220,8 +220,8 @@ void NotifyListView::createAddedAnimation(EntityPtr entity, const ListItem appIt
             addedAniGroup->addAnimation(downMoveAni);
         }
     } else {
-        for (int i = 0; i < appItem.showList.size(); i++) {
-            if (i > 1 || !canShow(appItem.showList[i])) {
+        for (int i = 0; i < appItem.showCount(); i++) {
+            if (i > 1 || !canShow(appItem.at(i))) {
                 break;
             }
             QWidget *widget = this->indexWidget(this->model()->index(1 + i, 0));
@@ -231,7 +231,7 @@ void NotifyListView::createAddedAnimation(EntityPtr entity, const ListItem appIt
             downMoveAni->setDuration(AnimationTime);
             addedAniGroup->addAnimation(downMoveAni);
         }
-        QWidget *lastWidget = this->indexWidget(this->model()->index(appItem.showList.size(), 0));
+        QWidget *lastWidget = this->indexWidget(this->model()->index(appItem.showCount(), 0));
         OverLapWidet *overLapWidget = qobject_cast<OverLapWidet *> (lastWidget);
         QWidget *faceWidget = nullptr;
         if (overLapWidget != nullptr) {

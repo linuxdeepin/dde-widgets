@@ -40,6 +40,7 @@
 #include <DLabel>
 #include <DFontSizeManager>
 #include <DGuiApplicationHelper>
+#include <QPushButton>
 
 DWIDGET_USE_NAMESPACE
 
@@ -66,26 +67,23 @@ void NotifyCenterWidget::initUI()
     m_headWidget->setAccessibleName("HeadWidget");
     m_headWidget->setFixedSize(Notify::CenterWidth - 2 * Notify::CenterMargin, Notify::CenterTitleHeight);
 
-    DIconButton *bell_notify = new DIconButton(m_headWidget);
-    bell_notify->setAccessibleName("BellNotifyBtn");
-    bell_notify->setFlat(true);
-    bell_notify->setIconSize(QSize(32, 32));
-    bell_notify->setFixedSize(32, 32);
-    const auto ratio = devicePixelRatioF();
-    QIcon icon_pix = QIcon::fromTheme("://icons/notifications.svg").pixmap(bell_notify->iconSize() * ratio);
-    bell_notify->setIcon(icon_pix);
-    bell_notify->setFocusPolicy(Qt::NoFocus);
-
     title_label = new DLabel;
     title_label->setAccessibleName("TitleLabel");
     QFont font = title_label->font();
     font.setBold(true);
-    font.setWeight(QFont::DemiBold);
+    font.setWeight(QFont::Black);
     title_label->setFont(font);
     title_label->setText(tr("Notification Center"));
-    title_label->setAlignment(Qt::AlignCenter | Qt::AlignBottom);
+    title_label->setAlignment(Qt::AlignVCenter | Qt::AlignLeft);
     title_label->setForegroundRole(QPalette::BrightText);
-    DFontSizeManager::instance()->bind(title_label, DFontSizeManager::T5);
+    DFontSizeManager::instance()->bind(title_label, DFontSizeManager::T3);
+
+    m_toggleNotificationFolding = new DIconButton(nullptr);
+    m_toggleNotificationFolding->setFlat(true);
+    m_toggleNotificationFolding->setCheckable(true);
+    m_toggleNotificationFolding->setAccessibleName("ToggleNotificationFolding");
+    m_toggleNotificationFolding->setFixedSize(Notify::CenterTitleHeight, Notify::CenterTitleHeight);
+    connect(m_toggleNotificationFolding, &DIconButton::clicked, this, &NotifyCenterWidget::toggleNotificationFolding);
 
     m_clearButton = new IconButton;
     m_clearButton->setAccessibleName("ClearButton");
@@ -95,18 +93,25 @@ void NotifyCenterWidget::initUI()
     m_clearButton->setFocusPolicy(Qt::StrongFocus);
 
     QHBoxLayout *head_Layout = new QHBoxLayout;
-    head_Layout->addWidget(bell_notify, Qt::AlignLeft | Qt::AlignTop);
     head_Layout->setMargin(0);
+    head_Layout->addWidget(title_label, Qt::AlignLeft | Qt::AlignBottom);
     head_Layout->addStretch();
-    head_Layout->addWidget(title_label, Qt::AlignCenter | Qt::AlignBottom);
-    head_Layout->addStretch();
+    head_Layout->addWidget(m_toggleNotificationFolding, Qt::AlignRight | Qt::AlignTop);
     head_Layout->addWidget(m_clearButton, Qt::AlignRight | Qt::AlignTop);
     m_headWidget->setLayout(head_Layout);
+
+    m_expandRemaining = new QPushButton();
+    m_expandRemaining->setFlat(true);
+    m_expandRemaining->setAccessibleName("ExpandRemainingButton");
+    connect(m_expandRemaining, &QPushButton::clicked, this, &NotifyCenterWidget::expandNotificationFolding);
+    connect(m_notifyWidget->model(), &NotifyModel::modelReset, this, &NotifyCenterWidget::updateDisplayOfRemainingNotification);
+    connect(this, &NotifyCenterWidget::notificationFoldingChanged, m_expandRemaining, &QPushButton::setVisible);
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
     mainLayout->setContentsMargins(Notify::CenterMargin, Notify::CenterMargin, 0, 0);
     mainLayout->addWidget(m_headWidget);
     mainLayout->addWidget(m_notifyWidget);
+    mainLayout->addWidget(m_expandRemaining);
 
     setLayout(mainLayout);
 
@@ -115,6 +120,8 @@ void NotifyCenterWidget::initUI()
     });
 
     refreshTheme();
+
+    collapesNotificationFolding();
 }
 
 void NotifyCenterWidget::initConnections()
@@ -146,8 +153,38 @@ void NotifyCenterWidget::refreshTheme()
     }
 }
 
-
 void NotifyCenterWidget::CompositeChanged()
 {
     m_hasComposite = m_wmHelper->hasComposite();
+}
+
+void NotifyCenterWidget::updateDisplayOfRemainingNotification()
+{
+    const int rowCount = m_notifyWidget->model()->remainNotificationCount();
+    m_expandRemaining->setText(tr("remain%1lines notification").arg(QString::number(rowCount)));
+}
+
+void NotifyCenterWidget::expandNotificationFolding()
+{
+    m_isCollapesNotificationFolding = false;
+    m_notifyWidget->model()->expandData();
+    m_toggleNotificationFolding->setIcon(QIcon::fromTheme("go-up"));
+    Q_EMIT notificationFoldingChanged(m_isCollapesNotificationFolding);
+}
+
+void NotifyCenterWidget::collapesNotificationFolding()
+{
+    m_isCollapesNotificationFolding = true;
+    m_notifyWidget->model()->collapseData();
+    m_toggleNotificationFolding->setIcon(QIcon::fromTheme("go-down"));
+    Q_EMIT notificationFoldingChanged(m_isCollapesNotificationFolding);
+}
+
+void NotifyCenterWidget::toggleNotificationFolding()
+{
+    if (m_isCollapesNotificationFolding) {
+        expandNotificationFolding();
+    } else {
+        collapesNotificationFolding();
+    }
 }
