@@ -79,6 +79,9 @@ void InstancePanelCell::startDrag(const QPoint &pos)
     if (!child)
         return;
 
+    if (isFixted())
+        return;
+
     m_startDrag = mapToGlobal(child->pos());
 
     QPoint hotSpot = pos - child->pos();

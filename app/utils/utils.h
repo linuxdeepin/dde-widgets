@@ -28,6 +28,7 @@
 #include <QPropertyAnimation>
 #include <QBasicTimer>
 #include <QMouseEvent>
+#include <QPointer>
 
 class DragDropFilter : public QObject {
     Q_OBJECT
@@ -86,6 +87,7 @@ public:
 protected:
     virtual bool eventFilter(QObject *obj, QEvent *event) override;
     virtual void timerEvent(QTimerEvent *event) override;
+    QWidget *targetWidget(const QPoint &global) const;
 
 private:
     void resetLongPressStatus();
@@ -96,7 +98,7 @@ private:
     QBasicTimer m_longPressTimer;
     int m_longPressInterval = 300;
     struct LeftPressInfo {
-        QObject *obj = nullptr;
+        QPointer<QObject> obj = nullptr;
         QPointF local;
         Qt::MouseButton button;
         Qt::MouseButtons buttons;
