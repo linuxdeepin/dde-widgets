@@ -45,9 +45,9 @@ public:
     ~NotifyListView() override;
 
 public:
-    void createAddedAnimation(EntityPtr entity, const ListItem appItem);
+    void createAddedAnimation(EntityPtr entity, const ListItemPtr appItem);
     void createRemoveAnimation(BubbleItem *item);
-    void createExpandAnimation(int idx, const ListItem appItem);
+    void createExpandAnimation(int idx, const ListItemPtr appItem);
     bool aniState() { return m_aniState; }
     void setCurrentRow(int row);
 

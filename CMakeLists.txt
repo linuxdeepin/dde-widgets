@@ -21,3 +21,6 @@ install(FILES ${QM_FILES} DESTINATION ${CMAKE_INSTALL_PREFIX}/share/dde-widgets/
 set(PLUGIN_QM_FILES ${QM_FILES})
 list(FILTER PLUGIN_QM_FILES EXCLUDE REGEX dde-widgets_)
 file(COPY ${PLUGIN_QM_FILES} DESTINATION ${PROJECT_BINARY_DIR}/app/translations)
+set(APP_QM_FILES ${QM_FILES})
+list(FILTER APP_QM_FILES EXCLUDE REGEX dde-widgets-)
+file(COPY ${APP_QM_FILES} DESTINATION $ENV{HOME}/.local/share/dde-widgets/translations)

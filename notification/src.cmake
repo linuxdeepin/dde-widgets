@@ -19,6 +19,7 @@ set(HEADERS
     "notification/appbodylabel.h"
     "notification/persistence.h"
     "notification/signalbridge.h"
+    "notification/notifysettings.h"
 
 )
 set(SOURCES
@@ -40,4 +41,5 @@ set(SOURCES
     "notification/iconbutton.cpp"
     "notification/appbodylabel.cpp"
     "notification/persistence.cpp"
+    "notification/notifysettings.cpp"
 )

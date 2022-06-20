@@ -51,12 +51,22 @@ protected:
     void focusInEvent(QFocusEvent *event) override;          //当焦点移入或移出时背景发生变化
     void focusOutEvent(QFocusEvent *event) override;
 
+private Q_SLOTS:
+    void toggleNotificationFolding();
+    void toggleAppTopping();
+
 private:
+    void updateNotificationFoldingStatus();
+    void updateAppToppingStatus();
+
     DLabel *m_titleLabel;
+    DIconButton *m_toggleNotificationFolding = nullptr;
+    DIconButton *m_gotopBtn = nullptr;
     DIconButton *m_closeButton;
     NotifyModel *m_model;
     int m_indexRow = 0;
     NotifyListView *m_view = nullptr;
+    QString m_appName;
 };
 
 #endif // BUBBLETITLEWIDGET_H

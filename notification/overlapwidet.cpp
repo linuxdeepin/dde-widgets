@@ -94,7 +94,7 @@ QList<QPointer<QWidget> > OverLapWidet::bubbleElements()
 void OverLapWidet::expandAppGroup()
 {
     hideOverlapBubble();
-    ListItem appItem = m_model->getAppData(m_entify->appName());
+    const ListItemPtr appItem = m_model->getAppData(m_entify->appName());
     m_view->createExpandAnimation(m_entify->currentIndex(), appItem);
 }
 

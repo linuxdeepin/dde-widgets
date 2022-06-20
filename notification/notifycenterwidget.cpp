@@ -85,6 +85,14 @@ void NotifyCenterWidget::initUI()
     m_toggleNotificationFolding->setFixedSize(Notify::CenterTitleHeight, Notify::CenterTitleHeight);
     connect(m_toggleNotificationFolding, &DIconButton::clicked, this, &NotifyCenterWidget::toggleNotificationFolding);
 
+    m_settingBtn = new DIconButton(nullptr);
+    m_settingBtn->setFlat(true);
+    m_settingBtn->setCheckable(true);
+    m_settingBtn->setIcon(QIcon::fromTheme("settings"));
+    m_settingBtn->setAccessibleName("SettingButton");
+    m_settingBtn->setFixedSize(Notify::CenterTitleHeight, Notify::CenterTitleHeight);
+    connect(m_settingBtn, &DIconButton::clicked, this, &NotifyCenterWidget::showNotificationModuleOfControlCenter);
+
     m_clearButton = new IconButton;
     m_clearButton->setAccessibleName("ClearButton");
     m_clearButton->setOpacity(IconButton::RELEASE, 255 * 0.0);
@@ -94,10 +102,11 @@ void NotifyCenterWidget::initUI()
 
     QHBoxLayout *head_Layout = new QHBoxLayout;
     head_Layout->setMargin(0);
-    head_Layout->addWidget(title_label, Qt::AlignLeft | Qt::AlignBottom);
+    head_Layout->addWidget(title_label, 0, Qt::AlignLeft | Qt::AlignBottom);
     head_Layout->addStretch();
-    head_Layout->addWidget(m_toggleNotificationFolding, Qt::AlignRight | Qt::AlignTop);
-    head_Layout->addWidget(m_clearButton, Qt::AlignRight | Qt::AlignTop);
+    head_Layout->addWidget(m_toggleNotificationFolding, 0, Qt::AlignRight | Qt::AlignTop);
+    head_Layout->addWidget(m_settingBtn, 0, Qt::AlignRight | Qt::AlignTop);
+    head_Layout->addWidget(m_clearButton, 0, Qt::AlignRight | Qt::AlignTop);
     m_headWidget->setLayout(head_Layout);
 
     m_expandRemaining = new QPushButton();
@@ -119,9 +128,15 @@ void NotifyCenterWidget::initUI()
         m_notifyWidget->model()->removeAllData();
     });
 
+    connect(m_notifyWidget->model(), &NotifyModel::appCountChanged, this, &NotifyCenterWidget::updateVisibleStatus);
+
     refreshTheme();
 
     collapesNotificationFolding();
+
+    updateVisibleStatus();
+
+    updateDisplayOfRemainingNotification();
 }
 
 void NotifyCenterWidget::initConnections()
@@ -186,5 +201,30 @@ void NotifyCenterWidget::toggleNotificationFolding()
         expandNotificationFolding();
     } else {
         collapesNotificationFolding();
+    }
+}
+
+void NotifyCenterWidget::showNotificationModuleOfControlCenter()
+{
+    // TODO it reports warning of `QDBusConnection: warning: blocking call took a long time`,
+    // and the second called is invaild, maybe it's a bug.
+    QDBusInterface interface("com.deepin.dde.ControlCenter", "/com/deepin/dde/ControlCenter",
+                             "com.deepin.dde.ControlCenter");
+    if (!interface.isValid()) {
+        qWarning() << "Get com.deepin.dde.ControlCenter interface error." << interface.lastError().message();
+        return;
+    }
+    const QString NotificationModuleName("notification");
+    interface.call("ShowModule", NotificationModuleName);
+}
+
+void NotifyCenterWidget::updateVisibleStatus()
+{
+    const bool showVisible = m_notifyWidget->model()->rowCount() > 0;
+    const bool changed = showVisible != isVisible();
+    qDebug() << "updateVisibleStatus() show Visible:" << showVisible << "changed:" << changed;
+    if (changed) {
+        setVisible(showVisible);
+        Q_EMIT visibleChanged(showVisible);
     }
 }
