@@ -288,6 +288,9 @@ void InstancePanel::dragMoveEvent(QDragMoveEvent *event)
     if (event->mimeData()->hasFormat(MoveMimeDataFormat)) {
         if (canDragDrop(event)) {
             event->acceptProposedAction();
+            // it seems as `autoScroll` in QAbstractItemView roughly.
+            const auto &pos = event->pos();
+            scrollView()->ensureVisible(pos.x(), pos.y());
         } else {
             event->ignore();
         }
