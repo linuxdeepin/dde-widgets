@@ -89,7 +89,7 @@ void InstancePanelCell::startDrag(const QPoint &pos)
     QMimeData *mimeData = new QMimeData;
     QByteArray itemData;
     QDataStream dataStream(&itemData, QIODevice::WriteOnly);
-    dataStream << m_instance->handler()->id();
+    dataStream << m_instance->handler()->id() << hotSpot;
     mimeData->setData(MoveMimeDataFormat, itemData);
 
     QPixmap pixmap(child->grab());
@@ -257,18 +257,53 @@ void InstancePanel::setView()
     }
 }
 
-int InstancePanel::positionCell(const QPoint &pos, const QSize &size) const
+int InstancePanel::positionCell(const QPoint &pos) const
 {
     for (int i = 0; i < m_layout->count(); i++) {
         auto cell = m_layout->itemAt(i)->widget();
         if (cell->geometry().contains(pos)) {
             return i;
         }
+    }
+    return -1;
+}
+
+static qlonglong qrectArea(const QRect &rect)
+{
+    return rect.width() * rect.height();
+}
+
+// In cell > Intersected cell > Empty cell
+int InstancePanel::positionCell(const QPoint &pos, const QSize &size, const QPoint &hotSpot) const
+{
+    const auto index = positionCell(pos);
+    if (index >= 0)
+        return index;
+
+    const QRect boundingRect(pos - hotSpot, size);
+    // max intersected area and it's index.
+    QPair<InstancePos, qlonglong> maxIntersected{-1, 0};
+    for (int i = 0; i < m_layout->count(); i++) {
+        auto cell = m_layout->itemAt(i)->widget();
+        if (!cell->geometry().intersects(boundingRect))
+            continue;
+
+        // get the largest intersected Rect as the target position.
+        const auto intersectedArea = qrectArea(cell->geometry().intersected(boundingRect));
+        if (maxIntersected.second < intersectedArea)
+            maxIntersected = qMakePair(i, intersectedArea);
+    }
+    if (maxIntersected.first >= 0)
+        return maxIntersected.first;
+
+    for (int i = 0; i < m_layout->count(); i++) {
+        auto cell = m_layout->itemAt(i)->widget();
         // pos is maybe in empty area, test pre cell whether contains the pos.
         if (cell->geometry().contains(pos.x() - size.width(), pos.y())) {
             return i + 1;
         }
     }
+
     return -1;
 }
 
@@ -303,10 +338,11 @@ void InstancePanel::dropEvent(QDropEvent *event)
         QByteArray itemData = event->mimeData()->data(MoveMimeDataFormat);
         QDataStream dataStream(&itemData, QIODevice::ReadOnly);
 
+        QPoint hotSpot;
         InstanceId id;
-        dataStream >> id;
+        dataStream >> id >> hotSpot;
         if (auto instance = m_model->getInstance(id)) {
-            auto target = positionCell(event->pos(), instance->handler()->size());
+            auto target = positionCell(event->pos(), instance->handler()->size(), hotSpot);
             if (canDragDrop(target)) {
                 m_model->moveInstance(id, target);
                 event->accept();
@@ -331,10 +367,11 @@ bool InstancePanel::canDragDrop(QDropEvent *event) const
 {
     QByteArray itemData = event->mimeData()->data(MoveMimeDataFormat);
     QDataStream dataStream(&itemData, QIODevice::ReadOnly);
+    QPoint hotSpot;
     InstanceId id;
-    dataStream >> id;
+    dataStream >> id >> hotSpot;
     if (auto instance = m_model->getInstance(id)) {
-        auto target = positionCell(event->pos(), instance->handler()->size());
+        auto target = positionCell(event->pos(), instance->handler()->size(), hotSpot);
         return canDragDrop(target);
     }
     return true;

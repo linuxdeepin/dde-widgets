@@ -269,7 +269,7 @@ void WidgetStoreCell::startDrag(const QPoint &pos)
     QMimeData *mimeData = new QMimeData;
     QByteArray itemData;
     QDataStream dataStream(&itemData, QIODevice::WriteOnly);
-    dataStream << m_handler->pluginId() << m_handler->type();
+    dataStream << m_handler->pluginId() << m_handler->type() << hotSpot;
     mimeData->setData(EditModeMimeDataFormat, itemData);
 
     QPixmap pixmap(child->grab());

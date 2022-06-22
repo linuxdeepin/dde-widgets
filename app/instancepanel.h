@@ -69,7 +69,8 @@ public Q_SLOTS:
     void replaceWidget(const InstanceId &id, InstancePos pos);
 
 protected:
-    int positionCell(const QPoint &pos, const QSize &size) const;
+    int positionCell(const QPoint &pos) const;
+    int positionCell(const QPoint &pos, const QSize &size, const QPoint &hotSpot) const;
     void setView();
 
 private Q_SLOTS:

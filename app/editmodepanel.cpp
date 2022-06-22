@@ -171,12 +171,13 @@ void EditModePanel::dropEvent(QDropEvent *event)
         QByteArray itemData = event->mimeData()->data(EditModeMimeDataFormat);
         QDataStream dataStream(&itemData, QIODevice::ReadOnly);
 
+        QPoint hotSpot;
         QString pluginId;
         int ttype = IWidget::Small;
-        dataStream >> pluginId >> ttype;
+        dataStream >> pluginId >> ttype >> hotSpot;
         IWidget::Type type = static_cast<IWidget::Type>(ttype);
 
-        auto posIndex = positionCell(event->pos(), WidgetHandlerImpl::size(type));
+        auto posIndex = positionCell(event->pos(), WidgetHandlerImpl::size(type), hotSpot);
 
         if (!canDragDrop(posIndex)) {
             event->ignore();
