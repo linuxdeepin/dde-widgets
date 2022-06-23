@@ -26,12 +26,19 @@
 #include <widgetsglobal.h>
 #include <QMargins>
 
+#define WIDGETS_FRAME_NAMESPACE dwf // dde-widgets frame
+
+#define WIDGETS_FRAME_BEGIN_NAMESPACE namespace WIDGETS_FRAME_NAMESPACE {
+#define WIDGETS_FRAME_END_NAMESPACE }
+#define WIDGETS_FRAME_USE_NAMESPACE using namespace WIDGETS_FRAME_NAMESPACE;
+
 class QSettings;
 WIDGETS_BEGIN_NAMESPACE
 class WidgetPluginSpec;
 class IWidget;
 WIDGETS_END_NAMESPACE
 
+WIDGETS_FRAME_BEGIN_NAMESPACE
 using PluginId = QString;
 using PluginPath = QString;
 using InstanceId = QString;
@@ -111,3 +118,4 @@ namespace EditMode {
 }
 
 }
+WIDGETS_FRAME_END_NAMESPACE

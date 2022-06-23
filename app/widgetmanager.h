@@ -28,6 +28,7 @@
 
 WIDGETS_USE_NAMESPACE
 
+WIDGETS_FRAME_BEGIN_NAMESPACE
 class WidgetManager {
 public:
     explicit WidgetManager();
@@ -80,3 +81,4 @@ private:
     QHash<InstanceId, Instance *> m_widgets;
     QStringList m_arguments;
 };
+WIDGETS_FRAME_END_NAMESPACE

@@ -29,6 +29,7 @@
 DWIDGET_USE_NAMESPACE
 
 class QScrollArea;
+WIDGETS_FRAME_BEGIN_NAMESPACE
 class InstanceModel;
 class WidgetManager;
 class InstancePanelCell : public DragDropWidget {
@@ -94,3 +95,4 @@ private:
     bool m_mode = false;
     QScrollArea *m_scrollView = nullptr;
 };
+WIDGETS_FRAME_END_NAMESPACE

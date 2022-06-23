@@ -42,6 +42,7 @@
 
 DGUI_USE_NAMESPACE
 
+WIDGETS_FRAME_BEGIN_NAMESPACE
 EditModePanelCell::EditModePanelCell(Instance *instance, QWidget *parent)
     : InstancePanelCell(instance, parent)
 {
@@ -196,3 +197,4 @@ void EditModePanel::dropEvent(QDropEvent *event)
         event->ignore();
     }
 }
+WIDGETS_FRAME_END_NAMESPACE

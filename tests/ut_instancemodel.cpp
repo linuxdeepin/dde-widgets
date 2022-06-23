@@ -25,6 +25,7 @@
 #include "instancemodel.h"
 #include "helper.hpp"
 #include <QSignalSpy>
+WIDGETS_FRAME_USE_NAMESPACE
 
 static PluginGuard pluginGuard;
 static WidgetManager manager;

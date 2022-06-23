@@ -26,6 +26,7 @@
 
 DWIDGET_USE_NAMESPACE
 
+WIDGETS_FRAME_BEGIN_NAMESPACE
 class DisplayModePanelCell : public InstancePanelCell {
     Q_OBJECT
 public:
@@ -45,3 +46,4 @@ public:
 Q_SIGNALS:
     void editClicked();
 };
+WIDGETS_FRAME_END_NAMESPACE

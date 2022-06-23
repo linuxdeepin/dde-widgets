@@ -24,6 +24,7 @@
 #include <QDebug>
 #include <QCoreApplication>
 
+WIDGETS_FRAME_BEGIN_NAMESPACE
 QString WidgetHandlerImpl::id() const { return m_id;}
 
 QSize WidgetHandlerImpl::size() const
@@ -167,3 +168,4 @@ QString WidgetHandlerImpl::typeString(const Widgets::IWidget::Type type)
 
     return types[type];
 }
+WIDGETS_FRAME_END_NAMESPACE

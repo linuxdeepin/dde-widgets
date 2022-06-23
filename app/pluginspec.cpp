@@ -28,6 +28,7 @@
 #include <QDebug>
 #include <QSettings>
 
+WIDGETS_FRAME_USE_NAMESPACE
 WIDGETS_BEGIN_NAMESPACE
 
 WidgetPluginSpec::WidgetPluginSpec(const PluginInfo &info)

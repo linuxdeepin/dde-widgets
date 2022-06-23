@@ -32,6 +32,7 @@
 
 WIDGETS_USE_NAMESPACE
 DGUI_USE_NAMESPACE
+WIDGETS_FRAME_BEGIN_NAMESPACE
 AnimationViewContainer::AnimationViewContainer(QWidget *parent)
     : QWidget (parent)
 {
@@ -142,3 +143,4 @@ void AnimationViewContainer::setCurrentX(const int x)
     setFixedWidth(rect.width());
     setGeometry(rect);
 }
+WIDGETS_FRAME_END_NAMESPACE

@@ -21,11 +21,15 @@
 
 #include "widgetsserver.h"
 #include "widgetmanager.h"
+#include "mainview.h"
+#include "displaymodepanel.h"
+#include "instancemodel.h"
 #include "dbusserver_adaptor.h"
 #include <QDebug>
 
 #define DDE_WIDGETS_SERVICE "org.deepin.dde.Widgets"
 
+WIDGETS_FRAME_USE_NAMESPACE
 WidgetsServer::WidgetsServer(QObject *parent)
     : QObject (parent)
     , m_manager (new WidgetManager())

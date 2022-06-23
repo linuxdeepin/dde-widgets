@@ -26,6 +26,7 @@
 
 WIDGETS_USE_NAMESPACE
 
+WIDGETS_FRAME_BEGIN_NAMESPACE
 class WidgetHandlerImpl : public WidgetHandler {
 public:
     explicit WidgetHandlerImpl();
@@ -60,3 +61,4 @@ public:
     IWidgetPlugin::Type m_pluginType;
     DataStore *m_dataStore = nullptr;
 };
+WIDGETS_FRAME_END_NAMESPACE

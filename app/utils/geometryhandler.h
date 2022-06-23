@@ -21,11 +21,13 @@
 
 #pragma once
 
+#include "global.h"
 #include <QObject>
 
 #include <com_deepin_daemon_display.h>
 #include <com_deepin_daemon_display_monitor.h>
 #include <com_deepin_dde_daemon_dock.h>
+WIDGETS_FRAME_BEGIN_NAMESPACE
 using DisplayInter = com::deepin::daemon::Display;
 using DockInter = com::deepin::dde::daemon::Dock;
 
@@ -42,3 +44,4 @@ private:
     DisplayInter *m_displayInter = nullptr;
     DockInter *m_dockDeamonInter = nullptr;
 };
+WIDGETS_FRAME_END_NAMESPACE

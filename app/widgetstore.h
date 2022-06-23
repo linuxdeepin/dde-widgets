@@ -33,11 +33,12 @@ class QLabel;
 class QVBoxLayout;
 class QScrollArea;
 class QStackedLayout;
-class WidgetManager;
-class WidgetStoreCell;
 DWIDGET_BEGIN_NAMESPACE
 class DButtonBox;
 DWIDGET_END_NAMESPACE
+WIDGETS_FRAME_BEGIN_NAMESPACE
+class WidgetManager;
+class WidgetStoreCell;
 class PluginCell : public DBlurEffectWidget {
     Q_OBJECT
 public:
@@ -96,3 +97,4 @@ private:
     QMap<PluginId, PluginCell *> m_pluginCells;
     QScrollArea *m_scrollView = nullptr;
 };
+WIDGETS_FRAME_END_NAMESPACE

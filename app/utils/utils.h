@@ -21,6 +21,7 @@
 
 #pragma once
 
+#include "global.h"
 #include <QObject>
 #include <QEvent>
 #include <QWidget>
@@ -30,6 +31,7 @@
 #include <QMouseEvent>
 #include <QPointer>
 
+WIDGETS_FRAME_BEGIN_NAMESPACE
 class DragDropFilter : public QObject {
     Q_OBJECT
 public:
@@ -106,3 +108,4 @@ private:
     };
     LeftPressInfo m_leftPressInfo;
 };
+WIDGETS_FRAME_END_NAMESPACE

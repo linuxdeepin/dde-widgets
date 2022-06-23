@@ -30,6 +30,7 @@
 #include <QtConcurrent/QtConcurrent>
 #include <QWidget>
 
+WIDGETS_FRAME_BEGIN_NAMESPACE
 static QPair<quint16, quint16> parseVersion(const QString &version)
 {
     QPair<quint16, quint16> res{0, 0};
@@ -450,3 +451,4 @@ QList<Instance *> WidgetManager::instances() const
 {
     return m_widgets.values();
 }
+WIDGETS_FRAME_END_NAMESPACE

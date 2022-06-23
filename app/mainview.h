@@ -30,6 +30,7 @@
 #include <QSequentialAnimationGroup>
 #include <dflowlayout.h>
 
+WIDGETS_FRAME_BEGIN_NAMESPACE
 class WidgetStore;
 class EditModePanel;
 class DisplayModePanel;
@@ -82,3 +83,4 @@ private:
     AnimationViewContainer *m_animationContainer;
     GeometryHandler *m_geometryHandler;
 };
+WIDGETS_FRAME_END_NAMESPACE

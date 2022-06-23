@@ -43,6 +43,7 @@
 #include <QAccessibleWidget>
 #include <DButtonBox>
 
+WIDGETS_FRAME_USE_NAMESPACE
 DWIDGET_BEGIN_NAMESPACE
 
 // 添加accessible

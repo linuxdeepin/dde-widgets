@@ -26,6 +26,7 @@
 
 WIDGETS_USE_NAMESPACE
 
+WIDGETS_FRAME_BEGIN_NAMESPACE
 class WidgetManager;
 class InstanceModel : public QObject{
     Q_OBJECT
@@ -77,3 +78,4 @@ private:
     WidgetManager *m_manager;
     DataStore *m_dataStore;
 };
+WIDGETS_FRAME_END_NAMESPACE

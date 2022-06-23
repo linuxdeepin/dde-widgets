@@ -28,6 +28,7 @@
 #include <QDir>
 #include <QDebug>
 
+WIDGETS_FRAME_BEGIN_NAMESPACE
 namespace Store {
 static const char *Instances = "instances";
 static const char *Positions = "positions";
@@ -333,3 +334,4 @@ int InstanceModel::count() const
 {
     return m_instances.count();
 }
+WIDGETS_FRAME_END_NAMESPACE

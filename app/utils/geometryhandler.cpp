@@ -26,6 +26,7 @@
 #include <QScrollArea>
 #include <QScreen>
 
+WIDGETS_FRAME_BEGIN_NAMESPACE
 using MonitorInter = com::deepin::daemon::display::Monitor;
 static const QString DisplayDaemonDBusServie = "com.deepin.daemon.Display";
 static const QString DisplayDaemonDBusPath = "/com/deepin/daemon/Display";
@@ -132,3 +133,4 @@ QRect GeometryHandler::calcDisplayRect(const QRect &dockRect)
     }
     return displayRect;
 }
+WIDGETS_FRAME_END_NAMESPACE

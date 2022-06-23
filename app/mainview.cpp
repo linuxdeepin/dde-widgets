@@ -33,6 +33,7 @@
 #include <DFontManager>
 #include <DPlatformWindowHandle>
 DGUI_USE_NAMESPACE
+WIDGETS_FRAME_BEGIN_NAMESPACE
 MainView::MainView( WidgetManager *manager, QWidget *parent)
     : DBlurEffectWidget (parent)
     , m_manager(manager)
@@ -192,3 +193,4 @@ int MainView::expectedWidth() const
 {
     return m_mode == Edit ? UI::EditMode::width : UI::DisMode::width;
 }
+WIDGETS_FRAME_END_NAMESPACE

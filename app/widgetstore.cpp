@@ -40,6 +40,7 @@
 #include <DFontSizeManager>
 #include <DButtonBox>
 
+WIDGETS_FRAME_BEGIN_NAMESPACE
 WidgetStore::WidgetStore(WidgetManager *manager, QWidget *parent)
     : QWidget(parent)
     , m_manager(manager)
@@ -296,3 +297,4 @@ void WidgetStoreCell::leaveEvent(QEvent *event)
     Q_EMIT enterChanged(false);
     QWidget::leaveEvent(event);
 }
+WIDGETS_FRAME_END_NAMESPACE

@@ -38,6 +38,7 @@
 
 #include <DIconButton>
 
+WIDGETS_FRAME_BEGIN_NAMESPACE
 static const char* MoveMimeDataFormat = "application/dde-widgets-instancedata";
 
 InstancePanelCell::InstancePanelCell(Instance *instance, QWidget *parent)
@@ -426,3 +427,4 @@ void InstancePanel::onMenuRequested(const InstanceId &id)
     menu->exec(QCursor::pos());
     menu->deleteLater();
 }
+WIDGETS_FRAME_END_NAMESPACE

@@ -21,11 +21,13 @@
 
 #pragma once
 
+#include "global.h"
 #include <QWidget>
 #include <DRegionMonitor>
 
 class QPropertyAnimation;
 DGUI_USE_NAMESPACE
+WIDGETS_FRAME_BEGIN_NAMESPACE
 class AnimationViewContainer : public QWidget
 {
     Q_OBJECT
@@ -56,3 +58,4 @@ private:
     QPropertyAnimation *m_currentXAni = nullptr;
     DRegionMonitor *m_regionMonitor = nullptr;
 };
+WIDGETS_FRAME_END_NAMESPACE

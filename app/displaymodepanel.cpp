@@ -32,6 +32,7 @@
 
 #include <DIconButton>
 
+WIDGETS_FRAME_BEGIN_NAMESPACE
 DisplayModePanelCell::DisplayModePanelCell(Instance *instance, QWidget *parent)
     : InstancePanelCell(instance, parent)
 {
@@ -76,3 +77,4 @@ DisplayModePanelCell *DisplayModePanel::createWidget(Instance *instance)
 
     return cell;
 }
+WIDGETS_FRAME_END_NAMESPACE

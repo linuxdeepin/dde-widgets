@@ -26,6 +26,7 @@
 
 DWIDGET_USE_NAMESPACE
 
+WIDGETS_FRAME_BEGIN_NAMESPACE
 class WidgetManager;
 class EditModePanelCell : public InstancePanelCell {
     Q_OBJECT
@@ -54,3 +55,4 @@ protected:
 Q_SIGNALS:
     void editCompleted();
 };
+WIDGETS_FRAME_END_NAMESPACE

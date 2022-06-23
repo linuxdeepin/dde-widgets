@@ -25,6 +25,7 @@
 #include "pluginspec.h"
 #include "helper.hpp"
 
+WIDGETS_FRAME_USE_NAMESPACE
 static PluginGuard pluginGuard;
 class ut_WidgetManager : public ::testing::Test
 {

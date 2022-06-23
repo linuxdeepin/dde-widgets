@@ -33,6 +33,7 @@
 #include <QPointer>
 DGUI_USE_NAMESPACE
 
+WIDGETS_FRAME_BEGIN_NAMESPACE
 DragDropFilter::DragDropFilter(QObject *parent)
     : QObject(parent)
 {
@@ -235,3 +236,4 @@ void LongPressEventFilter::resetLongPressStatus()
     m_isLongPress = false;
     m_leftPressInfo.obj = nullptr;
 }
+WIDGETS_FRAME_END_NAMESPACE

@@ -21,12 +21,14 @@
 
 #pragma once
 
+#include "global.h"
 #include <QObject>
 #include <QEvent>
-#include "mainview.h"
-#include "displaymodepanel.h"
-#include "instancemodel.h"
 
+WIDGETS_FRAME_BEGIN_NAMESPACE
+class WidgetManager;
+class MainView;
+WIDGETS_FRAME_END_NAMESPACE
 class WidgetsServer : public QObject {
     Q_OBJECT
 public:
@@ -44,6 +46,6 @@ public Q_SLOTS:
     void SyncWidgets();
 
 private:
-    WidgetManager *m_manager;
-    MainView *m_mainView = nullptr;
+    WIDGETS_FRAME_NAMESPACE::WidgetManager *m_manager;
+    WIDGETS_FRAME_NAMESPACE::MainView *m_mainView = nullptr;
 };
