@@ -78,7 +78,7 @@ bool NotificationWidget::initialize(const QStringList &arguments) {
         hasLoaded = loadTranslator("dde-widgets-notification_");
 
     m_persistence = new PersistenceObserver();
-    m_view = new NotifyCenterWidget(m_persistence);
+    m_view.reset(new NotifyCenterWidget(m_persistence));
     m_view->setFixedWidth(handler()->size().width());
     return true;
 }

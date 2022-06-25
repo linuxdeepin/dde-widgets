@@ -53,6 +53,7 @@ namespace UI {
     static const QMargins defaultMargins(0, 0, 0, 0);
     static const int topMargin = 22;
     static const int bottomMargin = 10;
+    static const int SizeType = 3;
 
 namespace Widget {
     static const QSize SmallSize(170, 170);
@@ -67,7 +68,7 @@ namespace Widget {
 
 namespace Store {
     static const QSize TypeBtnSize(28, 24);
-    static const QSize TypeBoxSize(84, 24);
+    static const QSize TypeBoxSize(TypeBtnSize.width() * SizeType, 24);
     static const QSize AddIconSize(17, 17);
     static const int leftMargin = 0;
     static const int rightMargin = 0;

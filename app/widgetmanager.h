@@ -52,6 +52,8 @@ public:
     void typeChanged(const InstanceId &instanceId, const IWidget::Type &type);
     Instance *getInstance(const InstanceId &key);
     QList<Instance *> instances() const;
+    void showAllWidgets();
+    void hideAllWidgets();
     void showWidgets(const QVector<Instance *> &instances);
     void hideWidgets(const QVector<Instance *> &instances);
     QVector<Instance *> initialize(const QVector<Instance *> &instances);

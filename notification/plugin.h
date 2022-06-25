@@ -44,16 +44,19 @@ WIDGETS_USE_NAMESPACE
 class NotificationWidget : public IWidget {
 public:
     virtual QWidget *view() override {
-        return m_view;
+        return m_view.get();
     }
     virtual ~NotificationWidget() override {
-        m_persistence->deleteLater();
+        if (m_persistence) {
+            m_persistence->deleteLater();
+            m_persistence = nullptr;
+        }
     }
 private:
     bool loadTranslator(const QString &fileNamePrefix);
 
-    NotifyCenterWidget *m_view = nullptr;
-    AbstractPersistence *m_persistence = nullptr;
+    QScopedPointer<NotifyCenterWidget> m_view;
+    AbstractPersistence* m_persistence = nullptr;
 
 public:
     virtual bool initialize(const QStringList &arguments) override;

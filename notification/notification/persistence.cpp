@@ -139,8 +139,7 @@ EntityPtr PersistenceObserver::json2Entity(const QJsonObject &obj)
                                                              ConvertStringToMap(obj.value("hint").toString()),
                                                              obj.value("time").toString(),
                                                              obj.value("replacesid").toString(),
-                                                             obj.value("timeout").toString(),
-                                                             this);
+                                                             obj.value("timeout").toString());
     return notification;
 }
 

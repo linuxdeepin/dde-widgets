@@ -36,6 +36,7 @@ class EditModePanel;
 class DisplayModePanel;
 class AnimationViewContainer;
 class GeometryHandler;
+class Appearancehandler;
 DWIDGET_USE_NAMESPACE
 
 class MainView : public DBlurEffectWidget
@@ -82,5 +83,7 @@ private:
 
     AnimationViewContainer *m_animationContainer;
     GeometryHandler *m_geometryHandler;
+    Appearancehandler *m_appearancehandler = nullptr;
+
 };
 WIDGETS_FRAME_END_NAMESPACE

@@ -199,7 +199,6 @@ void PluginCell::addCell(WidgetStoreCell *cell)
     const auto text= WidgetHandlerImpl::get(cell->m_handler)->typeString();
     auto btn = new DButtonBoxButton(text, cell);
     btn->setText(text);
-    btn->setFixedSize(UI::Store::TypeBtnSize);
     QList<DButtonBoxButton *> tmpBtnList;
     for (auto item : m_typeBox->buttonList()) {
         tmpBtnList << qobject_cast<DButtonBoxButton *>(item);

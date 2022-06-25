@@ -22,42 +22,26 @@
 #pragma once
 
 #include "global.h"
-#include <QWidget>
-#include <DRegionMonitor>
+#include <QObject>
 #include <DBlurEffectWidget>
 
-class QPropertyAnimation;
-DGUI_USE_NAMESPACE
+#include <com_deepin_daemon_appearance.h>
 WIDGETS_FRAME_BEGIN_NAMESPACE
 DWIDGET_USE_NAMESPACE
-class AnimationViewContainer : public DBlurEffectWidget
-{
+using Appearance = com::deepin::daemon::Appearance;
+
+class Appearancehandler : public QObject {
     Q_OBJECT
-    Q_PROPERTY(int currentX READ currentX WRITE setCurrentX)
 public:
-    explicit AnimationViewContainer (QWidget *parent = nullptr);
-    virtual ~AnimationViewContainer() override;
+    explicit Appearancehandler(QObject *parent = nullptr);
+    virtual ~Appearancehandler() override;
 
-    void showView();
-    void hideView();
-    void updateGeometry(const QRect &rect);
+    void addTargetWidget(DBlurEffectWidget *target);
 
-Q_SIGNALS:
-    void outsideAreaReleased();
-
-private Q_SLOTS:
-    void regionMonitorHide(const QPoint & p);
+    int aplpha() const;
 
 private:
-    int currentX() const;
-    void setCurrentX(const int x);
-    void registerRegion();
-    void unRegisterRegion();
-
-private:
-    QRect m_currRect;
-    QRect m_targetRect;
-    QPropertyAnimation *m_currentXAni = nullptr;
-    DRegionMonitor *m_regionMonitor = nullptr;
+    Appearance *m_appearance = nullptr;
+    QList<QPointer<QWidget>> m_targets;
 };
 WIDGETS_FRAME_END_NAMESPACE

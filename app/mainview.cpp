@@ -26,6 +26,7 @@
 #include "widgetmanager.h"
 #include "animationviewcontainer.h"
 #include "geometryhandler.h"
+#include "appearancehandler.h"
 
 #include <QDebug>
 #include <QHBoxLayout>
@@ -41,8 +42,10 @@ MainView::MainView( WidgetManager *manager, QWidget *parent)
     , m_layout(new QHBoxLayout(this))
     , m_instanceModel(new InstanceModel(m_manager, this))
     , m_geometryHandler(new GeometryHandler())
+    , m_appearancehandler(new Appearancehandler(this))
 {
     setParent(m_animationContainer);
+    m_appearancehandler->addTargetWidget(m_animationContainer);
 
     qApp->installEventFilter(new LongPressEventFilter(this));
     if (releaseMode()) {
@@ -115,14 +118,14 @@ void MainView::showView()
 {
     qDebug(dwLog()) << "showView";
     m_animationContainer->showView();
-    m_manager->showWidgets(m_instanceModel->instances());
+    m_manager->showAllWidgets();
 }
 
 void MainView::hideView()
 {
     qDebug(dwLog()) << "hideView";
     m_animationContainer->hideView();
-    m_manager->hideWidgets(m_instanceModel->instances());
+    m_manager->hideAllWidgets();
 }
 
 void MainView::updateGeometry(const QRect &rect)

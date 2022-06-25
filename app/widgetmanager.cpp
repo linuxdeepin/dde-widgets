@@ -190,14 +190,14 @@ Instance *WidgetManager::getInstance(const InstanceId &key)
 void WidgetManager::showWidgets(const QVector<Instance *> &instances)
 {
     for (auto instance : qAsConst(instances)) {
-        QtConcurrent::run(instance, &IWidget::showWidgets);
+        instance->showWidgets();
     }
 }
 
 void WidgetManager::hideWidgets(const QVector<Instance *> &instances)
 {
     for (auto instance : qAsConst(instances)) {
-        QtConcurrent::run(instance, &IWidget::hideWidgets);
+        instance->hideWidgets();
     }
 }
 
@@ -323,6 +323,7 @@ WidgetPluginSpec *WidgetManager::loadPlugin(const PluginInfo &info)
     auto spec = new WidgetPluginSpec (info);
 
     auto store = new DataStore(dataStorePath(spec->id()), QSettings::NativeFormat);
+    qDebug(dwLog()) << "loadPlugin() config's filePath:" << store->fileName();
     spec->setDataStore(store);
     m_plugins.insert(spec->id(), spec);
 
@@ -450,5 +451,15 @@ QList<Instance *> WidgetManager::getInstances(const PluginId &key) const
 QList<Instance *> WidgetManager::instances() const
 {
     return m_widgets.values();
+}
+
+void WidgetManager::showAllWidgets()
+{
+    showWidgets(instances().toVector());
+}
+
+void WidgetManager::hideAllWidgets()
+{
+    hideWidgets(instances().toVector());
 }
 WIDGETS_FRAME_END_NAMESPACE

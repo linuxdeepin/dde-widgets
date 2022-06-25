@@ -97,7 +97,6 @@ void InstanceModel::loadPrePanelInstances()
     }
 
     const auto &failedInstances = m_manager->initialize(existedInstances.values().toVector());
-    qDeleteAll(failedInstances);
 
     // save instance.
     m_instances.resize(existedInstances.size() - failedInstances.size());
@@ -110,8 +109,10 @@ void InstanceModel::loadPrePanelInstances()
         ++position;
     }
 
+    qDeleteAll(failedInstances);
+
     // update position's cache.
-    const bool positionChanged = savedPositions.size() != existedInstances.size();
+    const bool positionChanged = m_instances.size() != existedInstances.size();
     if (positionChanged)
         updatePositions();
 
@@ -170,8 +171,6 @@ void InstanceModel::addInstance(Instance *instance, InstancePos index)
     addMapItem(Store::Positions, instance->handler()->id(), index);
     m_instances.insert(index, instance);
     updatePositions();
-
-    Q_EMIT added(instance->handler()->id(), index);
 }
 
 void InstanceModel::removeInstance(const InstanceId &key)
@@ -236,13 +235,18 @@ void InstanceModel::loadOrCreateResidentInstance()
         if (existInstance(plugin->id()))
             continue;
 
+        if (existInstanceInDataStore(plugin->id()))
+            continue;
+
         const auto types = plugin->supportTypes();
         if (types.empty()) {
             qWarning(dwLog()) << "Resident plugins not existed any types widget." << plugin->id();
             continue;
         }
         const IWidget::Type type = types.first();
-        addInstance(plugin->id(), type, 0);
+        if (auto instance = m_manager->createWidget(plugin->id(), type)) {
+            addInstance(instance, 0);
+        }
     }
 }
 
@@ -253,14 +257,29 @@ void InstanceModel::loadOrCreateAloneInstance()
         if (existInstance(plugin->id()))
             continue;
 
+        if (existInstanceInDataStore(plugin->id()))
+            continue;
+
         const auto types = plugin->supportTypes();
         if (types.empty()) {
             qWarning(dwLog()) << "Alone plugins not existed any types widget." << plugin->id();
             continue;
         }
         const IWidget::Type type = types.first();
-        addInstance(plugin->id(), type, 0);
+        if (auto instance = m_manager->createWidget(plugin->id(), type)) {
+            addInstance(instance, 0);
+        }
     }
+}
+
+bool InstanceModel::existInstanceInDataStore(const PluginId &pluginId)
+{
+    for (const auto &item : m_dataStore->value(Store::Instances).toMap()) {
+        const QVariantMap &info = item.toMap();
+        if (info[Store::PluginId].toString() == pluginId)
+            return true;
+    }
+    return false;
 }
 
 InstancePos InstanceModel::instancePosition(const InstanceId &key)
@@ -277,6 +296,10 @@ Instance *InstanceModel::addInstance(const PluginId &pluginId, const IWidget::Ty
 {
     if (auto instance = m_manager->createWidget(pluginId, type)) {
         addInstance(instance, index);
+
+        Q_EMIT added(instance->handler()->id(), index);
+        // addWidegt to Model, This hint the `instance` should be shown.
+        m_manager->showWidgets({instance});
         return instance;
     }
     return nullptr;

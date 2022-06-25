@@ -34,7 +34,7 @@ WIDGETS_USE_NAMESPACE
 DGUI_USE_NAMESPACE
 WIDGETS_FRAME_BEGIN_NAMESPACE
 AnimationViewContainer::AnimationViewContainer(QWidget *parent)
-    : QWidget (parent)
+    : DBlurEffectWidget (parent)
 {
     setAttribute(Qt::WA_TranslucentBackground);
     setFixedWidth(0);
