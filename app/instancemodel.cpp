@@ -159,7 +159,7 @@ Instance *InstanceModel::replaceInstance(const InstanceId &key, const IWidget::T
     return instance;
 }
 
-void InstanceModel::addInstance(Instance *instance, InstancePos index)
+InstancePos InstanceModel::addInstance(Instance *instance, const InstancePos expectedIndex)
 {
     QVariantMap info;
     info[Store::Type] = instance->handler()->type();
@@ -167,10 +167,11 @@ void InstanceModel::addInstance(Instance *instance, InstancePos index)
     info[Store::Version] = m_manager->currentVersion();
     addMapItem(Store::Instances, instance->handler()->id(), info);
 
-    index = index < 0 ? m_instances.count() : index;
+    const InstancePos index = expectedIndex < 0 ? m_instances.count() : expectedIndex;
     addMapItem(Store::Positions, instance->handler()->id(), index);
     m_instances.insert(index, instance);
     updatePositions();
+    return index;
 }
 
 void InstanceModel::removeInstance(const InstanceId &key)
@@ -292,10 +293,10 @@ InstancePos InstanceModel::instancePosition(const InstanceId &key)
     return -1;
 }
 
-Instance *InstanceModel::addInstance(const PluginId &pluginId, const IWidget::Type &type, InstancePos index)
+Instance *InstanceModel::addInstance(const PluginId &pluginId, const IWidget::Type &type, const InstancePos expectedIndex)
 {
     if (auto instance = m_manager->createWidget(pluginId, type)) {
-        addInstance(instance, index);
+        const InstancePos index = addInstance(instance, expectedIndex);
 
         Q_EMIT added(instance->handler()->id(), index);
         // addWidegt to Model, This hint the `instance` should be shown.

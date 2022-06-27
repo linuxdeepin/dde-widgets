@@ -38,7 +38,7 @@ public:
     QVector<Instance *> instances() const;
     InstancePos instancePosition(const InstanceId &key);
 
-    Instance *addInstance(const PluginId &pluginId, const IWidget::Type &type, InstancePos index = -1);
+    Instance *addInstance(const PluginId &pluginId, const IWidget::Type &type, const InstancePos expectedIndex = -1);
     void moveInstance(const InstanceId &source, InstancePos index = -1);
     Instance *replaceInstance(const InstanceId &key, const IWidget::Type &type);
     Instance *getInstance(const InstancePos pos) const;
@@ -65,7 +65,7 @@ private:
     void removeMapItem(const QString &dataStoreKey, const InstanceId &key);
     void addMapItem(const QString &dataStoreKey, const InstanceId &key, const QVariant &value);
     void updateContentItem(const InstanceId &key, const QString &contentKey, const QVariant &value);
-    void addInstance(Instance *instance, InstancePos index = -1);
+    InstancePos addInstance(Instance *instance, const InstancePos expectedIndex = -1);
 
     void updatePositions();
 
