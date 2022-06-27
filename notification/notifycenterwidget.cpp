@@ -176,7 +176,7 @@ void NotifyCenterWidget::CompositeChanged()
 void NotifyCenterWidget::updateDisplayOfRemainingNotification()
 {
     const int rowCount = m_notifyWidget->model()->remainNotificationCount();
-    m_expandRemaining->setText(tr("remain%1lines notification").arg(QString::number(rowCount)));
+    m_expandRemaining->setText(tr("%1 more notifications").arg(QString::number(rowCount)));
 }
 
 void NotifyCenterWidget::expandNotificationFolding()

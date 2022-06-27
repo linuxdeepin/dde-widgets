@@ -35,6 +35,7 @@
 #include <QLabel>
 #include <QMenu>
 #include <QScrollArea>
+#include <QCoreApplication>
 
 #include <DIconButton>
 
@@ -408,7 +409,7 @@ void InstancePanel::onMenuRequested(const InstanceId &id)
         if (!instance->enableSettings())
             break;
 
-        QAction *action = menu->addAction(tr("settings widget"));
+        QAction *action = menu->addAction(qApp->translate("InstancePanel", "settings widget"));
         connect(action, &QAction::triggered, this, [this, instance](){
             instance->settings();
         });
@@ -418,7 +419,7 @@ void InstancePanel::onMenuRequested(const InstanceId &id)
         if (WidgetHandlerImpl::get(instance->handler())->isFixted())
             break;
 
-        QAction *action = menu->addAction(tr("remove widget"));
+        QAction *action = menu->addAction(qApp->translate("InstancePanel", "remove widget"));
         connect(action, &QAction::triggered, this, [this, id](){
             m_model->removeInstance(id);
         });

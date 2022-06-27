@@ -35,6 +35,7 @@
 #include <QMimeData>
 #include <QDrag>
 #include <QLabel>
+#include <QCoreApplication>
 
 #include <DIconButton>
 #include <DFontManager>
@@ -107,7 +108,7 @@ void EditModePanel::init()
 
     auto button = new QPushButton();
     button->setObjectName("complete-button");
-    button->setText(tr("complete"));
+    button->setText(qApp->translate("EditModePanel","complete"));
     button->setFixedSize(UI::Edit::CompleteSize);
     connect(button, &QPushButton::clicked, this, &EditModePanel::editCompleted);
     layout->addSpacing(UI::Ins::button2FlowPanelTopMargin);

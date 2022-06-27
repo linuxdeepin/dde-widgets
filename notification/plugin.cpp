@@ -77,6 +77,9 @@ bool NotificationWidget::initialize(const QStringList &arguments) {
     if (!hasLoaded)
         hasLoaded = loadTranslator("dde-widgets-notification_");
 
+    // enable accessible
+    QAccessible::installFactory(notificationAccessibleFactory);
+
     m_persistence = new PersistenceObserver();
     m_view.reset(new NotifyCenterWidget(m_persistence));
     m_view->setFixedWidth(handler()->size().width());
@@ -85,6 +88,4 @@ bool NotificationWidget::initialize(const QStringList &arguments) {
 
 void NotificationWidget::delayInitialize()
 {
-    // enable accessible
-    QAccessible::installFactory(notificationAccessibleFactory);
 }

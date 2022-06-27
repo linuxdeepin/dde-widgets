@@ -5,7 +5,7 @@
     <name>BubbleItem</name>
     <message>
         <location filename="../notification/bubbleitem.cpp" line="232"/>
-        <source>Just Now</source>
+        <source>Just now</source>
         <translation>刚刚</translation>
     </message>
     <message>
@@ -27,12 +27,12 @@
 <context>
     <name>NotificationWidgetPlugin</name>
     <message>
-        <location filename="../notification/plugin.cpp" line="29"/>
+        <location filename="../notification/plugin.cpp" line="31"/>
         <source>Notification</source>
         <translation>通知</translation>
     </message>
     <message>
-        <location filename="../notification/plugin.cpp" line="34"/>
+        <location filename="../notification/plugin.cpp" line="36"/>
         <source>Notification Center</source>
         <translation>通知中心</translation>
     </message>
@@ -45,8 +45,8 @@
         <translation>通知中心</translation>
     </message>
     <message>
-        <location filename="../notification/notifycenterwidget.cpp" line="165"/>
-        <source>remain%1lines notification</source>
+        <location filename="../notification/notifycenterwidget.cpp" line="179"/>
+        <source>%1 more notifications</source>
         <translation>剩余%1条通知</translation>
     </message>
 </context>

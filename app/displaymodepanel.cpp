@@ -29,6 +29,7 @@
 #include <QDebug>
 #include <QHBoxLayout>
 #include <QPushButton>
+#include <QCoreApplication>
 
 #include <DIconButton>
 
@@ -62,7 +63,7 @@ void DisplayModePanel::init()
 
     auto button = new QPushButton();
     button->setObjectName("edit-button");
-    button->setText(tr("edit"));
+    button->setText(qApp->translate("DisplayModePanel","edit"));
     button->setFixedSize(UI::Display::EditSize);
     connect(button, &QPushButton::clicked, this, &DisplayModePanel::editClicked);
     layout->addSpacing(UI::Ins::button2FlowPanelTopMargin);

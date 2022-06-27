@@ -229,7 +229,7 @@ void BubbleItem::onRefreshTime()
 
     if (elapsedDay == 0) {
         if (minute == 0) {
-            text =  tr("Just Now");
+            text =  tr("Just now");
         } else if (minute > 0 && minute < 60) {
             text = tr("%1 minutes ago").arg(minute);
         } else {

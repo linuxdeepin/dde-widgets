@@ -77,6 +77,15 @@ SET_FORM_ACCESSIBLE(QScrollArea, "QScrollArea")
 SET_FORM_ACCESSIBLE(QFrame, "QFrame")
 SET_FORM_ACCESSIBLE(QGraphicsView, "QGraphicsView")
 
+static const QString getWidgetsFrameNamespaceString()
+{
+#define WIDGETS_FRAME_GET_NAMESPACE_STR_IMPL(M) #M "::"
+#define WIDGETS_FRAME_GET_NAMESPACE_STR(M) WIDGETS_FRAME_GET_NAMESPACE_STR_IMPL(M)
+    return WIDGETS_FRAME_GET_NAMESPACE_STR(WIDGETS_FRAME_NAMESPACE);
+#undef WIDGETS_FRAME_GET_NAMESPACE_STR
+#undef WIDGETS_FRAME_GET_NAMESPACE_STR_IMPL
+}
+
 QAccessibleInterface *accessibleFactory(const QString &classname, QObject *object)
 {
     // 自动化标记确定不需要的控件，方可加入忽略列表
@@ -84,17 +93,19 @@ QAccessibleInterface *accessibleFactory(const QString &classname, QObject *objec
 
     QAccessibleInterface *interface = nullptr;
 
-    USE_ACCESSIBLE(classname, MainView)
-            ELSE_USE_ACCESSIBLE(classname, AnimationViewContainer)
-            ELSE_USE_ACCESSIBLE(classname, WidgetStore)
-            ELSE_USE_ACCESSIBLE(classname, EditModePanel)
-            ELSE_USE_ACCESSIBLE(classname, DisplayModePanel)
-            ELSE_USE_ACCESSIBLE(classname, PluginCell)
-            ELSE_USE_ACCESSIBLE(classname, WidgetStoreCell)
-            ELSE_USE_ACCESSIBLE(classname, EditModePanelCell)
-            ELSE_USE_ACCESSIBLE(classname, DisplayModePanelCell)
-            ELSE_USE_ACCESSIBLE(classname, QWidget)
-            ELSE_USE_ACCESSIBLE(classname, QLabel)
+    const QString NamespaceString(getWidgetsFrameNamespaceString());
+
+    USE_ACCESSIBLE(QString(classname).replace(NamespaceString, ""), MainView)
+            ELSE_USE_ACCESSIBLE(QString(classname).replace(NamespaceString, ""), AnimationViewContainer)
+            ELSE_USE_ACCESSIBLE(QString(classname).replace(NamespaceString, ""), WidgetStore)
+            ELSE_USE_ACCESSIBLE(QString(classname).replace(NamespaceString, ""), EditModePanel)
+            ELSE_USE_ACCESSIBLE(QString(classname).replace(NamespaceString, ""), DisplayModePanel)
+            ELSE_USE_ACCESSIBLE(QString(classname).replace(NamespaceString, ""), PluginCell)
+            ELSE_USE_ACCESSIBLE(QString(classname).replace(NamespaceString, ""), WidgetStoreCell)
+            ELSE_USE_ACCESSIBLE(QString(classname).replace(NamespaceString, ""), EditModePanelCell)
+            ELSE_USE_ACCESSIBLE(QString(classname).replace(NamespaceString, ""), DisplayModePanelCell)
+            ELSE_USE_ACCESSIBLE(QString(classname).replace("Dtk::Widget::", ""), QWidget)
+            ELSE_USE_ACCESSIBLE(QString(classname).replace("Dtk::Widget::", ""), QLabel)
             ELSE_USE_ACCESSIBLE(QString(classname).replace("Dtk::Widget::", ""), DBlurEffectWidget)
             ELSE_USE_ACCESSIBLE(QString(classname).replace("Dtk::Widget::", ""), DListView)
             ELSE_USE_ACCESSIBLE(QString(classname).replace("Dtk::Widget::", ""), DLoadingIndicator)
