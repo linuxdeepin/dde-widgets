@@ -23,6 +23,7 @@
 #include "pluginspec.h"
 #include "widgethandler.h"
 #include "widgetmanager.h"
+#include "instanceproxy.h"
 #include "utils.h"
 
 #include <QScrollArea>
@@ -163,7 +164,7 @@ PluginCell::PluginCell(QWidget *parent)
         m_description->setFont(DFontSizeManager::instance()->t8());
     }
 
-    QWidget *views = new QWidget(this);
+    QWidget *views = new QWidget();
     auto viewsLayout = new QVBoxLayout(views);
     auto cellViews = new QWidget(views);
 
@@ -273,6 +274,7 @@ void WidgetStoreCell::startDrag(const QPoint &pos)
     mimeData->setData(EditModeMimeDataFormat, itemData);
 
     QPixmap pixmap(child->grab());
+    pixmap.setMask(WidgetContainer::bitmapOfMask(pixmap.size(), WidgetHandlerImpl::get(m_handler)->m_isUserAreaInstance));
 
     QDrag *drag = new QDrag(this);
     drag->setMimeData(mimeData);

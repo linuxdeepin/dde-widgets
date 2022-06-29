@@ -22,6 +22,7 @@
 
 #include "instancepanel.h"
 #include "instancemodel.h"
+#include "instanceproxy.h"
 #include "widgethandler.h"
 #include "widgetmanager.h"
 #include "utils.h"
@@ -95,6 +96,7 @@ void InstancePanelCell::startDrag(const QPoint &pos)
     mimeData->setData(MoveMimeDataFormat, itemData);
 
     QPixmap pixmap(child->grab());
+    pixmap.setMask(WidgetContainer::bitmapOfMask(pixmap.size(), m_instance->isUserAreaInstance()));
 
     QDrag *drag = new QDrag(this);
     drag->setMimeData(mimeData);

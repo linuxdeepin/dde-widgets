@@ -47,13 +47,13 @@ public:
 
     QVector<IWidget::Type> supportTypes() const;
 
-    IWidget *createWidget(const IWidget::Type &type);
-    IWidget *createWidget(const IWidget::Type &type, const WIDGETS_FRAME_NAMESPACE::InstanceId &key);
+    WIDGETS_FRAME_NAMESPACE::Instance *createWidget(const IWidget::Type &type);
+    WIDGETS_FRAME_NAMESPACE::Instance *createWidget(const IWidget::Type &type, const WIDGETS_FRAME_NAMESPACE::InstanceId &key);
 private:
 
-    IWidget *createWidgetForWidgetStore(const IWidget::Type &type);
+    WIDGETS_FRAME_NAMESPACE::Instance *createWidgetForWidgetStore(const IWidget::Type &type);
 
-    IWidget *createWidgetImpl(const IWidget::Type &type, const WIDGETS_FRAME_NAMESPACE::InstanceId &key);
+    WIDGETS_FRAME_NAMESPACE::Instance *createWidgetImpl(const IWidget::Type &type, const WIDGETS_FRAME_NAMESPACE::InstanceId &key);
     void setDataStore(WIDGETS_FRAME_NAMESPACE::DataStore *store);
 
     IWidgetPlugin *m_plugin = nullptr;

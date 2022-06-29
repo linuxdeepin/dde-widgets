@@ -21,6 +21,7 @@
 
 #include "pluginspec.h"
 #include "widgethandler.h"
+#include "instanceproxy.h"
 #include "widgetsinterface_p.h"
 #include "utils.h"
 
@@ -51,26 +52,26 @@ WidgetPluginSpec::~WidgetPluginSpec()
     }
 }
 
-IWidget *WidgetPluginSpec::createWidget(const IWidget::Type &type)
+Instance *WidgetPluginSpec::createWidget(const IWidget::Type &type)
 {
     return createWidgetImpl(type, QUuid::createUuid().toString());
 }
 
-IWidget *WidgetPluginSpec::createWidget(const IWidget::Type &type, const InstanceId &key)
+Instance *WidgetPluginSpec::createWidget(const IWidget::Type &type, const InstanceId &key)
 {
     return createWidgetImpl(type, key);
 }
 
-IWidget *WidgetPluginSpec::createWidgetForWidgetStore(const IWidget::Type &type)
+Instance *WidgetPluginSpec::createWidgetForWidgetStore(const IWidget::Type &type)
 {
     auto instance = createWidget(type);
     if (instance) {
-        WidgetHandlerImpl::get(instance->handler())->m_isInstance = false;
+        WidgetHandlerImpl::get(instance->handler())->m_isUserAreaInstance = false;
     }
     return instance;
 }
 
-IWidget *WidgetPluginSpec::createWidgetImpl(const IWidget::Type &type, const InstanceId &key)
+Instance *WidgetPluginSpec::createWidgetImpl(const IWidget::Type &type, const InstanceId &key)
 {
     if (!m_plugin->supportTypes().contains(type))
         return nullptr;
@@ -87,7 +88,7 @@ IWidget *WidgetPluginSpec::createWidgetImpl(const IWidget::Type &type, const Ins
     handler->m_pluginType = m_plugin->type();
     handler->setDataStore(m_dataStore);
     qDebug(dwLog()) << "created widget." << m_pluginId << type << key;
-    return instance;
+    return new Instance(instance);
 }
 
 QString WidgetPluginSpec::title() const

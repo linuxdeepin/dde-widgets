@@ -24,6 +24,7 @@
 #include "pluginspec.h"
 #include "widgethandler.h"
 #include "instancemodel.h"
+#include "instanceproxy.h"
 #include "widgetmanager.h"
 #include "utils.h"
 

@@ -46,8 +46,8 @@ public:
     WidgetPlugin *getPlugin(const PluginId &key) const;
 
     QMultiMap<PluginId, Instance *> loadWidgetStoreInstances();
-    IWidget *createWidget(const PluginId &pluginId, const IWidget::Type &type);
-    IWidget *createWidget(const PluginId &pluginId, const IWidget::Type &type, const InstanceId &id);
+    Instance *createWidget(const PluginId &pluginId, const IWidget::Type &type);
+    Instance *createWidget(const PluginId &pluginId, const IWidget::Type &type, const InstanceId &id);
     void removeWidget(const InstanceId &instanceId);
     void typeChanged(const InstanceId &instanceId, const IWidget::Type &type);
     Instance *getInstance(const InstanceId &key);

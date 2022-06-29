@@ -14,6 +14,7 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/editmodepanel.h
     ${CMAKE_CURRENT_LIST_DIR}/widgetstore.h
     ${CMAKE_CURRENT_LIST_DIR}/widgetsserver.h
+    ${CMAKE_CURRENT_LIST_DIR}/instanceproxy.h
     ${CMAKE_CURRENT_LIST_DIR}/instancemodel.h
     ${CMAKE_CURRENT_LIST_DIR}/instancepanel.h
     ${CMAKE_CURRENT_LIST_DIR}/utils/utils.h
@@ -32,6 +33,7 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/editmodepanel.cpp
     ${CMAKE_CURRENT_LIST_DIR}/widgetstore.cpp
     ${CMAKE_CURRENT_LIST_DIR}/widgetsserver.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/instanceproxy.cpp
     ${CMAKE_CURRENT_LIST_DIR}/instancemodel.cpp
     ${CMAKE_CURRENT_LIST_DIR}/instancepanel.cpp
     ${CMAKE_CURRENT_LIST_DIR}/utils/utils.cpp

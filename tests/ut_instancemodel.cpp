@@ -23,6 +23,7 @@
 
 #include "widgetmanager.h"
 #include "instancemodel.h"
+#include "instanceproxy.h"
 #include "helper.hpp"
 #include <QSignalSpy>
 WIDGETS_FRAME_USE_NAMESPACE

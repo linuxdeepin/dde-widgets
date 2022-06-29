@@ -22,6 +22,7 @@
 #include <gtest/gtest.h>
 
 #include "widgetmanager.h"
+#include "instanceproxy.h"
 #include "pluginspec.h"
 #include "helper.hpp"
 

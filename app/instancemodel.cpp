@@ -22,6 +22,7 @@
 #include "instancemodel.h"
 #include "pluginspec.h"
 #include "widgethandler.h"
+#include "instanceproxy.h"
 #include "widgetmanager.h"
 
 #include <QSettings>

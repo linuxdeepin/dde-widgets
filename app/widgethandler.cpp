@@ -29,7 +29,7 @@ QString WidgetHandlerImpl::id() const { return m_id;}
 
 QSize WidgetHandlerImpl::size() const
 {
-    return size(m_type, m_isInstance);
+    return size(m_type, m_isUserAreaInstance);
 }
 
 QSize WidgetHandlerImpl::size(const IWidget::Type type, const bool instance)
@@ -64,7 +64,7 @@ void WidgetHandlerImpl::clear()
 
 bool WidgetHandlerImpl::unavailableDS() const
 {
-    return !m_isInstance;
+    return !m_isUserAreaInstance;
 }
 
 WidgetHandlerImpl *WidgetHandlerImpl::get(WidgetHandler *handler)

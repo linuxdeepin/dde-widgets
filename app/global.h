@@ -44,7 +44,8 @@ using PluginPath = QString;
 using InstanceId = QString;
 using InstancePos = int;
 using WidgetPlugin = WIDGETS_NAMESPACE::WidgetPluginSpec;
-using Instance = WIDGETS_NAMESPACE::IWidget;
+class InstanceProxy;
+using Instance = InstanceProxy; //WIDGETS_NAMESPACE::IWidget;
 using DataStore = QSettings;
 
 static const char* EditModeMimeDataFormat = "application/dde-widgets-storedata";
@@ -54,6 +55,8 @@ namespace UI {
     static const int topMargin = 22;
     static const int bottomMargin = 10;
     static const int SizeType = 3;
+    static const qreal RoundedRectRadius = 18;
+    static const qreal DataStoreRoundedRectRadius = 12;
 
 namespace Widget {
     static const QSize SmallSize(170, 170);

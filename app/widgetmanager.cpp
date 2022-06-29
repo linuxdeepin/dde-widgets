@@ -22,6 +22,7 @@
 #include "widgetmanager.h"
 #include "pluginspec.h"
 #include "widgethandler.h"
+#include "instanceproxy.h"
 
 #include <QPluginLoader>
 #include <QDir>
@@ -140,7 +141,7 @@ WidgetPlugin *WidgetManager::getPlugin(const PluginId &key) const
     return m_plugins.value(key);
 }
 
-IWidget *WidgetManager::createWidget(const PluginId &pluginId, const IWidget::Type &type)
+Instance *WidgetManager::createWidget(const PluginId &pluginId, const IWidget::Type &type)
 {
     if (auto plugin = getPlugin(pluginId)) {
         auto instance = plugin->createWidget(type);
@@ -148,12 +149,12 @@ IWidget *WidgetManager::createWidget(const PluginId &pluginId, const IWidget::Ty
         if (initialize(instance)) {
             return instance;
         }
-        delete instance;
+        instance->deleteLater();
     }
     return nullptr;
 }
 
-IWidget *WidgetManager::createWidget(const PluginId &pluginId, const IWidget::Type &type, const InstanceId &id)
+Instance *WidgetManager::createWidget(const PluginId &pluginId, const IWidget::Type &type, const InstanceId &id)
 {
     if (auto plugin = getPlugin(pluginId)) {
         auto instance = plugin->createWidget(type, id);
@@ -161,7 +162,7 @@ IWidget *WidgetManager::createWidget(const PluginId &pluginId, const IWidget::Ty
         if (initialize(instance)) {
             return instance;
         }
-        delete instance;
+        instance->deleteLater();
     }
     return nullptr;
 }
@@ -170,7 +171,7 @@ void WidgetManager::removeWidget(const InstanceId &instanceId)
 {
     if (auto instance = m_widgets.take(instanceId)) {
         aboutToShutdown(instance);
-        delete instance;
+        instance->deleteLater();
     }
 }
 
@@ -218,7 +219,7 @@ QVector<Instance *> WidgetManager::initialize(const QVector<Instance *> &instanc
         instance->typeChanged(instance->handler()->type());
 
         qDebug(dwLog()) << "delayInitialize widget." << instance->handler()->pluginId() << instance->handler()->id();
-        futures << QtConcurrent::run(instance, &IWidget::delayInitialize);
+        futures << QtConcurrent::run(instance, &Instance::delayInitialize);
     }
     // TODO delay those blocking.
     for (auto item : futures) {

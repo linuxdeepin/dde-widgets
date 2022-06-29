@@ -54,7 +54,7 @@ public:
     bool isCustom() const;
     void setDataStore(DataStore *store);
 
-    bool m_isInstance = true;
+    bool m_isUserAreaInstance = true;
     InstanceId m_id;
     PluginId m_pluginId;
     IWidget::Type m_type;
