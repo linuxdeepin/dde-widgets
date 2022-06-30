@@ -1,0 +1,26 @@
+set(HEADERS
+    "accessible/accessible.h"
+    "utils/consts.h"
+    "utils/file_util.h"
+    "utils/searchinput.h"
+    "utils/timezone.h"
+    "utils/zoneinfo.h"
+    "global.h"
+    "mainview.h"
+    "timezonemodel.h"
+    "clockview.h"
+    "clock.h"
+    "settingsview.h"
+)
+
+set(SOURCES
+    "utils/file_util.cpp"
+    "utils/searchinput.cpp"
+    "utils/timezone.cpp"
+    "utils/zoneinfo.cpp"
+    "mainview.cpp"
+    "timezonemodel.cpp"
+    "clockview.cpp"
+    "clock.cpp"
+    "settingsview.cpp"
+)

@@ -13,6 +13,7 @@ add_subdirectory(app)
 add_subdirectory(example)
 add_subdirectory(notification)
 add_subdirectory(memorymonitor)
+add_subdirectory(worldclock)
 add_subdirectory(tests)
 
 file(GLOB QM_FILES "translations/*.qm")

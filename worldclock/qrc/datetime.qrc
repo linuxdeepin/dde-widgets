@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/icons/deepin/builtin">
+        <file>icons/dcc_nav_datetime_42px.svg</file>
+        <file>icons/dcc_nav_datetime_84px.svg</file>
+        <file>texts/dcc_clock_white_16px.svg</file>
+        <file>texts/dcc_noun_minute_16px.svg</file>
+        <file>texts/dcc_noun_hour_16px.svg</file>
+        <file>texts/dcc_clock_black_16px.svg</file>
+        <file>texts/dcc_noun_second_16px.svg</file>
+    </qresource>
+</RCC>
