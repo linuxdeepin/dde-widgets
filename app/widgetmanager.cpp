@@ -118,6 +118,10 @@ QList<WidgetPlugin *> WidgetManager::plugins(const IWidgetPlugin::Type type) con
             continue;
         result.append(plugin);
     }
+    // sort plugin's order by character sorting.
+    std::sort(result.begin(), result.end(), [this](const WidgetPlugin *first, const WidgetPlugin *second){
+        return first->id() < second->id();
+    });
     return result;
 }
 
@@ -147,6 +151,7 @@ Instance *WidgetManager::createWidget(const PluginId &pluginId, const IWidget::T
         auto instance = plugin->createWidget(type);
         Q_ASSERT(instance);
         if (initialize(instance)) {
+            typeChanged({instance});
             return instance;
         }
         instance->deleteLater();
@@ -160,6 +165,7 @@ Instance *WidgetManager::createWidget(const PluginId &pluginId, const IWidget::T
         auto instance = plugin->createWidget(type, id);
         Q_ASSERT(instance);
         if (initialize(instance)) {
+            typeChanged({instance});
             return instance;
         }
         instance->deleteLater();
@@ -180,6 +186,13 @@ void WidgetManager::typeChanged(const InstanceId &instanceId, const IWidget::Typ
     if (auto instance = m_widgets.value(instanceId)) {
         WidgetHandlerImpl::get(instance->handler())->m_type = type;
         instance->typeChanged(type);
+    }
+}
+
+void WidgetManager::typeChanged(const QVector<Instance *> &instances)
+{
+    for (auto instance : qAsConst(instances)) {
+        instance->typeChanged(instance->handler()->type());
     }
 }
 
@@ -215,8 +228,6 @@ QVector<Instance *> WidgetManager::initialize(const QVector<Instance *> &instanc
         }
 
         m_widgets[instance->handler()->id()] = instance;
-
-        instance->typeChanged(instance->handler()->type());
 
         qDebug(dwLog()) << "delayInitialize widget." << instance->handler()->pluginId() << instance->handler()->id();
         futures << QtConcurrent::run(instance, &Instance::delayInitialize);
@@ -293,19 +304,35 @@ QList<PluginPath> WidgetManager::addingPlugins()
 
 QList<Instance *> WidgetManager::createWidgetStoreInstances(const PluginId &key)
 {
-    QList<Instance *> instances;
+    QVector<Instance *> instances;
     if (auto plugin = getPlugin(key)) {
         static const QVector<IWidget::Type> Types{IWidget::Small, IWidget::Middle, IWidget::Large};
         for (auto type : Types) {
             auto instance = plugin->createWidgetForWidgetStore(type);
-            if (!instance)
+            if (!instance) {
+                plugin->removeSupportType(type);
                 continue;
+            }
 
             instances << instance;
         }
     }
-    initialize(instances.toVector());
-    return instances;
+    const auto &failedInstances = initialize(instances);
+    if (!failedInstances.isEmpty()) {
+        for (auto item : failedInstances) {
+            const auto index = instances.indexOf(item);
+            if (index < 0)
+                continue;
+
+            if (auto plugin = m_plugins.value(instances[index]->handler()->pluginId())) {
+                plugin->removeSupportType(instances[index]->handler()->type());
+            }
+            instances.remove(index);
+        }
+        qDeleteAll(failedInstances);
+    }
+    typeChanged(instances);
+    return instances.toList();
 }
 
 WidgetPluginSpec *WidgetManager::loadPlugin(const PluginPath &pluginPath)

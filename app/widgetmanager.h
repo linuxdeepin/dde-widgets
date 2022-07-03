@@ -50,6 +50,7 @@ public:
     Instance *createWidget(const PluginId &pluginId, const IWidget::Type &type, const InstanceId &id);
     void removeWidget(const InstanceId &instanceId);
     void typeChanged(const InstanceId &instanceId, const IWidget::Type &type);
+    void typeChanged(const QVector<Instance *> &instances);
     Instance *getInstance(const InstanceId &key);
     QList<Instance *> instances() const;
     void showAllWidgets();

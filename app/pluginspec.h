@@ -46,6 +46,7 @@ public:
     IWidgetPlugin::Type type() const;
 
     QVector<IWidget::Type> supportTypes() const;
+    void removeSupportType(const IWidget::Type type);
 
     WIDGETS_FRAME_NAMESPACE::Instance *createWidget(const IWidget::Type &type);
     WIDGETS_FRAME_NAMESPACE::Instance *createWidget(const IWidget::Type &type, const WIDGETS_FRAME_NAMESPACE::InstanceId &key);
@@ -60,6 +61,7 @@ private:
     WIDGETS_FRAME_NAMESPACE::PluginId m_pluginId;
     WIDGETS_FRAME_NAMESPACE::DataStore *m_dataStore = nullptr;
     QString m_fileName;
+    QVector<IWidget::Type> m_supportTypes;
 
     friend class WIDGETS_FRAME_NAMESPACE::WidgetManager;
 };

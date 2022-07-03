@@ -37,7 +37,8 @@ WidgetPluginSpec::WidgetPluginSpec(const PluginInfo &info)
     , m_pluginId(info.id)
     , m_fileName(info.fileName)
 {
-
+    Q_ASSERT(m_plugin);
+    m_supportTypes = m_plugin->supportTypes();
 }
 
 WidgetPluginSpec::~WidgetPluginSpec()
@@ -73,7 +74,7 @@ Instance *WidgetPluginSpec::createWidgetForWidgetStore(const IWidget::Type &type
 
 Instance *WidgetPluginSpec::createWidgetImpl(const IWidget::Type &type, const InstanceId &key)
 {
-    if (!m_plugin->supportTypes().contains(type))
+    if (!m_supportTypes.contains(type))
         return nullptr;
 
     auto instance = m_plugin->createWidget();
@@ -108,7 +109,12 @@ IWidgetPlugin::Type WidgetPluginSpec::type() const
 
 QVector<IWidget::Type> WidgetPluginSpec::supportTypes() const
 {
-    return m_plugin->supportTypes();
+    return m_supportTypes;
+}
+
+void WidgetPluginSpec::removeSupportType(const IWidget::Type type)
+{
+    m_supportTypes.removeOne(type);
 }
 
 void WidgetPluginSpec::setDataStore(DataStore *store)

@@ -110,6 +110,8 @@ void InstanceModel::loadPrePanelInstances()
         ++position;
     }
 
+    m_manager->typeChanged(m_instances);
+
     qDeleteAll(failedInstances);
 
     // update position's cache.
