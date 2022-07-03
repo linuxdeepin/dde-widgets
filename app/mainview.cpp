@@ -116,14 +116,14 @@ MainView::Mode MainView::displayMode() const
 
 void MainView::showView()
 {
-    qDebug(dwLog()) << "showView";
+    qDebug(dwLog()) << "showView()";
     m_animationContainer->showView();
     m_manager->showAllWidgets();
 }
 
 void MainView::hideView()
 {
-    qDebug(dwLog()) << "hideView";
+    qDebug(dwLog()) << "hideView()";
     m_animationContainer->hideView();
     m_manager->hideAllWidgets();
 }

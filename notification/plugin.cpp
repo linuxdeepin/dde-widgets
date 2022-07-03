@@ -20,11 +20,10 @@
  */
 
 #include "plugin.h"
+#include "common/helper.hpp"
 #include "accessible/accessible.h"
 
-#include <DStandardPaths>
 #include <QAccessible>
-#include <QTranslator>
 
 QString NotificationWidgetPlugin::title() const
 {
@@ -41,41 +40,11 @@ IWidget *NotificationWidgetPlugin::createWidget()
     return new NotificationWidget();
 }
 
-bool NotificationWidget::loadTranslator(const QString &fileNamePrefix)
-{
-    const auto &locale = userInterfaceLanguage();
-    if (!locale.isEmpty()) {
-        const QString fileName(fileNamePrefix + locale);
-        // translations dirs.
-        QStringList dirs { "./translations/" };
-        DCORE_USE_NAMESPACE;
-        const auto &genDatas = DStandardPaths::standardLocations(
-                    QStandardPaths::GenericDataLocation);
-        for (const auto & path : qAsConst(genDatas)) {
-            dirs << path + "/dde-widgets/translations/";
-        }
-        auto qtl = new QTranslator();
-        for (auto dir : dirs) {
-            if (qtl->load(fileName, dir)) {
-                qApp->installTranslator(qtl);
-                qInfo(dwLog()) << QString("load translation [%1] successful.").arg(fileName);
-                return true;
-            }
-        }
-        if (qtl->isEmpty()) {
-            qWarning(dwLog()) << QString("load translation [%1] error from those dirs.").arg(fileName)
-                              << dirs;
-            qtl->deleteLater();
-        }
-    }
-    return false;
-}
-
 bool NotificationWidget::initialize(const QStringList &arguments) {
     Q_UNUSED(arguments);
     static bool hasLoaded = false;
     if (!hasLoaded)
-        hasLoaded = loadTranslator("dde-widgets-notification_");
+        hasLoaded = BuildinWidgetsHelper::instance()->loadTranslator("dde-widgets-notification_");
 
     // enable accessible
     QAccessible::installFactory(notificationAccessibleFactory);

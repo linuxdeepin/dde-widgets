@@ -40,7 +40,6 @@ public:
     virtual void settings() override;
 
 private:
-    bool loadTranslator(const QString &fileNamePrefix);
 
     QPointer<ViewManager> m_viewManager = nullptr;
 };

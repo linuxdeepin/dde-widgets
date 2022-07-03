@@ -104,6 +104,8 @@ int NotifyModel::remainNotificationCount() const
 
 void NotifyModel::addNotify(EntityPtr entity)
 {
+    qDebug() << "addNotify(): Notification's appName:" << entity->appName()
+             << ", id:" << entity->id();
     beginResetModel();
     addAppData(entity);
     sortNotifications();
@@ -308,6 +310,8 @@ void NotifyModel::initData()
             m_database->removeOne(QString::number(notify->id()));
         }
     }
+    qDebug() << "initData(): Notification count:" << notifications.count()
+             << ", App's count:" << m_notifications.count();
 
     sortNotifications();
 }
@@ -355,7 +359,6 @@ void NotifyModel::addAppData(EntityPtr entity)
         appGroup->push(entity);
         m_notifications.append(appGroup);
         Q_EMIT appCountChanged();
-        qDebug() << "addAppData" << m_notifications.size();
     }
 }
 

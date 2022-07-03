@@ -33,6 +33,5 @@ target_include_directories(${PROJECT_NAME} PUBLIC
     ${DtkWidget_INCLUDE_DIRS}
 )
 include_directories(../interface/)
-include_directories(../app/accessible)
 
 install(TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/dde-widgets/plugins)

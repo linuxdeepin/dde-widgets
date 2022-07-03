@@ -41,8 +41,6 @@ public:
             m_timer->stop();
     }
 private:
-    bool loadTranslator(const QString &fileNamePrefix);
-
     void updateMemory();
 
     QPointer<MemoryWidget> m_view;

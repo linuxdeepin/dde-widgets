@@ -21,7 +21,7 @@
 
 #pragma once
 
-#include "accessibledefine.h"
+#include "common/accessibledefine.h"
 
 #include "mainview.h"
 #include "displaymodepanel.h"

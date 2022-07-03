@@ -22,7 +22,6 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/utils/animationviewcontainer.h
     ${CMAKE_CURRENT_LIST_DIR}/utils/appearancehandler.h
     ${CMAKE_CURRENT_LIST_DIR}/accessible/accessible.h
-    ${CMAKE_CURRENT_LIST_DIR}/accessible/accessibledefine.h
 )
 set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/mainview.cpp

@@ -53,7 +53,6 @@ public:
         }
     }
 private:
-    bool loadTranslator(const QString &fileNamePrefix);
 
     QScopedPointer<NotifyCenterWidget> m_view;
     AbstractPersistence* m_persistence = nullptr;

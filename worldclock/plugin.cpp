@@ -20,14 +20,12 @@
  */
 
 #include "plugin.h"
+#include "common/helper.hpp"
 #include "accessible/accessible.h"
 #include "clockview.h"
 #include "settingsview.h"
 #include "timezonemodel.h"
 
-#include <QVariant>
-#include <DStandardPaths>
-#include <QTranslator>
 namespace dwclock {
 QString WorldClockWidgetPlugin::title() const
 {
@@ -44,36 +42,6 @@ IWidget *WorldClockWidgetPlugin::createWidget()
     return new WorldClockWidget();
 }
 
-bool WorldClockWidget::loadTranslator(const QString &fileNamePrefix)
-{
-    const auto &locale = userInterfaceLanguage();
-    if (!locale.isEmpty()) {
-        const QString fileName(fileNamePrefix + locale);
-        // translations dirs.
-        QStringList dirs { "./translations/" };
-        DCORE_USE_NAMESPACE;
-        const auto &genDatas = DStandardPaths::standardLocations(
-                    QStandardPaths::GenericDataLocation);
-        for (const auto & path : qAsConst(genDatas)) {
-            dirs << path + "/dde-widgets/translations/";
-        }
-        auto qtl = new QTranslator();
-        for (auto dir : dirs) {
-            if (qtl->load(fileName, dir)) {
-                qApp->installTranslator(qtl);
-                qInfo(dwLog()) << QString("load translation [%1] successful.").arg(fileName);
-                return true;
-            }
-        }
-        if (qtl->isEmpty()) {
-            qWarning(dwLog()) << QString("load translation [%1] error from those dirs.").arg(fileName)
-                              << dirs;
-            qtl->deleteLater();
-        }
-    }
-    return false;
-}
-
 QWidget *WorldClockWidget::view()
 {
     return m_viewManager->clockView();
@@ -83,7 +51,7 @@ bool WorldClockWidget::initialize(const QStringList &arguments) {
     Q_UNUSED(arguments);
     static bool hasLoaded = false;
     if (!hasLoaded)
-        hasLoaded = loadTranslator("dde-widgets-worldclock_");
+        hasLoaded = BuildinWidgetsHelper::instance()->loadTranslator("dde-widgets-worldclock_");
 
     m_viewManager = new ViewManager();
     auto clockView = m_viewManager->clockView();

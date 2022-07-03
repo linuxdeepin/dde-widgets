@@ -41,6 +41,5 @@ target_include_directories(${PROJECT_NAME} PUBLIC
     ${DFrameworkDBus_INCLUDE_DIRS}
 )
 include_directories(../interface/)
-include_directories(../app/accessible)
 
 install(TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/dde-widgets/plugins)

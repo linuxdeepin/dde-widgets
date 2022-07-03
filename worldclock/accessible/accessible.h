@@ -21,7 +21,7 @@
 
 #pragma once
 
-#include "accessibledefine.h"
+#include "common/accessibledefine.h"
 
 #include "clockview.h"
 #include "settingsview.h"
