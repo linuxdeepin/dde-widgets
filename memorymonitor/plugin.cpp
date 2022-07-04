@@ -28,7 +28,6 @@
 
 #include <QAccessible>
 #include <QDBusInterface>
-#include <QtConcurrent>
 
 QString MemoryMonitorWidgetPlugin::title() const
 {
@@ -92,8 +91,6 @@ void MemoryMonitorWidget::typeChanged(const IWidget::Type type)
 
 void MemoryMonitorWidget::timerEvent(QTimerEvent *event)
 {
-//    if (event->timerId() == m_timer->timerId())
-//        QtConcurrent::run(QThreadPool::globalInstance(), this, &MemoryMonitorWidget::updateMemory);
     if (event->timerId() == m_timer->timerId())
         updateMemory();
 

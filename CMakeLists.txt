@@ -10,11 +10,20 @@ endif ()
 
 add_subdirectory(interface)
 add_subdirectory(app)
-add_subdirectory(example)
+add_subdirectory(tests)
+
+# buildin widgets.
 add_subdirectory(notification)
 add_subdirectory(memorymonitor)
 add_subdirectory(worldclock)
-add_subdirectory(tests)
+
+# Only build example when dde-widgets-dev in installed.
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+    find_package(DdeWidgets QUIET)
+    if (DdeWidgets_FOUND)
+        add_subdirectory(example)
+    endif()
+endif()
 
 file(GLOB QM_FILES "translations/*.qm")
 install(FILES ${QM_FILES} DESTINATION ${CMAKE_INSTALL_PREFIX}/share/dde-widgets/translations)

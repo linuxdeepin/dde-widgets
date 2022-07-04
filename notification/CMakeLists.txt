@@ -2,7 +2,7 @@ PROJECT(dde-notificationwidget-plugin)
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 
 set(REQUIRED_QT_VERSION 5.11.3)
-find_package(Qt5 ${REQUIRED_QT_VERSION} REQUIRED COMPONENTS Core Gui Widgets DBus Concurrent Svg Sql X11Extras)
+find_package(Qt5 ${REQUIRED_QT_VERSION} REQUIRED COMPONENTS Core Gui Widgets DBus Concurrent Svg X11Extras)
 find_package(DtkCore REQUIRED)
 find_package(DtkGui REQUIRED)
 find_package(DtkWidget REQUIRED)
