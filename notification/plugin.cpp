@@ -58,3 +58,14 @@ bool NotificationWidget::initialize(const QStringList &arguments) {
 void NotificationWidget::delayInitialize()
 {
 }
+
+
+QIcon NotificationWidgetPlugin::logo() const
+{
+    return QIcon::fromTheme("notifications");
+}
+
+QStringList NotificationWidgetPlugin::contributors() const
+{
+    return {BuildinWidgetsHelper::instance()->contributor()};
+}

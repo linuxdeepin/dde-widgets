@@ -36,6 +36,7 @@ WidgetPluginSpec::WidgetPluginSpec(const PluginInfo &info)
     : m_plugin (info.plugin)
     , m_pluginId(info.id)
     , m_fileName(info.fileName)
+    , m_version(info.version)
 {
     Q_ASSERT(m_plugin);
     m_supportTypes = m_plugin->supportTypes();
@@ -105,6 +106,21 @@ QString WidgetPluginSpec::description() const
 IWidgetPlugin::Type WidgetPluginSpec::type() const
 {
     return m_plugin->type();
+}
+
+QString WidgetPluginSpec::version() const
+{
+    return m_version;
+}
+
+QIcon WidgetPluginSpec::logo() const
+{
+    return m_plugin->logo();
+}
+
+QStringList WidgetPluginSpec::contributors() const
+{
+    return m_plugin->contributors();
 }
 
 QVector<IWidget::Type> WidgetPluginSpec::supportTypes() const

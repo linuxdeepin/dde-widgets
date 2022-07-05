@@ -75,4 +75,7 @@ public:
     virtual IWidget *createWidget() override;
     virtual QVector<IWidget::Type> supportTypes() const { return {IWidget::Custom};}
     virtual IWidgetPlugin::Type type() const override { return IWidgetPlugin::Alone; }
+
+    virtual QIcon logo() const override;
+    virtual QStringList contributors() const override;
 };

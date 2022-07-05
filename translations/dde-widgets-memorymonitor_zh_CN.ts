@@ -4,12 +4,12 @@
 <context>
     <name>MemoryMonitorWidgetPlugin</name>
     <message>
-        <location filename="../memorymonitor/plugin.cpp" line="36"/>
+        <location filename="../memorymonitor/plugin.cpp" line="34"/>
         <source>MemoryMonitor</source>
         <translation>内存监控</translation>
     </message>
     <message>
-        <location filename="../memorymonitor/plugin.cpp" line="41"/>
+        <location filename="../memorymonitor/plugin.cpp" line="39"/>
         <source>Memory Monitor</source>
         <translation>实时监控内存变化</translation>
     </message>

@@ -147,3 +147,13 @@ void MemoryMonitorWidget::showSystemMonitorDetail()
      const QString MsgCodeName("MSG_PROCESS");
      interface.call("slotJumpProcessWidget", MsgCodeName);
 }
+
+QIcon MemoryMonitorWidgetPlugin::logo() const
+{
+    return QIcon();
+}
+
+QStringList MemoryMonitorWidgetPlugin::contributors() const
+{
+    return {BuildinWidgetsHelper::instance()->contributor()};
+}

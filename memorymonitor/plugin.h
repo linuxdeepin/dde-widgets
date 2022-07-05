@@ -80,4 +80,7 @@ public:
     virtual IWidget *createWidget() override;
     virtual QVector<IWidget::Type> supportTypes() const { return {IWidget::Small};}
     virtual IWidgetPlugin::Type type() const override { return IWidgetPlugin::Normal; }
+
+    virtual QIcon logo() const override;
+    virtual QStringList contributors() const override;
 };

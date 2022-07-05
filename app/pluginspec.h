@@ -32,6 +32,7 @@ struct PluginInfo {
     WIDGETS_NAMESPACE::IWidgetPlugin *plugin = nullptr;
     WIDGETS_FRAME_NAMESPACE::PluginId id;
     QString fileName;
+    QString version;
 };
 WIDGETS_BEGIN_NAMESPACE
 
@@ -44,6 +45,9 @@ public:
     QString title() const;
     QString description() const;
     IWidgetPlugin::Type type() const;
+    QString version() const;
+    QIcon logo() const;
+    QStringList contributors() const;
 
     QVector<IWidget::Type> supportTypes() const;
     void removeSupportType(const IWidget::Type type);
@@ -61,6 +65,7 @@ private:
     WIDGETS_FRAME_NAMESPACE::PluginId m_pluginId;
     WIDGETS_FRAME_NAMESPACE::DataStore *m_dataStore = nullptr;
     QString m_fileName;
+    QString m_version;
     QVector<IWidget::Type> m_supportTypes;
 
     friend class WIDGETS_FRAME_NAMESPACE::WidgetManager;

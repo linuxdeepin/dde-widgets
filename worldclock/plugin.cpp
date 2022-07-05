@@ -109,4 +109,14 @@ void WorldClockWidget::settings()
     settingsView->move(pw->mapToGlobal(pw->geometry().bottomLeft()));
     settingsView->exec();
 }
+
+QIcon WorldClockWidgetPlugin::logo() const
+{
+    return QIcon::fromTheme("dcc_nav_datetime");
+}
+
+QStringList WorldClockWidgetPlugin::contributors() const
+{
+    return {BuildinWidgetsHelper::instance()->contributor()};
+}
 }

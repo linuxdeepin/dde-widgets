@@ -55,5 +55,8 @@ public:
     virtual QString description() const override;
     IWidget *createWidget() override;
     virtual QVector<IWidget::Type> supportTypes() const { return {IWidget::Middle, IWidget::Small};}
+
+    virtual QIcon logo() const override;
+    virtual QStringList contributors() const override;
 };
 }

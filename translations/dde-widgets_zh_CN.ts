@@ -18,14 +18,37 @@
     </message>
 </context>
 <context>
+    <name>InstanceAboutDialog</name>
+    <message>
+        <location filename="../app/aboutdialog.cpp" line="61"/>
+        <source>version: %1</source>
+        <translation>版本: %1</translation>
+    </message>
+    <message>
+        <location filename="../app/aboutdialog.cpp" line="76"/>
+        <source>contributor: %1</source>
+        <translation>开发者: %1</translation>
+    </message>
+</context>
+<context>
     <name>InstancePanel</name>
     <message>
-        <location filename="../app/instancepanel.cpp" line="414"/>
+        <location filename="../app/instancepanel.cpp" line="415"/>
         <source>settings widget</source>
         <translation>自定义小组件</translation>
     </message>
     <message>
-        <location filename="../app/instancepanel.cpp" line="424"/>
+        <location filename="../app/instancepanel.cpp" line="434"/>
+        <source>about widget</source>
+        <translation>关于</translation>
+    </message>
+    <message>
+        <location filename="../app/instancepanel.cpp" line="455"/>
+        <source>anonym</source>
+        <translation>匿名者</translation>
+    </message>
+    <message>
+        <location filename="../app/instancepanel.cpp" line="425"/>
         <source>remove widget</source>
         <translation>删除小组件</translation>
     </message>

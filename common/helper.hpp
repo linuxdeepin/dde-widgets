@@ -38,6 +38,11 @@ public:
     }
 
     inline bool loadTranslator(const QString &fileNamePrefix);
+
+    inline QString contributor() const
+    {
+        return qApp->translate("BuildinWidgetsHelper", "https://www.chinauos.com");
+    }
 };
 
 bool BuildinWidgetsHelper::loadTranslator(const QString &fileNamePrefix)

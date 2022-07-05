@@ -25,6 +25,7 @@
 #include <QStringList>
 #include <QVariant>
 #include <QSize>
+#include <QIcon>
 #include <QLoggingCategory>
 
 QT_BEGIN_NAMESPACE
@@ -203,6 +204,16 @@ public:
      * @brief 组件描述信息
      */
     virtual QString description() const { return QString();}
+
+    /**
+     * @brief 组件图片
+     */
+    virtual QIcon logo() const { return QIcon();}
+
+    /**
+     * @brief 组件贡献者
+     */
+    virtual QStringList contributors() const { return QStringList();}
 
     /**
      * @brief 创建组件实例，所属权归调用方所有

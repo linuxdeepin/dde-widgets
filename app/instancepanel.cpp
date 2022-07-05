@@ -25,6 +25,7 @@
 #include "instanceproxy.h"
 #include "widgethandler.h"
 #include "widgetmanager.h"
+#include "aboutdialog.h"
 #include "utils.h"
 
 #include <QDebug>
@@ -424,6 +425,39 @@ void InstancePanel::onMenuRequested(const InstanceId &id)
         QAction *action = menu->addAction(qApp->translate("InstancePanel", "remove widget"));
         connect(action, &QAction::triggered, this, [this, id](){
             m_model->removeInstance(id);
+        });
+    } while (false);
+
+    do {
+        menu->addSeparator();
+
+        QAction *action = menu->addAction(qApp->translate("InstancePanel", "about widget"));
+        connect(action, &QAction::triggered, this, [this, instance](){
+            auto plugin = m_manager->getPlugin(instance->handler()->pluginId());
+            if (!plugin)
+                return;
+
+            InstanceAboutDialog dialog;
+
+            auto logo = plugin->logo();
+            if(logo.isNull()) {
+                QPixmap pixmap(instance->view()->grab());
+                pixmap.setMask(WidgetContainer::bitmapOfMask(pixmap.size(), instance->isUserAreaInstance()));
+                logo = QIcon(pixmap);
+            }
+            dialog.setLogo(logo);
+            dialog.setTitle(plugin->title());
+            dialog.setDescription(plugin->description());
+            dialog.setVersion(plugin->version());
+
+            QString contributor = plugin->contributors().join(", ");
+            if (contributor.isEmpty())
+                contributor = qApp->translate("InstancePanel", "anonym");
+
+            dialog.setContributor(contributor);
+
+            dialog.exec();
+
         });
     } while (false);
 

@@ -121,5 +121,16 @@ namespace EditMode {
     static const int spacing = 37;
 }
 
+namespace About {
+static const int width = 320;
+static const QMargins margins(11, 0, 11, 10);
+static const QSize logoSize(64, 64);
+static const int titleSpacing = 6;
+static const int versionSpacing = 6;
+static const int contributorSpacing = 8;
+static const int descriptionSpacing = 12;
+
+}
+
 }
 WIDGETS_FRAME_END_NAMESPACE

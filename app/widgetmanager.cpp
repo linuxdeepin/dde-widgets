@@ -382,9 +382,9 @@ PluginInfo WidgetManager::parsePluginInfo(const QString &fileName) const
             qWarning(dwLog()) << "pluginId not existed in MetaData for the plugin." << fileName;
             break;
         }
-        const auto version = meta["MetaData"]["version"].toString();
-        if (!matchVersion(version)) {
-            qWarning(dwLog()) << QString("plugin version [%1] is not matched by [%2].").arg(version).arg(currentVersion()) << fileName;
+        info.version = meta["MetaData"]["version"].toString();
+        if (!matchVersion(info.version)) {
+            qWarning(dwLog()) << QString("plugin version [%1] is not matched by [%2].").arg(info.version).arg(currentVersion()) << fileName;
             break;
         }
         if (!loader.instance()) {

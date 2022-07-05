@@ -29,6 +29,7 @@
 #include "widgetstore.h"
 #include "animationviewcontainer.h"
 #include "instanceproxy.h"
+#include "aboutdialog.h"
 
 #include <DIconButton>
 #include <DSwitchButton>
@@ -58,6 +59,7 @@ SET_FORM_ACCESSIBLE(WidgetStoreCell, "widgetstorecell")
 SET_FORM_ACCESSIBLE(EditModePanelCell, "editmodepanelcell")
 SET_FORM_ACCESSIBLE(DisplayModePanelCell, "displaymodepanelcell")
 SET_FORM_ACCESSIBLE(WidgetContainer, "WidgetContainer")
+SET_FORM_ACCESSIBLE(InstanceAboutDialog, "InstanceAboutDialog")
 
 SET_FORM_ACCESSIBLE(QWidget, m_w->objectName().isEmpty() ? "widget" : m_w->objectName())
 SET_LABEL_ACCESSIBLE(QLabel, m_w->objectName().isEmpty() ? m_w->text().isEmpty() ? "text" : m_w->text() : m_w->objectName())
@@ -107,6 +109,7 @@ QAccessibleInterface *accessibleFactory(const QString &classname, QObject *objec
             ELSE_USE_ACCESSIBLE(QString(classname).replace(NamespaceString, ""), EditModePanelCell)
             ELSE_USE_ACCESSIBLE(QString(classname).replace(NamespaceString, ""), DisplayModePanelCell)
             ELSE_USE_ACCESSIBLE(QString(classname).replace(NamespaceString, ""), WidgetContainer)
+            ELSE_USE_ACCESSIBLE(QString(classname).replace(NamespaceString, ""), InstanceAboutDialog)
             ELSE_USE_ACCESSIBLE(QString(classname).replace("Dtk::Widget::", ""), QWidget)
             ELSE_USE_ACCESSIBLE(QString(classname).replace("Dtk::Widget::", ""), QLabel)
             ELSE_USE_ACCESSIBLE(QString(classname).replace("Dtk::Widget::", ""), DBlurEffectWidget)

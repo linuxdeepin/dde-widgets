@@ -17,6 +17,7 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/instanceproxy.h
     ${CMAKE_CURRENT_LIST_DIR}/instancemodel.h
     ${CMAKE_CURRENT_LIST_DIR}/instancepanel.h
+    ${CMAKE_CURRENT_LIST_DIR}/aboutdialog.h
     ${CMAKE_CURRENT_LIST_DIR}/utils/utils.h
     ${CMAKE_CURRENT_LIST_DIR}/utils/geometryhandler.h
     ${CMAKE_CURRENT_LIST_DIR}/utils/animationviewcontainer.h
@@ -35,6 +36,7 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/instanceproxy.cpp
     ${CMAKE_CURRENT_LIST_DIR}/instancemodel.cpp
     ${CMAKE_CURRENT_LIST_DIR}/instancepanel.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/aboutdialog.cpp
     ${CMAKE_CURRENT_LIST_DIR}/utils/utils.cpp
     ${CMAKE_CURRENT_LIST_DIR}/utils/geometryhandler.cpp
     ${CMAKE_CURRENT_LIST_DIR}/utils/animationviewcontainer.cpp
