@@ -63,7 +63,7 @@ void DisplayModePanel::init()
 
     auto button = new QPushButton();
     button->setObjectName("edit-button");
-    button->setText(qApp->translate("DisplayModePanel","edit"));
+    button->setText(qApp->translate("DisplayModePanel","edit widget"));
     button->setFixedSize(UI::Display::EditSize);
     connect(button, &QPushButton::clicked, this, &DisplayModePanel::editClicked);
     layout->addSpacing(UI::Ins::button2FlowPanelTopMargin);

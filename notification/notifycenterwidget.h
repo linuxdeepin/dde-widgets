@@ -66,7 +66,6 @@ private:
 
 Q_SIGNALS:
     void notificationFoldingChanged(bool isExpand);
-    void visibleChanged(bool visible);
 
 private Q_SLOTS:
     void CompositeChanged();   //用来设置是否开启窗口特效
@@ -75,7 +74,6 @@ private Q_SLOTS:
     void collapesNotificationFolding();
     void toggleNotificationFolding();
     void showNotificationModuleOfControlCenter();
-    void updateVisibleStatus();
 
 private:
     QWidget *m_headWidget;

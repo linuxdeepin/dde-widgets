@@ -5,14 +5,14 @@
     <name>DisplayModePanel</name>
     <message>
         <location filename="../app/displaymodepanel.cpp" line="66"/>
-        <source>edit</source>
-        <translation>编辑</translation>
+        <source>edit widget</source>
+        <translation>编辑小组件</translation>
     </message>
 </context>
 <context>
     <name>EditModePanel</name>
     <message>
-        <location filename="../app/editmodepanel.cpp" line="111"/>
+        <location filename="../app/editmodepanel.cpp" line="112"/>
         <source>complete</source>
         <translation>完成</translation>
     </message>
@@ -20,12 +20,12 @@
 <context>
     <name>InstancePanel</name>
     <message>
-        <location filename="../app/instancepanel.cpp" line="412"/>
+        <location filename="../app/instancepanel.cpp" line="414"/>
         <source>settings widget</source>
         <translation>自定义小组件</translation>
     </message>
     <message>
-        <location filename="../app/instancepanel.cpp" line="422"/>
+        <location filename="../app/instancepanel.cpp" line="424"/>
         <source>remove widget</source>
         <translation>删除小组件</translation>
     </message>

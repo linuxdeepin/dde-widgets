@@ -128,13 +128,11 @@ void NotifyCenterWidget::initUI()
         m_notifyWidget->model()->removeAllData();
     });
 
-    connect(m_notifyWidget->model(), &NotifyModel::appCountChanged, this, &NotifyCenterWidget::updateVisibleStatus);
+    connect(m_notifyWidget->model(), &NotifyModel::appCountChanged, this, &NotifyCenterWidget::updateDisplayOfRemainingNotification);
 
     refreshTheme();
 
     collapesNotificationFolding();
-
-    updateVisibleStatus();
 
     updateDisplayOfRemainingNotification();
 }
@@ -175,8 +173,13 @@ void NotifyCenterWidget::CompositeChanged()
 
 void NotifyCenterWidget::updateDisplayOfRemainingNotification()
 {
-    const int rowCount = m_notifyWidget->model()->remainNotificationCount();
-    m_expandRemaining->setText(tr("%1 more notifications").arg(QString::number(rowCount)));
+    const bool hasAppNotification = m_notifyWidget->model()->rowCount() > 0;
+    if (!hasAppNotification) {
+        m_expandRemaining->setText(tr("No new notifications"));
+    } else {
+        const int rowCount = m_notifyWidget->model()->remainNotificationCount();
+        m_expandRemaining->setText(tr("%1 more notifications").arg(QString::number(rowCount)));
+    }
 }
 
 void NotifyCenterWidget::expandNotificationFolding()
@@ -216,15 +219,4 @@ void NotifyCenterWidget::showNotificationModuleOfControlCenter()
     }
     const QString NotificationModuleName("notification");
     interface.call("ShowModule", NotificationModuleName);
-}
-
-void NotifyCenterWidget::updateVisibleStatus()
-{
-    const bool showVisible = m_notifyWidget->model()->rowCount() > 0;
-    const bool changed = showVisible != isVisible();
-    qDebug() << "updateVisibleStatus() show Visible:" << showVisible << "changed:" << changed;
-    if (changed) {
-        setVisible(showVisible);
-        Q_EMIT visibleChanged(showVisible);
-    }
 }

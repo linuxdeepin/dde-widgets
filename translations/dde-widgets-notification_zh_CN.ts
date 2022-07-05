@@ -27,12 +27,12 @@
 <context>
     <name>NotificationWidgetPlugin</name>
     <message>
-        <location filename="../notification/plugin.cpp" line="31"/>
+        <location filename="../notification/plugin.cpp" line="30"/>
         <source>Notification</source>
         <translation>通知</translation>
     </message>
     <message>
-        <location filename="../notification/plugin.cpp" line="36"/>
+        <location filename="../notification/plugin.cpp" line="35"/>
         <source>Notification Center</source>
         <translation>通知中心</translation>
     </message>
@@ -45,7 +45,12 @@
         <translation>通知中心</translation>
     </message>
     <message>
-        <location filename="../notification/notifycenterwidget.cpp" line="179"/>
+        <location filename="../notification/notifycenterwidget.cpp" line="178"/>
+        <source>No new notifications</source>
+        <translation>没有最近的通知消息</translation>
+    </message>
+    <message>
+        <location filename="../notification/notifycenterwidget.cpp" line="181"/>
         <source>%1 more notifications</source>
         <translation>剩余%1条通知</translation>
     </message>
