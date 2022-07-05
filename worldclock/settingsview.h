@@ -32,7 +32,7 @@ class SearchInput;
 class ZoneSearch : public QWidget {
     Q_OBJECT
 public:
-    ZoneSearch(QWidget *parent = nullptr);
+    explicit ZoneSearch(QWidget *parent = nullptr);
 
 Q_SIGNALS:
     void timezoneChanged(const QString &timezone);
@@ -48,7 +48,7 @@ private:
 class SettingsView : public DDialog {
     Q_OBJECT
 public:
-    SettingsView(TimezoneModel *model, QWidget *parent = nullptr);
+    explicit SettingsView(TimezoneModel *model, QWidget *parent = nullptr);
 
     void selectItem(const int row = 0);
 

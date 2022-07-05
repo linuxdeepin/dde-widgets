@@ -76,8 +76,6 @@ bool CopyFolder(const QString &src_dir, const QString& dest_dir,
   }
   QDirIterator iter(src_dir, QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot,
                     iter_flag);
-  QFileInfo src_info;
-  QString dest_filepath;
   bool ok = true;
   if (!QDir(dest_dir).exists()) {
     ok = CreateDirs(dest_dir);
@@ -85,8 +83,8 @@ bool CopyFolder(const QString &src_dir, const QString& dest_dir,
 
   // Walk through source folder.
   while (ok && iter.hasNext()) {
-    src_info = iter.next();
-    dest_filepath = iter.filePath().replace(src_dir, dest_dir);
+    QFileInfo src_info = iter.next();
+    const QString dest_filepath = iter.filePath().replace(src_dir, dest_dir);
     if (src_info.isDir()) {
       if (!QDir(dest_filepath).exists()) {
         ok = CreateDirs(dest_filepath);

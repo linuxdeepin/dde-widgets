@@ -33,7 +33,7 @@
 
 #define PROC_PATH_MEM "/proc/meminfo"
 
-inline void print_errno(decltype(errno) e, const QString msg)
+inline void print_errno(decltype(errno) e, const QString &msg)
 {
     qWarning() << QString("Error: [%1] %2, ").arg(e).arg(strerror(e)) << msg;
 }
@@ -137,95 +137,94 @@ qulonglong MemInfo::mapped() const
 void MemInfo::readMemInfo()
 {
     FILE *fp;
-    uFile ufp;
-    const size_t BUFLEN = 512;
-    QByteArray line(BUFLEN, '\0');
 
     if ((fp = fopen(PROC_PATH_MEM, "r"))) {
-        ufp.reset(fp);
+        uFile ufp(fp);
+        Q_UNUSED(ufp);
 
-        int nr = 0;
+        const size_t BUFLEN = 512;
+        QByteArray line(BUFLEN, '\0');
         while (fgets(line.data(), BUFLEN, fp)) {
             if (!strncmp(line.data(), "MemTotal:", 9)) {
-                nr = sscanf(line.data() + 9, "%llu", &d->mem_total_kb);
+                int nr = sscanf(line.data() + 9, "%llu", &d->mem_total_kb);
 
                 if (nr != 1)
                     print_errno(errno, QString("parse %1 -> %2 failed").arg(PROC_PATH_MEM).arg("MemTotal"));
 
             } else if (!strncmp(line.data(), "MemFree:", 8)) {
-                nr = sscanf(line.data() + 8, "%llu", &d->mem_free_kb);
+                int nr = sscanf(line.data() + 8, "%llu", &d->mem_free_kb);
 
                 if (nr != 1)
                     print_errno(errno, QString("parse %1 -> %2 failed").arg(PROC_PATH_MEM).arg("MemFree"));
 
             } else if (!strncmp(line.data(), "MemAvailable:", 13)) {
-                nr = sscanf(line.data() + 13, "%llu", &d->mem_avail_kb);
+                int nr = sscanf(line.data() + 13, "%llu", &d->mem_avail_kb);
 
                 if (nr != 1)
                     print_errno(errno, QString("parse %1 -> %2 failed").arg(PROC_PATH_MEM).arg("MemAvailable"));
 
             } else if (!strncmp(line.data(), "Buffers:", 8)) {
-                nr = sscanf(line.data() + 8, "%llu", &d->buffers_kb);
+                int nr = sscanf(line.data() + 8, "%llu", &d->buffers_kb);
 
                 if (nr != 1)
                     print_errno(errno, QString("parse %1 -> %2 failed").arg(PROC_PATH_MEM).arg("Buffers"));
 
             } else if (!strncmp(line.data(), "Cached:", 7)) {
-                nr = sscanf(line.data() + 7, "%llu", &d->cached_kb);
+                int nr = sscanf(line.data() + 7, "%llu", &d->cached_kb);
 
                 if (nr != 1)
                     print_errno(errno, QString("parse %1 -> %2 failed").arg(PROC_PATH_MEM).arg("Cached"));
 
             } else if (!strncmp(line.data(), "SwapCached:", 11)) {
-                nr = sscanf(line.data() + 11, "%llu", &d->swap_cached_kb);
+                int nr = sscanf(line.data() + 11, "%llu", &d->swap_cached_kb);
 
                 if (nr != 1)
                     print_errno(errno, QString("parse %1 -> %2 failed").arg(PROC_PATH_MEM).arg("SwapCached"));
 
             } else if (!strncmp(line.data(), "Active:", 7)) {
-                nr = sscanf(line.data() + 7, "%llu", &d->active_kb);
+                int nr = sscanf(line.data() + 7, "%llu", &d->active_kb);
 
                 if (nr != 1)
                     print_errno(errno, QString("parse %1 -> %2 failed").arg(PROC_PATH_MEM).arg("Active"));
 
             } else if (!strncmp(line.data(), "Inactive:", 9)) {
-                nr = sscanf(line.data() + 9, "%llu", &d->inactive_kb);
+                int nr = sscanf(line.data() + 9, "%llu", &d->inactive_kb);
 
                 if (nr != 1)
                     print_errno(errno, QString("parse %1 -> %2 failed").arg(PROC_PATH_MEM).arg("Inactive"));
 
             } else if (!strncmp(line.data(), "SwapTotal:", 10)) {
-                nr = sscanf(line.data() + 10, "%llu", &d->swap_total_kb);
+                int nr = sscanf(line.data() + 10, "%llu", &d->swap_total_kb);
 
                 if (nr != 1)
                     print_errno(errno, QString("parse %1 -> %2 failed").arg(PROC_PATH_MEM).arg("SwapTotal"));
 
             } else if (!strncmp(line.data(), "SwapFree:", 9)) {
-                nr = sscanf(line.data() + 9, "%llu", &d->swap_free_kb);
+                int nr = sscanf(line.data() + 9, "%llu", &d->swap_free_kb);
 
                 if (nr != 1)
                     print_errno(errno, QString("parse %1 -> %2 failed").arg(PROC_PATH_MEM).arg("SwapFree"));
 
             } else if (!strncmp(line.data(), "Dirty:", 6)) {
-                nr = sscanf(line.data() + 6, "%llu", &d->dirty_kb);
+                int nr = sscanf(line.data() + 6, "%llu", &d->dirty_kb);
 
                 if (nr != 1)
                     print_errno(errno, QString("parse %1 -> %2 failed").arg(PROC_PATH_MEM).arg("Dirty"));
 
             } else if (!strncmp(line.data(), "Shmem:", 6)) {
-                nr = sscanf(line.data() + 6, "%llu", &d->shmem_kb);
+                int nr = sscanf(line.data() + 6, "%llu", &d->shmem_kb);
 
                 if (nr != 1)
                     print_errno(errno, QString("parse %1 -> %2 failed").arg(PROC_PATH_MEM).arg("Shmem"));
 
             } else if (!strncmp(line.data(), "Slab:", 5)) {
-                nr = sscanf(line.data() + 5, "%llu", &d->slab_kb);
+                int nr = sscanf(line.data() + 5, "%llu", &d->slab_kb);
 
                 if (nr != 1)
                     print_errno(errno, QString("parse %1 -> %2 failed").arg(PROC_PATH_MEM).arg("Slab"));
 
             } else if (!strncmp(line.data(), "Mapped:", 7)) {
-                nr = sscanf(line.data() + 7, "%llu", &d->mapped_kb);
+                int nr = sscanf(line.data() + 7, "%llu", &d->mapped_kb);
 
                 if (nr != 1)
                     print_errno(errno, QString("parse %1 -> %2 failed").arg(PROC_PATH_MEM).arg("Mapped"));

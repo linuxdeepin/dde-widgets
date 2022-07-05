@@ -110,7 +110,7 @@ QImage BubbleTool::decodeNotificationSpecImageHint(const QDBusArgument &arg)
             qWarning() << "Image data is incomplete. y:" << y << "height:" << height;
             break;
         }
-        fcn((QRgb *)image.scanLine(y), ptr, width);
+        fcn(reinterpret_cast<QRgb *>(image.scanLine(y)), ptr, width);
     }
 
     return image;

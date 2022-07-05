@@ -43,12 +43,12 @@ NotifyModel::NotifyModel(QObject *parent, AbstractPersistence *database, NotifyL
 
 ListItemPtr NotifyModel::getAppData(const QString &appName) const
 {
-
-    foreach (auto item, m_notifications) {
-        if (item->appName() == appName)
-            return item;
-    }
-    Q_UNREACHABLE();
+    auto iter = std::find_if(m_notifications.begin(), m_notifications.end(),
+                             [this, appName](const ListItemPtr &item) {
+        return item->appName() == appName;
+    });
+    Q_ASSERT(iter != m_notifications.end());
+    return *iter;
 }
 
 int NotifyModel::rowCount(const QModelIndex &parent) const
@@ -138,7 +138,7 @@ void NotifyModel::removeNotify(EntityPtr entity)
     Q_EMIT removedNotif();
 }
 
-void NotifyModel::removeAppGroup(QString appName)
+void NotifyModel::removeAppGroup(const QString &appName)
 {
     beginResetModel();
     if (m_notifications.isEmpty())
@@ -299,7 +299,7 @@ void NotifyModel::initData()
     if (m_database == nullptr)  return;
     QList<EntityPtr> notifications = m_database->getAllNotify();
 
-    std::sort(notifications.begin(), notifications.end(), [=](const EntityPtr& ptr1,const EntityPtr& ptr2) {
+    std::sort(notifications.begin(), notifications.end(), [](const EntityPtr& ptr1,const EntityPtr& ptr2) {
         return ptr1->ctime().toLongLong() > ptr2->ctime().toLongLong();
     });
 
@@ -390,11 +390,10 @@ bool NotifyModel::checkTimeOut(EntityPtr ptr, int sec)
 
 bool NotifyModel::contains(const QString &appName)
 {
-    for (auto item : m_notifications) {
-        if (item->appName() == appName)
-            return true;
-    }
-    return false;
+    return std::any_of(m_notifications.begin(), m_notifications.end(),
+                       [this, appName](const ListItemPtr &item) {
+        return item->appName() == appName;
+    });
 }
 
 int NotifyModel::showCount() const

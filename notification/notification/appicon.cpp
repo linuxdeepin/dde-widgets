@@ -51,10 +51,9 @@ void AppIcon::setIcon(const QString &iconPath, const QString &fallback)
     }
 
     if (pixmap.isNull()) {
-        QString iconUrl;
         const QUrl url(iconPath);
-        iconUrl = url.isLocalFile() ? url.toLocalFile() : url.url();
-        const QIcon &icon = QIcon::fromTheme(iconPath, QIcon::fromTheme(fallback, QIcon::fromTheme("application-x-desktop")));
+        QString iconUrl = url.isLocalFile() ? url.toLocalFile() : url.url();
+        const QIcon &icon = QIcon::fromTheme(iconUrl, QIcon::fromTheme(fallback, QIcon::fromTheme("application-x-desktop")));
         pixmap = icon.pixmap(width() * pixelRatio, height() * pixelRatio);
     }
 

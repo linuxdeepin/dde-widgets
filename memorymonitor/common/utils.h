@@ -98,24 +98,24 @@ bool startWithHanzi(const QString &text);
 
 QMap<QString, QString> getProcessDescriptions();
 QMap<QString, QString> getDesktopfileMap();
-QPixmap getDesktopFileIcon(std::string desktopFile, int iconSize = 24);
-QSize getRenderSize(int fontSize, QString string);
+QPixmap getDesktopFileIcon(const std::string &desktopFile, int iconSize = 24);
+QSize getRenderSize(int fontSize, const QString &string);
 
 QString getProcessCmdline(pid_t pid);
-QString getProcessEnvironmentVariable(pid_t pid, QString environmentName);
+QString getProcessEnvironmentVariable(pid_t pid, const QString &environmentName);
 QString getProcessNameFromCmdLine(const pid_t pid);
 QString getQrcPath(QString imageName);
-QString getFlatpakAppIcon(QString flatpakAppid);
-QDir getFlatpakAppPath(QString flatpakAppid);
-bool fileExists(QString path);
+QString getFlatpakAppIcon(const QString &flatpakAppid);
+QDir getFlatpakAppPath(const QString &flatpakAppid);
+bool fileExists(const QString &path);
 void drawLoadingRing(QPainter &painter, int centerX, int centerY, int radius, int penWidth,
                      int loadingAngle, int rotationAngle, QColor foregroundColor,
                      double foregroundOpacity, QColor backgroundColor, double backgroundOpacity,
                      double percent);
 void drawRing(QPainter &painter, int centerX, int centerY, int radius, int penWidth,
-              int loadingAngle, int rotationAngle, QColor color, double opacity);
+              int loadingAngle, int rotationAngle, const QColor &color, double opacity);
 void drawTooltipBackground(QPainter &painter, QRect rect, qreal opacity = 0.4);
-void drawTooltipText(QPainter &painter, QString text, QString textColor, int textSize, QRectF rect);
+void drawTooltipText(QPainter &painter, const QString &text, const QString &textColor, int textSize, const QRectF &rect);
 void setFontSize(QPainter &painter, int textSize);
 }  // namespace Utils
 

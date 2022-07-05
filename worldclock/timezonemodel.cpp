@@ -163,8 +163,10 @@ void TimezoneModel::updateTimezoneOffset(QStandardItem *item, const QString &tim
     QObject::connect(watcher, &QDBusPendingCallWatcher::finished, this,
                      [this, timezone, item](QDBusPendingCallWatcher* call) {
         static bool Registered = false;
-        if (!Registered)
+        if (!Registered) {
             registerZoneInfoMetaType();
+            Registered = true;
+        }
 
         QDBusPendingReply<ZoneInfo> reply = *call;
         if (reply.isError()) {

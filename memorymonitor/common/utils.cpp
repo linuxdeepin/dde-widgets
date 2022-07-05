@@ -73,7 +73,7 @@ bool startWithHanzi(const QString &text)
     return text.at(0).script() == QChar::Script_Han;
 }
 
-QPixmap getDesktopFileIcon(std::string desktopFile, int iconSize)
+QPixmap getDesktopFileIcon(const std::string &desktopFile, int iconSize)
 {
     std::ifstream in;
     in.open(desktopFile);
@@ -112,7 +112,7 @@ QPixmap getDesktopFileIcon(std::string desktopFile, int iconSize)
     return icon.pixmap(iconSize, iconSize);
 }
 
-QSize getRenderSize(int fontSize, QString string)
+QSize getRenderSize(int fontSize, const QString &string)
 {
     QFont font;
     font.setPointSizeF(fontSize);
@@ -133,7 +133,7 @@ QSize getRenderSize(int fontSize, QString string)
     return QSize(width, height);
 }
 
-QString getProcessEnvironmentVariable(pid_t pid, QString environmentName)
+QString getProcessEnvironmentVariable(pid_t pid, const QString &environmentName)
 {
     std::string temp;
     try {
@@ -190,7 +190,7 @@ QString getQrcPath(QString imageName)
     return QString(":/image/%1").arg(imageName);
 }
 
-QDir getFlatpakAppPath(QString flatpakAppid)
+QDir getFlatpakAppPath(const QString &flatpakAppid)
 {
     QProcess whichProcess;
     QString exec = "flatpak";
@@ -204,7 +204,7 @@ QDir getFlatpakAppPath(QString flatpakAppid)
     return QDir(output.split("Location:")[1].split("\n")[0].simplified());
 }
 
-QString getFlatpakAppIcon(QString flatpakAppid)
+QString getFlatpakAppIcon(const QString &flatpakAppid)
 {
     QString exec = "flatpak";
 
@@ -237,7 +237,7 @@ QString getFlatpakAppIcon(QString flatpakAppid)
     return flatpakDir.filePath(QString("%1.svg").arg(appID));
 }
 
-bool fileExists(QString path)
+bool fileExists(const QString &path)
 {
     QFileInfo check_file(path);
 
@@ -258,7 +258,7 @@ void drawLoadingRing(QPainter &painter, int centerX, int centerY, int radius, in
 }
 
 void drawRing(QPainter &painter, int centerX, int centerY, int radius, int penWidth,
-              int loadingAngle, int rotationAngle, QColor color, double opacity)
+              int loadingAngle, int rotationAngle, const QColor &color, double opacity)
 {
     QRect drawingRect;
 
@@ -293,7 +293,7 @@ void drawTooltipBackground(QPainter &painter, QRect rect, qreal opacity)
     painter.drawPath(path);
 }
 
-void drawTooltipText(QPainter &painter, QString text, QString textColor, int textSize, QRectF rect)
+void drawTooltipText(QPainter &painter, const QString &text, const QString &textColor, int textSize, const QRectF &rect)
 {
     setFontSize(painter, textSize);
     painter.setOpacity(1);

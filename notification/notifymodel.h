@@ -49,6 +49,13 @@ class ListItem {
 public:
     explicit ListItem(const QString &appName);
     ListItem() = delete;
+    ~ListItem()
+    {
+        if (m_isAppTopping) {
+            delete m_isAppTopping;
+            m_isAppTopping = nullptr;
+        }
+    }
 
     // 按时间顺序插入到队列中
     void push(const EntityPtr &entity);
@@ -168,7 +175,7 @@ public:
 public slots:
     void addNotify(EntityPtr entity);                   // 添加一条通知，并更新视图
     void removeNotify(EntityPtr entity);                // 删除一条通知，并更新视图
-    void removeAppGroup(QString appName);               // 移除一组通知
+    void removeAppGroup(const QString &appName);               // 移除一组通知
     void removeAllData();                               // 清除所有通知
     void expandDataByAppName(const QString &appName);   // 展开通知
     void expandData();                               // 展开通知

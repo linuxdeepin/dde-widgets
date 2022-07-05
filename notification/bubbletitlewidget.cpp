@@ -31,11 +31,11 @@
 #include <DSysInfo>
 
 BubbleTitleWidget::BubbleTitleWidget(NotifyModel *model, EntityPtr entity, QWidget *parent)
-    : DWidget(parent),
-      m_titleLabel(nullptr),
-      m_model(model)
+    : DWidget(parent)
+    , m_titleLabel(nullptr)
+    , m_model(model)
+    , m_appName(entity->appName())
 {
-    m_appName = entity->appName();
     this->setObjectName(entity->appName());
     m_titleLabel = new DLabel;
     m_titleLabel->setForegroundRole(QPalette::BrightText);

@@ -46,8 +46,6 @@ static QPair<quint16, quint16> parseVersion(const QString &version)
     const quint16 minor = items.last().toUShort(&ok);
     if (!ok)
         return res;
-    if (major <= 0 && minor <=0 )
-        return res;
 
     res.first = major;
     res.second = minor;

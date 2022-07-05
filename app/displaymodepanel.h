@@ -30,7 +30,7 @@ WIDGETS_FRAME_BEGIN_NAMESPACE
 class DisplayModePanelCell : public InstancePanelCell {
     Q_OBJECT
 public:
-    DisplayModePanelCell(Instance *instance, QWidget *parent = nullptr);
+    explicit DisplayModePanelCell(Instance *instance, QWidget *parent = nullptr);
 
     virtual void setView() override;
 };
@@ -38,7 +38,7 @@ public:
 class DisplayModePanel : public InstancePanel {
     Q_OBJECT
 public:
-    DisplayModePanel (WidgetManager *manager, QWidget *parent = nullptr);
+    explicit DisplayModePanel (WidgetManager *manager, QWidget *parent = nullptr);
     void init();
 
     virtual DisplayModePanelCell *createWidget(Instance *instance) override;

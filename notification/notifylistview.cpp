@@ -369,8 +369,8 @@ bool NotifyListView::tabKeyEvent(QObject *object, QKeyEvent *event)
     } else {
         if (qobject_cast<DIconButton *> (m_currentElement) != nullptr) {
             DIconButton *itemCloseBtn = qobject_cast<DIconButton *> (m_currentElement);
-            QFocusEvent event(QEvent::Enter, Qt::MouseFocusReason);
-            QApplication::sendEvent (itemCloseBtn, &event);
+            QFocusEvent e(QEvent::Enter, Qt::MouseFocusReason);
+            QApplication::sendEvent (itemCloseBtn, &e);
         } else if (qobject_cast<Button *> (m_currentElement) != nullptr) {
             Button *actionBtn = qobject_cast<Button *> (m_currentElement);
             actionBtn->setFocus();

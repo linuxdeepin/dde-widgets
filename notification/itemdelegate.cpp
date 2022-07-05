@@ -66,12 +66,15 @@ QSize ItemDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelInd
     Q_UNUSED(option);
 
     EntityPtr notify = index.data().value<EntityPtr>();
+    if (!notify)
+        return QSize();
+
     QSize bubbleSize(BubbleItemWidth, BubbleItem::bubbleItemHeight() + BubbleSpacing);
 
-    if(notify && notify->isTitle())
+    if(notify->isTitle())
         bubbleSize = QSize(BubbleTitleWidth, BubbleTitleWidget::bubbleTitleWidgetHeight());
     else if(notify->hideCount() != 0)
-        bubbleSize = bubbleSize + QSize(0,notify->hideCount()*10);
+        bubbleSize = bubbleSize + QSize(0, notify->hideCount()*10);
 
     return bubbleSize;
 }
