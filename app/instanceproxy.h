@@ -42,6 +42,7 @@ public:
 protected:
     virtual void resizeEvent(QResizeEvent *event) override;
     bool m_isUserAreaInstance = false;
+    QPointer<QWidget> m_view = nullptr;
 };
 
 class InstanceProxy : public QObject {

@@ -40,11 +40,8 @@ InstanceProxy::InstanceProxy(IWidget *impl)
 
 InstanceProxy::~InstanceProxy()
 {
-
-    if (m_containerView) {
+    if (m_containerView)
         m_containerView->deleteLater();
-        m_containerView = nullptr;
-    }
 }
 
 QWidget *InstanceProxy::view() const
@@ -109,14 +106,22 @@ bool InstanceProxy::isUserAreaInstance() const
 
 WidgetContainer::WidgetContainer(QWidget *view, QWidget *parent)
     : QWidget(parent)
+    , m_view(view)
 {
+    Q_ASSERT(m_view);
     auto layout = new QVBoxLayout(this);
     layout->setContentsMargins(UI::defaultMargins);
-    layout->addWidget(view);
+    layout->addWidget(m_view);
 }
 
 WidgetContainer::~WidgetContainer()
 {
+    if (m_view) {
+        // avoid to being deleted by QWidget, which uses `delete` to release it's child,
+        // it would be double free when `m_view` is InstanceProxy's `m_impl`.
+        m_view->setParent(nullptr);
+        m_view->deleteLater();
+    }
 }
 
 void WidgetContainer::setIsUserAreaInstance(const bool isUserAreaInstance)
