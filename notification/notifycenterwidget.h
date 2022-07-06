@@ -39,9 +39,7 @@
 DWIDGET_USE_NAMESPACE
 DGUI_USE_NAMESPACE
 
-DWIDGET_BEGIN_NAMESPACE
-class DIconButton;
-DWIDGET_END_NAMESPACE
+class CicleIconButton;
 class AbstractPersistence;
 class QVariantAnimation;
 class QPropertyAnimation;
@@ -73,16 +71,17 @@ private Q_SLOTS:
     void expandNotificationFolding();
     void collapesNotificationFolding();
     void toggleNotificationFolding();
+    void showSettingMenu();
     void showNotificationModuleOfControlCenter();
 
 private:
     QWidget *m_headWidget;
     NotifyWidget *m_notifyWidget;
     DLabel *title_label = nullptr;
-    IconButton *m_clearButton;
+    CicleIconButton *m_clearButton = nullptr;
     QPushButton *m_expandRemaining = nullptr;
-    DIconButton *m_settingBtn = nullptr;
-    DIconButton *m_toggleNotificationFolding = nullptr;
+    CicleIconButton *m_settingBtn = nullptr;
+    CicleIconButton *m_toggleNotificationFolding = nullptr;
     bool m_isCollapesNotificationFolding = true;
     QRect m_notifyRect;
     QRect m_dockRect;

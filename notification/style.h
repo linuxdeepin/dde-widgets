@@ -19,22 +19,28 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "iconbutton.h"
+#pragma once
 
-#include "style.h"
+#include <QSize>
+#include <QColor>
+#include <QMargins>
 
-DGUI_USE_NAMESPACE
+namespace Notify {
+namespace UI {
 
-CicleIconButton::CicleIconButton(QWidget *parent)
-    : DIconButton(parent)
-{
-    setEnabledCircle(true);
-    updateBackground(UI::Panel::buttonBackground);
+namespace Panel{
+    static const QColor buttonBackground(0, 0, 0, 0.1 * 255);
+    static const QSize buttonSize(24, 24);
+    static const QSize settingsIconSize(12, 12);
+    static const QSize clearIconSize(settingsIconSize);
+    static const QSize collapseIconSize(settingsIconSize);
 }
-
-void CicleIconButton::updateBackground(const QColor &color)
-{
-    auto pt = palette();
-    pt.setBrush(QPalette::Button, color);
-    setPalette(pt);
+namespace Bubble {
+    static const QSize buttonSize(24, 24);
+    static const QSize settingsIconSize(10, 10);
+    static const QSize clearIconSize(settingsIconSize);
+    static const QSize collapseIconSize(settingsIconSize);
 }
+}
+}
+using namespace Notify;

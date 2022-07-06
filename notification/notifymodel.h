@@ -116,6 +116,10 @@ public:
     {
         return at(index + showCount());
     }
+    inline int overlapCount() const
+    {
+        return qMin(2, hideCount());
+    }
     inline EntityPtr title() const
     {
         return m_title;
@@ -188,6 +192,8 @@ public slots:
     bool isAppTopping(const QString &appName) const;
     bool isAppTopping(const ListItemPtr &appItem) const;
     void setAppTopping(const QString &appName, bool isTopping);
+    bool isCollapse() const;
+    bool isCollapse(const QString &appName) const;
 
 Q_SIGNALS:
     void dataChanged();                                 // 数据库有添加数据时发送该信号
@@ -205,6 +211,7 @@ private:
     bool checkTimeOut(EntityPtr ptr, int sec);          // 检查通知是否超时
     bool contains(const QString &appName);
     int showCount() const;
+    int countOfEachTitle(const bool collapse) const;
     void sortNotifications();
 
 private:

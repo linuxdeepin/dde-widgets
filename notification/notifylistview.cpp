@@ -121,24 +121,32 @@ void NotifyListView::createRemoveAnimation(BubbleItem *item)
 
 void NotifyListView::createExpandAnimation(int idx, const ListItemPtr appItem)
 {
+    // 正在进行动画
+    if (m_aniState)
+        return;
+
     // 获取动画的起始位置
     const QModelIndex &index = this->model()->index(idx, 0);
     QWidget *currentWidget = this->indexWidget(index);
     if (!currentWidget)
         return;
 
-    QSequentialAnimationGroup *insertAniGroup = new QSequentialAnimationGroup(this);    // 逐个插入的串行动画
-    QParallelAnimationGroup *downMoveAniGroup = new QParallelAnimationGroup(this);      // 整体向下移动的动画
-
-    connect(insertAniGroup, &QParallelAnimationGroup::finished, this, [ = ] {
-        m_aniState = false;
-        Q_EMIT expandAniFinished(appItem->appName());
-    });
-
     QPoint startPos = currentWidget->pos();
     const int bubbleItemHight = BubbleItem::bubbleItemHeight();
     int maxCount = (height() - startPos.y()) / (bubbleItemHight + BubbleSpacing);
     int needCount = appItem->hideCount() > maxCount ? maxCount : appItem->hideCount();
+
+    // 当不需要插入时，不进行动画，当QSequentialAnimationGroup的动画个数为0时而start后，不会触发finished.
+    if (needCount <= 0)
+        return;
+
+    QSequentialAnimationGroup *insertAniGroup = new QSequentialAnimationGroup(this);    // 逐个插入的串行动画
+    QParallelAnimationGroup *downMoveAniGroup = new QParallelAnimationGroup(this);      // 整体向下移动的动画
+
+    connect(insertAniGroup, &QSequentialAnimationGroup::finished, this, [ = ] {
+        m_aniState = false;
+        Q_EMIT expandAniFinished(appItem->appName());
+    });
 
     for (int i = 0; i < needCount; i++) {
         BubbleItem *item = new BubbleItem(this, appItem->hideAt(i));
@@ -152,7 +160,7 @@ void NotifyListView::createExpandAnimation(int idx, const ListItemPtr appItem)
                 item->show();
             }
         });
-        connect(insertAniGroup, &QParallelAnimationGroup::finished, item, &BubbleItem::deleteLater);
+        connect(insertAniGroup, &QSequentialAnimationGroup::finished, item, &BubbleItem::deleteLater);
         ani->setStartValue(itemStartPos);
         ani->setEndValue(itemEndPos);
         ani->setDuration(ExpandAnimationTime);
@@ -179,6 +187,10 @@ void NotifyListView::createExpandAnimation(int idx, const ListItemPtr appItem)
 
 void NotifyListView::createAddedAnimation(EntityPtr entity, const ListItemPtr appItem)
 {
+    // 正在进行动画
+    if (m_aniState)
+        return;
+
     const QModelIndex &index = this->model()->index(1, 0);
     QWidget *currentWidget = this->indexWidget(index);
     if (!currentWidget)

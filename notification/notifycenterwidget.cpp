@@ -27,6 +27,8 @@
 #include "notification/persistence.h"
 #include "notification/constants.h"
 #include "notification/iconbutton.h"
+#include "style.h"
+#include "helper.hpp"
 
 #include <QDesktopWidget>
 #include <QBoxLayout>
@@ -35,8 +37,8 @@
 #include <QDebug>
 #include <QTimer>
 #include <QScreen>
+#include <QMenu>
 
-#include <DIconButton>
 #include <DLabel>
 #include <DFontSizeManager>
 #include <DGuiApplicationHelper>
@@ -65,7 +67,7 @@ void NotifyCenterWidget::initUI()
 
     m_headWidget = new QWidget;
     m_headWidget->setAccessibleName("HeadWidget");
-    m_headWidget->setFixedSize(Notify::CenterWidth - 2 * Notify::CenterMargin, Notify::CenterTitleHeight);
+    m_headWidget->setFixedSize(Notify::CenterWidth, Notify::CenterTitleHeight);
 
     title_label = new DLabel;
     title_label->setAccessibleName("TitleLabel");
@@ -78,27 +80,22 @@ void NotifyCenterWidget::initUI()
     title_label->setForegroundRole(QPalette::BrightText);
     DFontSizeManager::instance()->bind(title_label, DFontSizeManager::T3);
 
-    m_toggleNotificationFolding = new DIconButton(nullptr);
-    m_toggleNotificationFolding->setFlat(true);
-    m_toggleNotificationFolding->setCheckable(true);
+    m_toggleNotificationFolding = new CicleIconButton(nullptr);
     m_toggleNotificationFolding->setAccessibleName("ToggleNotificationFolding");
-    m_toggleNotificationFolding->setFixedSize(Notify::CenterTitleHeight, Notify::CenterTitleHeight);
-    connect(m_toggleNotificationFolding, &DIconButton::clicked, this, &NotifyCenterWidget::toggleNotificationFolding);
+    m_toggleNotificationFolding->setFixedSize(UI::Panel::buttonSize);
+    connect(m_toggleNotificationFolding, &CicleIconButton::clicked, this, &NotifyCenterWidget::toggleNotificationFolding);
 
-    m_settingBtn = new DIconButton(nullptr);
-    m_settingBtn->setFlat(true);
-    m_settingBtn->setCheckable(true);
-    m_settingBtn->setIcon(QIcon::fromTheme("settings"));
+    m_settingBtn = new CicleIconButton(nullptr);
+    m_settingBtn->setIcon(DDciIcon::fromTheme("notify_more"));
     m_settingBtn->setAccessibleName("SettingButton");
-    m_settingBtn->setFixedSize(Notify::CenterTitleHeight, Notify::CenterTitleHeight);
-    connect(m_settingBtn, &DIconButton::clicked, this, &NotifyCenterWidget::showNotificationModuleOfControlCenter);
+    m_settingBtn->setFixedSize(UI::Panel::buttonSize);
+    connect(m_settingBtn, &CicleIconButton::clicked, this, &NotifyCenterWidget::showSettingMenu);
 
-    m_clearButton = new IconButton;
+    m_clearButton = new CicleIconButton;
     m_clearButton->setAccessibleName("ClearButton");
-    m_clearButton->setOpacity(IconButton::RELEASE, 255 * 0.0);
-    m_clearButton->setRadius(Notify::CenterTitleHeight / 2);
-    m_clearButton->setFixedSize(Notify::CenterTitleHeight, Notify::CenterTitleHeight);
-    m_clearButton->setFocusPolicy(Qt::StrongFocus);
+    m_clearButton->setIcon(DDciIcon::fromTheme("notify_clear"));
+    m_clearButton->setFixedSize(UI::Panel::buttonSize);
+//    m_clearButton->setFocusPolicy(Qt::StrongFocus);
 
     QHBoxLayout *head_Layout = new QHBoxLayout;
     head_Layout->setMargin(0);
@@ -114,7 +111,6 @@ void NotifyCenterWidget::initUI()
     m_expandRemaining->setAccessibleName("ExpandRemainingButton");
     connect(m_expandRemaining, &QPushButton::clicked, this, &NotifyCenterWidget::expandNotificationFolding);
     connect(m_notifyWidget->model(), &NotifyModel::modelReset, this, &NotifyCenterWidget::updateDisplayOfRemainingNotification);
-    connect(this, &NotifyCenterWidget::notificationFoldingChanged, m_expandRemaining, &QPushButton::setVisible);
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
     mainLayout->setContentsMargins(Notify::CenterMargin, Notify::CenterMargin, 0, 0);
@@ -124,7 +120,7 @@ void NotifyCenterWidget::initUI()
 
     setLayout(mainLayout);
 
-    connect(m_clearButton, &IconButton::clicked, this, [ = ]() {
+    connect(m_clearButton, &CicleIconButton::clicked, this, [this]() {
         m_notifyWidget->model()->removeAllData();
     });
 
@@ -143,7 +139,7 @@ void NotifyCenterWidget::initConnections()
 
     connect(m_wmHelper, &DWindowManagerHelper::hasCompositeChanged, this, &NotifyCenterWidget::CompositeChanged, Qt::QueuedConnection);
 
-    connect(m_notifyWidget, &NotifyWidget::focusOnButton, this, [=] {
+    connect(m_notifyWidget, &NotifyWidget::focusOnButton, this, [this] {
         qDebug() << "set Focus on clearButton";
         m_clearButton->setFocus();
         m_clearButton->update();
@@ -155,15 +151,6 @@ void NotifyCenterWidget::refreshTheme()
     QPalette pa = title_label->palette();
     pa.setBrush(QPalette::WindowText, pa.brightText());
     title_label->setPalette(pa);
-    if (DGuiApplicationHelper::instance()->themeType() == DGuiApplicationHelper::LightType) {
-        m_clearButton->setIcon("://icons/list_icon_clear.svg");
-        m_clearButton->setOpacity(IconButton::HOVER, 255 * 0.2);
-        m_clearButton->setOpacity(IconButton::PRESS, 255 * 0.3);
-    } else {
-        m_clearButton->setIcon("://icons/list_icon_clear_dark.svg");
-        m_clearButton->setOpacity(IconButton::HOVER, 255 * 0.2);
-        m_clearButton->setOpacity(IconButton::PRESS, 255 * 0.1);
-    }
 }
 
 void NotifyCenterWidget::CompositeChanged()
@@ -186,16 +173,20 @@ void NotifyCenterWidget::expandNotificationFolding()
 {
     m_isCollapesNotificationFolding = false;
     m_notifyWidget->model()->expandData();
-    m_toggleNotificationFolding->setIcon(QIcon::fromTheme("go-up"));
+    m_toggleNotificationFolding->setIcon(DDciIcon::fromTheme("arrow_ordinary_up"));
     Q_EMIT notificationFoldingChanged(m_isCollapesNotificationFolding);
+    m_expandRemaining->hide();
+    m_toggleNotificationFolding->show();
 }
 
 void NotifyCenterWidget::collapesNotificationFolding()
 {
     m_isCollapesNotificationFolding = true;
     m_notifyWidget->model()->collapseData();
-    m_toggleNotificationFolding->setIcon(QIcon::fromTheme("go-down"));
+    m_toggleNotificationFolding->setIcon(DDciIcon::fromTheme("arrow_ordinary_down"));
     Q_EMIT notificationFoldingChanged(m_isCollapesNotificationFolding);
+    m_expandRemaining->show();
+    m_toggleNotificationFolding->hide();
 }
 
 void NotifyCenterWidget::toggleNotificationFolding()
@@ -209,14 +200,19 @@ void NotifyCenterWidget::toggleNotificationFolding()
 
 void NotifyCenterWidget::showNotificationModuleOfControlCenter()
 {
-    // TODO it reports warning of `QDBusConnection: warning: blocking call took a long time`,
-    // and the second called is invaild, maybe it's a bug.
-    QDBusInterface interface("com.deepin.dde.ControlCenter", "/com/deepin/dde/ControlCenter",
-                             "com.deepin.dde.ControlCenter");
-    if (!interface.isValid()) {
-        qWarning() << "Get com.deepin.dde.ControlCenter interface error." << interface.lastError().message();
-        return;
-    }
-    const QString NotificationModuleName("notification");
-    interface.call("ShowModule", NotificationModuleName);
+    Helper::instance()->showNotificationModuleOfControlCenter();
+}
+
+void NotifyCenterWidget::showSettingMenu()
+{
+    QMenu *menu = new QMenu(this);
+    do {
+        QAction *action = menu->addAction(tr("Notification settings"));
+        action->setCheckable(true);
+
+        connect(action, &QAction::triggered, this, &NotifyCenterWidget::showNotificationModuleOfControlCenter);
+    } while (false);
+
+    menu->exec(QCursor::pos());
+    menu->deleteLater();
 }

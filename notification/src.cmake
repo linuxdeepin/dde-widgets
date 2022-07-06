@@ -1,4 +1,6 @@
 set(HEADERS
+    "style.h"
+    "helper.hpp"
     "bubbleitem.h"
     "bubbletitlewidget.h"
     "itemdelegate.h"

@@ -4,4 +4,10 @@
         <file>icons/list_icon_clear.svg</file>
         <file>icons/list_icon_clear_dark.svg</file>
     </qresource>
+    <qresource prefix="/dsg/built-in-icons">
+        <file alias="notify_clear.dci">icons/bloom/notify_clear.dci</file>
+        <file alias="notify_more.dci">icons/bloom/notify_more.dci</file>
+        <file alias="arrow_ordinary_up.dci">icons/bloom/arrow_ordinary_up.dci</file>
+        <file alias="arrow_ordinary_down.dci">icons/bloom/arrow_ordinary_down.dci</file>
+    </qresource>
 </RCC>

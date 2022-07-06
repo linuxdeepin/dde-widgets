@@ -32,6 +32,8 @@
 #include "notifymodel.h"
 #include "notifylistview.h"
 #include "notification/signalbridge.h"
+#include "style.h"
+#include "helper.hpp"
 
 #include <QTimer>
 #include <QDateTime>
@@ -46,6 +48,7 @@
 #include <DStyleHelper>
 #include <DGuiApplicationHelper>
 #include <DFontSizeManager>
+#include <QMenu>
 
 AlphaWidget::AlphaWidget(QWidget *parent)
     : DWidget(parent)
@@ -87,7 +90,7 @@ void AlphaWidget::paintEvent(QPaintEvent *event)
 }
 
 BubbleItem::BubbleItem(QWidget *parent, EntityPtr entity)
-    : QWidget(parent)
+    : BubbleBase(parent, entity)
     , m_entity(entity)
     , m_bgWidget(new AlphaWidget(this))
     , m_titleWidget(new AlphaWidget(this))
@@ -97,8 +100,6 @@ BubbleItem::BubbleItem(QWidget *parent, EntityPtr entity)
     , m_icon(new AppIcon(this))
     , m_body(new AppBody(this))
     , m_actionButton(new ActionButton(this, OSD::BUBBLEWIDGET))
-    , m_closeButton(new DIconButton(DStyle::SP_CloseButton, this))
-
 {
     initUI();
     initContent();
@@ -118,17 +119,18 @@ void BubbleItem::initUI()
     m_icon->setAccessibleName("AppIcon");
     m_body->setAccessibleName("AppBody");
     m_actionButton->setAccessibleName("ActionButton");
-    m_closeButton->setAccessibleName("CloseButton");
 
     setWindowFlags(Qt::Widget);
     setFocusPolicy(Qt::StrongFocus);
     resize(OSD::BubbleSize(OSD::BUBBLEWIDGET));
     m_icon->setFixedSize(OSD::IconSize(OSD::BUBBLEWIDGET));
-    m_closeButton->setFlat(true);
-    m_closeButton->setContentsMargins(0, 0, 0, 0);
     m_closeButton->setFixedSize(Notify::BubbleCloseButtonSize - 4, Notify::BubbleCloseButtonSize - 4);
-    m_closeButton->setIconSize(QSize(Notify::BubbleCloseButtonSize, Notify::BubbleCloseButtonSize));
+    m_closeButton->setIconSize(UI::Panel::clearIconSize);
     m_closeButton->setVisible(false);
+
+    m_settingBtn->setFixedSize(Notify::BubbleCloseButtonSize - 4, Notify::BubbleCloseButtonSize - 4);
+    m_settingBtn->setIconSize(UI::Panel::settingsIconSize);
+    m_settingBtn->setVisible(false);
 
     m_titleWidget->setFixedHeight(BubbleItemTitleHeight);
     m_titleWidget->setObjectName("notification_title");
@@ -156,6 +158,7 @@ void BubbleItem::initUI()
     DFontSizeManager::instance()->bind(m_appTimeLabel, DFontSizeManager::T8);
 
     setAlpha(Notify::BubbleDefaultAlpha);
+    titleLayout->addWidget(m_settingBtn);
     titleLayout->addWidget(m_closeButton);
     m_titleWidget->setLayout(titleLayout);
     m_titleWidget->setFixedHeight(qMax(m_appNameLabel->fontMetrics().height(), BubbleItemTitleHeight));
@@ -341,6 +344,7 @@ void BubbleItem::onHavorStateChanged(bool hover)
 {
     if (m_showContent) {
         m_closeButton->setVisible(hover);
+        m_settingBtn->setVisible(hover);
         if (hover) {
             QFocusEvent event(QEvent::Leave, Qt::MouseFocusReason);
             QApplication::sendEvent (m_closeButton, &event);
@@ -357,8 +361,7 @@ void BubbleItem::onCloseBubble()
 
 void BubbleItem::setParentModel(NotifyModel *model)
 {
-    Q_ASSERT(model);
-    m_model = model;
+    BubbleBase::setParentModel(model);
 
     connect(model, &NotifyModel::removedNotif, this, [this] {
         if (!m_actionId.isEmpty()) {
@@ -370,7 +373,7 @@ void BubbleItem::setParentModel(NotifyModel *model)
 
 void BubbleItem::setParentView(NotifyListView *view)
 {
-    m_view = view;
+    BubbleBase::setParentView(view);
     connect(m_view, &NotifyListView::refreshItemTime, this, &BubbleItem::onRefreshTime);
 }
 
@@ -406,4 +409,67 @@ int BubbleItem::bubbleItemHeight()
     int bubbleTitleHeight = qMax(QFontMetrics(DFontSizeManager::instance()->t8()).height(), BubbleItemTitleHeight);
 
     return appBodyHeight + bubbleTitleHeight;
+}
+
+BubbleBase::BubbleBase(QWidget *parent, EntityPtr entity)
+    : QWidget(parent)
+    , m_closeButton(new CicleIconButton(this))
+    , m_settingBtn(new CicleIconButton(this))
+    , m_appName(entity->appName())
+{
+    m_settingBtn->setAccessibleName("SettingButton");
+    m_settingBtn->setObjectName(m_appName + "-Settings");
+    m_settingBtn->setIcon(DDciIcon::fromTheme("notify_more"));
+    connect(m_settingBtn, &CicleIconButton::clicked, this, &BubbleBase::showSettingsMenu);
+
+    m_closeButton->setAccessibleName("CloseButton");
+    m_closeButton->setObjectName(m_appName + "-CloseButton");
+    m_closeButton->setIcon(DDciIcon::fromTheme("notify_clear"));
+}
+
+void BubbleBase::setParentModel(NotifyModel *model)
+{
+    Q_ASSERT(model);
+    m_model = model;
+}
+
+void BubbleBase::setParentView(NotifyListView *view)
+{
+    m_view = view;
+}
+
+void BubbleBase::showSettingsMenu()
+{
+    QMenu *menu = new QMenu(this);
+
+    do {
+        const bool isTopping = m_model->isAppTopping(m_appName);
+        QAction *action = menu->addAction(isTopping ? tr("Unpin") : tr("Pin"));
+        action->setCheckable(true);
+
+        connect(action, &QAction::triggered, this, &BubbleBase::toggleAppTopping);
+    } while (false);
+
+     do {
+         QAction *action = menu->addAction(tr("Notification settings"));
+         action->setCheckable(true);
+
+         connect(action, &QAction::triggered, this, &BubbleBase::showNotificationModuleOfControlCenter);
+     } while (false);
+
+     menu->exec(QCursor::pos());
+     menu->deleteLater();
+}
+
+void BubbleBase::toggleAppTopping()
+{
+    const bool isTopping = m_model->isAppTopping(m_appName);
+    m_model->setAppTopping(m_appName, !isTopping);
+
+    m_model->refreshAppTopping();
+}
+
+void BubbleBase::showNotificationModuleOfControlCenter()
+{
+    Helper::instance()->showNotificationModuleOfControlCenter();
 }

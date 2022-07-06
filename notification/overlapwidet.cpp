@@ -115,7 +115,8 @@ void OverLapWidet::initOverlap()
     standard_size.setHeight(BubbleItem::bubbleItemHeight());
     QPoint up_point(0, standard_size.height());
 
-    for(int i = 0; i < MIN(3,m_entify->hideCount()); ++i)
+    int overlapCount = m_model->getAppData(m_entify->appName())->overlapCount();
+    for(int i = 0; i < overlapCount; ++i)
     {
         HalfRoundedRectWidget *bubble = new HalfRoundedRectWidget(this);
         bubble->setAccessibleName("HalfRoundedRectBubble");

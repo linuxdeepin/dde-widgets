@@ -43,16 +43,16 @@ QWidget *ItemDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem 
     if (!notify)
         return nullptr;
 
+    if (m_model->isCollapse(notify->appName())) {
+        OverLapWidet *widget = new OverLapWidet(m_model, notify, parent);
+        widget->setParentView(m_view);
+        return widget;
+    }
+
     if(notify->isTitle()) {
         BubbleTitleWidget *titleWidget = new BubbleTitleWidget(m_model, notify, parent);
         titleWidget->setParentView(m_view);
         return titleWidget;
-    }
-
-    if (notify->hideCount() != 0) {
-        OverLapWidet *widget = new OverLapWidet(m_model, notify, parent);
-        widget->setParentView(m_view);
-        return widget;
     }
 
     BubbleItem *bubble = new BubbleItem(parent, notify);
@@ -70,11 +70,11 @@ QSize ItemDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelInd
         return QSize();
 
     QSize bubbleSize(BubbleItemWidth, BubbleItem::bubbleItemHeight() + BubbleSpacing);
-
-    if(notify->isTitle())
+    if (m_model->isCollapse(notify->appName())) {
+        bubbleSize = bubbleSize + QSize(0, m_model->getAppData(notify->appName())->overlapCount() * 10);
+    } else if (notify->isTitle()) {
         bubbleSize = QSize(BubbleTitleWidth, BubbleTitleWidget::bubbleTitleWidgetHeight());
-    else if(notify->hideCount() != 0)
-        bubbleSize = bubbleSize + QSize(0, notify->hideCount()*10);
+    }
 
     return bubbleSize;
 }

@@ -39,10 +39,7 @@ class IconButton;
 class NotifyModel;
 class NotifyListView;
 class AppBodyLabel;
-
-DWIDGET_BEGIN_NAMESPACE
-class DIconButton;
-DWIDGET_END_NAMESPACE
+class CicleIconButton;
 
 DWIDGET_USE_NAMESPACE
 /*!
@@ -78,18 +75,41 @@ protected:
     bool m_hasFocus = false;
 };
 
+class BubbleBase : public QWidget
+{
+    Q_OBJECT
+public:
+    explicit BubbleBase(QWidget *parent = nullptr, EntityPtr entity = nullptr);
+
+    virtual void setParentModel(NotifyModel *model);
+    virtual void setParentView(NotifyListView *view);
+
+public slots:
+    void showSettingsMenu();
+    void toggleAppTopping();
+    void showNotificationModuleOfControlCenter();
+
+protected:
+    NotifyModel *m_model = nullptr;
+    NotifyListView *m_view = nullptr;
+    QString m_appName;
+
+    CicleIconButton *m_settingBtn = nullptr;
+    CicleIconButton *m_closeButton = nullptr;
+};
+
 /*!
  * \~chinese \class ItemWidget
  * \~chinese \brief 通知中心中的气泡窗口类
  */
-class BubbleItem : public QWidget
+class BubbleItem : public BubbleBase
 {
     Q_OBJECT
 public:
     BubbleItem(QWidget *parent = nullptr, EntityPtr entity = nullptr);
     ~BubbleItem() override;
-    void setParentModel(NotifyModel *model);
-    void setParentView(NotifyListView *view);
+    virtual void setParentModel(NotifyModel *model) override;
+    virtual void setParentView(NotifyListView *view) override;
     const QPixmap converToPixmap(const QDBusArgument &value);
     void setAlpha(int alpha);
     QList<QPointer<QWidget>> bubbleElements();
@@ -127,8 +147,6 @@ private:
 
 private:
     EntityPtr m_entity;
-    NotifyModel *m_model = nullptr;
-    NotifyListView *m_view = nullptr;
 
     //controls
     AlphaWidget *m_bgWidget = nullptr;
@@ -140,7 +158,6 @@ private:
     AppIcon *m_icon = nullptr;
     AppBody *m_body = nullptr;
     ActionButton *m_actionButton = nullptr;
-    DIconButton *m_closeButton = nullptr;
     QWidget *m_currentElement = nullptr;
 
     bool m_showContent = true;

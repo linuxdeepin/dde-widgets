@@ -56,7 +56,7 @@ int NotifyModel::rowCount(const QModelIndex &parent) const
     Q_UNUSED(parent)
     int count = 0;
     for (int i = 0; i < showCount(); i++) {
-        count += 1 + m_notifications[i]->showCount();
+        count += countOfEachTitle(m_notifications[i]->isCollapse()) + m_notifications[i]->showCount();
     }
     return count;
 }
@@ -186,7 +186,13 @@ void NotifyModel::expandDataByAppName(const QString &appName)
 void NotifyModel::expandData()
 {
     m_isCollapse = false;
-    expandDataByAppName(QString());
+    // 展开Model，但对每项需要收起
+    beginResetModel();
+    for (int i = 0; i < m_notifications.size(); i++) {
+        const ListItemPtr &appGroup = m_notifications[i];
+        appGroup->toggleFolding(true);
+    }
+    endResetModel();
 }
 
 void NotifyModel::collapseData()
@@ -287,6 +293,16 @@ void NotifyModel::setAppTopping(const QString &appName, bool isTopping)
     m_settings->setAppSetting(appName, AbstractNotifySetting::SHOWNOTIFICATIONTOP, isTopping);
 }
 
+bool NotifyModel::isCollapse(const QString &appName) const
+{
+    return getAppData(appName)->isCollapse();
+}
+
+bool NotifyModel::isCollapse() const
+{
+    return m_isCollapse;
+}
+
 void NotifyModel::refreshAppTopping()
 {
     beginResetModel();
@@ -368,16 +384,19 @@ EntityPtr NotifyModel::getEntityByRow(int row) const
 
     for (int i = 0, index = 0; i < showCount(); ++i) {
         const auto &item = m_notifications[i];
-        const int nextIndex = index + 1 + item->showCount();
+        const int nextIndex = index + countOfEachTitle(item->isCollapse()) + item->showCount();
         if (nextIndex <= row) {
             index = nextIndex;
             continue;
         }
 
         if (index == row) {
+            if (item->isCollapse())
+                return item->showFirst();
+
             return item->title();
         }
-        return item->showAt(row - index - 1);
+        return item->showAt(row - index - countOfEachTitle(item->isCollapse()));
     }
     Q_UNREACHABLE();
 }
@@ -399,6 +418,11 @@ bool NotifyModel::contains(const QString &appName)
 int NotifyModel::showCount() const
 {
     return m_isCollapse ? qMin(NotifyShowMaxCount, m_notifications.count()) : m_notifications.count();
+}
+
+int NotifyModel::countOfEachTitle(const bool collapse) const
+{
+    return collapse ? 0 : 1;
 }
 
 void NotifyModel::sortNotifications()
@@ -494,7 +518,7 @@ void ListItem::resetShowLastHideCount()
 void ListItem::updateShowLastHideCount()
 {
     if (showCount() > 0) {
-        showLast()->setHideCount(qMin(2, hideCount()));
+        showLast()->setHideCount(overlapCount());
     }
 }
 
