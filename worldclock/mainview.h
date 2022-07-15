@@ -25,7 +25,7 @@
 #include <QWidget>
 
 namespace dwclock {
-class ClockView;
+class ClockPanel;
 class SettingsView;
 class TimezoneModel;
 class ViewManager : public QObject
@@ -34,14 +34,14 @@ class ViewManager : public QObject
 public:
     explicit ViewManager (QObject *parent = nullptr);
     virtual ~ViewManager() override;
-    ClockView *clockView() const;
+    ClockPanel *clockPanel() const;
     SettingsView *settingsView() const;
     TimezoneModel *model() const;
     void updateModel(const QStringList &timezones);
 
 private:
     TimezoneModel *m_model = nullptr;
-    mutable ClockView *m_clockView = nullptr;
+    mutable ClockPanel *m_clockPanel = nullptr;
     mutable QPointer<SettingsView> m_settingsView = nullptr;
 };
 }

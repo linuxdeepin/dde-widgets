@@ -26,25 +26,31 @@
 #include <QIcon>
 #include <QDebug>
 #include <QResizeEvent>
+#include <DDciIcon>
+#include <DFontSizeManager>
+#include <DFontManager>
+#include <QApplication>
 
+DGUI_USE_NAMESPACE
+DWIDGET_USE_NAMESPACE
 namespace dwclock {
 static const QSize baseClockSize = QSize(224, 224);
-static const QSize basePointSize = QSize(145, 15);
+static const QSize basePointSize = QSize(224, 224);
 
-ClockWidget::ClockWidget(QWidget *parent)
-    : QWidget(parent)
+Clock::Clock()
 {
+    updateLocationFont();
 }
 
-ClockWidget::~ClockWidget()
+Clock::~Clock()
 {
 
 }
 
-QPixmap ClockWidget::getPixmap(const QString &name, const QSize &size)
+QPixmap Clock::getPixmap(const QString &name, const QSize &size)
 {
     const QIcon &icon = QIcon::fromTheme(name);
-    const qreal ratio = devicePixelRatioF();
+    const auto ratio = qApp->devicePixelRatio();
     QPixmap pixmap = icon.pixmap(size * ratio).scaled(size * ratio, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
     QPainter p(&pixmap);
     p.setRenderHints(QPainter::Antialiasing);
@@ -53,95 +59,114 @@ QPixmap ClockWidget::getPixmap(const QString &name, const QSize &size)
     return pixmap;
 }
 
-void ClockWidget::paintEvent(QPaintEvent *event)
+QPixmap Clock::getPixmap(const QString &name, const int size, const bool isDark)
 {
-    Q_UNUSED(event);
+    const auto &icon = DDciIcon::fromTheme(name);
+    const auto ratio = qApp->devicePixelRatio();
+    return icon.pixmap(ratio, size, isDark ? DDciIcon::Dark : DDciIcon::Light);
+}
 
-    if (!m_clockPlatSize.isValid() || !m_clockPointSize.isValid())
-        return;
+void Clock::paint(QPainter *painter, const QRect &rect)
+{
+    m_clockPlatSize = rect.size();
+    const auto ratio = m_clockPlatSize.width() * 1.0 / baseClockSize.width();
+    m_clockPointSize = basePointSize * ratio;
 
     QDateTime datetime(QDateTime::currentDateTime());
     datetime = datetime.addSecs(datetime.offsetFromUtc() - m_utcOffset);
     const QTime time(datetime.time());
 
-    updateClockPointPixmap();
     const bool nightMode = !(time.hour() >= 6 && time.hour() < 18);
-    updateClockPlatPixmap(nightMode);
+    updateClockPixmap(nightMode);
 
-    const auto center = rect().center();
+    const auto center = rect.center();
 
-    QPainter painter(this);
-    painter.setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
+    painter->setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
 
     // draw plate
     QRect platRect = m_plat.rect();
     platRect.moveCenter(center);
-    painter.drawPixmap(platRect, m_plat);
+    painter->drawPixmap(platRect, m_plat);
 
     int nHour = (time.hour() >= 12) ? (time.hour() - 12) : time.hour();
-    int nStartAngle = 90; //The image from 0 start , but the clock need from -90 start
+    int nStartAngle = 0; //The image from 0 start
 
     const QPointF clockPointPosition(-m_clockPointSize.width() / 2.0, -m_clockPointSize.height() / 2.0);
     // draw hour hand
     const qreal hourAngle = qreal(nHour * 30 + time.minute() * 30 / 60 + time.second() * 30 / 60 / 60 - nStartAngle);
-    painter.save();
-    painter.translate(center);
-    painter.rotate(hourAngle);
-    painter.drawPixmap(clockPointPosition, m_hour);
-    painter.restore();
+    painter->save();
+    painter->translate(center);
+    painter->rotate(hourAngle);
+    painter->drawPixmap(clockPointPosition, m_hour);
+    painter->restore();
 
     // draw minute hand
     const qreal minuteAngle = qreal(time.minute() * 6 + time.second() * 6 / 60 - nStartAngle);
-    painter.save();
-    painter.translate(center);
-    painter.rotate(minuteAngle);
-    painter.drawPixmap(clockPointPosition, m_min);
-    painter.restore();
+    painter->save();
+    painter->translate(center);
+    painter->rotate(minuteAngle);
+    painter->drawPixmap(clockPointPosition, m_min);
+    painter->restore();
 
     // draw second hand
     const qreal secondAngle = qreal(time.second() * 6 - nStartAngle);
-    painter.save();
-    painter.translate(center);
-    painter.rotate(secondAngle);
-    painter.drawPixmap(clockPointPosition, m_sec);
-    painter.restore();
+    painter->save();
+    painter->translate(center);
+    painter->rotate(secondAngle);
+    painter->drawPixmap(clockPointPosition, m_sec);
+    painter->restore();
+
+    if (!m_location.isEmpty()) {
+        // draw location
+        painter->save();
+        painter->translate(center);
+        painter->setPen(nightMode ? Qt::white : Qt::black);
+        painter->setFont(m_locationTxtFont);
+
+        QFontMetrics fmTxt(m_locationTxtFont);
+        // we assume height is equal width, so maxWidth == r - height.
+        auto txt = fmTxt.elidedText(m_location, Qt::ElideRight, m_clockPlatSize.width() - fmTxt.height());
+        const QSize textSize = fmTxt.size(Qt::TextSingleLine, txt);
+        painter->drawText(QRect(-textSize.width() / 2, -m_clockPlatSize.height() / 3, textSize.width(), textSize.height()),
+                         Qt::AlignHCenter | Qt::AlignVCenter,
+                         txt);
+        painter->restore();
+    }
 }
 
-void ClockWidget::setUTCOffset(const int utcOffset)
+void Clock::setUTCOffset(const int utcOffset)
 {
     if (m_utcOffset == utcOffset)
         return;
 
     m_utcOffset = utcOffset;
-    update();
 }
 
-void ClockWidget::resizeEvent(QResizeEvent *event)
+void Clock::setLocation(const QString &location)
 {
-    if (event->size() != event->oldSize()) {
-        m_clockPlatSize = event->size();
-        const auto ratio = m_clockPlatSize.width() * 1.0 / baseClockSize.width();
-        m_clockPointSize = basePointSize * ratio;
-    }
-
-    return QWidget::resizeEvent(event);
-}
-
-void ClockWidget::updateClockPointPixmap()
-{
-    if (m_hour.size() == m_clockPointSize)
+    if (m_location == location)
         return;
 
-    m_hour = getPixmap("dcc_noun_hour", m_clockPointSize);
-    m_min = getPixmap("dcc_noun_minute", m_clockPointSize);
-    m_sec = getPixmap("dcc_noun_second", m_clockPointSize);
+    m_location = location;
 }
 
-void ClockWidget::updateClockPlatPixmap(const bool isNightMode)
+void Clock::updateClockPixmap(const bool isNightMode)
 {
     if (isNightMode != m_isBlack || m_plat.size() != m_clockPlatSize) {
-        m_plat = getPixmap(isNightMode ? "dcc_clock_black" : "dcc_clock_white", m_clockPlatSize);
-        m_isBlack = !m_isBlack;
+        m_hour = getPixmap("clock_small_hours", m_clockPointSize.width(), isNightMode);
+        m_min = getPixmap("clock_small_minute", m_clockPointSize.width(), isNightMode);
+        m_sec = getPixmap("clock_small_sec", m_clockPointSize.width(), isNightMode);
+
+        m_plat = getPixmap("clock_small", m_clockPlatSize.width(), isNightMode);
+
+        m_isBlack = isNightMode;
     }
+}
+
+void Clock::updateLocationFont()
+{
+    m_locationTxtFont = DFontSizeManager::instance()->t8();
+    m_locationTxtFont.setFamily("SourceHanSansSC");
+    m_locationTxtFont.setWeight(QFont::ExtraLight);
 }
 }

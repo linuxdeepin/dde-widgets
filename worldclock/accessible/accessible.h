@@ -23,7 +23,7 @@
 
 #include "common/accessibledefine.h"
 
-#include "clockview.h"
+#include "clockpanel.h"
 #include "settingsview.h"
 #include "clock.h"
 
@@ -32,7 +32,7 @@ namespace dwclock {
 SET_FORM_ACCESSIBLE(ClockView, "ClockView")
 SET_FORM_ACCESSIBLE(SettingsView, "SettingsView")
 SET_FORM_ACCESSIBLE(ZoneSearch, "ZoneSearch")
-SET_FORM_ACCESSIBLE(ClockWidget, "ClockWidget")
+SET_FORM_ACCESSIBLE(ClockPanel, "ClockPanel")
 
 QAccessibleInterface *accessibleFactory(const QString &classname, QObject *object)
 {
@@ -42,7 +42,7 @@ QAccessibleInterface *accessibleFactory(const QString &classname, QObject *objec
     USE_ACCESSIBLE(QString(classname).replace(NamespaceString, ""), ClockView)
             ELSE_USE_ACCESSIBLE(QString(classname).replace(NamespaceString, ""), SettingsView)
             ELSE_USE_ACCESSIBLE(QString(classname).replace(NamespaceString, ""), ZoneSearch)
-            ELSE_USE_ACCESSIBLE(QString(classname).replace(NamespaceString, ""), ClockWidget)
+            ELSE_USE_ACCESSIBLE(QString(classname).replace(NamespaceString, ""), ClockPanel)
 
     return interface;
 }

@@ -22,7 +22,7 @@
 #include "plugin.h"
 #include "common/helper.hpp"
 #include "accessible/accessible.h"
-#include "clockview.h"
+#include "clockpanel.h"
 #include "settingsview.h"
 #include "timezonemodel.h"
 
@@ -44,7 +44,7 @@ IWidget *WorldClockWidgetPlugin::createWidget()
 
 QWidget *WorldClockWidget::view()
 {
-    return m_viewManager->clockView();
+    return m_viewManager->clockPanel();
 }
 
 bool WorldClockWidget::initialize(const QStringList &arguments) {
@@ -54,8 +54,6 @@ bool WorldClockWidget::initialize(const QStringList &arguments) {
         hasLoaded = BuildinWidgetsHelper::instance()->loadTranslator("dde-widgets-worldclock_");
 
     m_viewManager = new ViewManager();
-    auto clockView = m_viewManager->clockView();
-    clockView->setWidgetHandler(handler());
 
     QObject::connect(m_viewManager->model(), &TimezoneModel::timezonesChanged, m_viewManager, [this]() {
         const QStringList &timezones = m_viewManager->model()->timezones();
@@ -72,28 +70,15 @@ void WorldClockWidget::delayInitialize()
 
 void WorldClockWidget::typeChanged(const IWidget::Type type)
 {
-    auto clockView = m_viewManager->clockView();
-    clockView->setFixedSize(handler()->size());
+    auto clockPanel = m_viewManager->clockPanel();
+    clockPanel->setFixedSize(handler()->size());
 
-    if (type == IWidget::Small) {
-        const QStringList &defaultLocations = TimezoneModel::defaultLocations();
-        const auto data = handler()->value("locations", defaultLocations).toStringList();
-        // Get the first location as Model.
-        m_viewManager->updateModel({data.first()});
-    } else if (type == IWidget::Middle) {
-        const QStringList &defaultLocations = TimezoneModel::defaultLocations();
-        auto data = handler()->value("locations", defaultLocations).toStringList();
-        // Get the locations as Model, and the rest is added from DefaultLocations if possible.
-        for (auto item : defaultLocations) {
-            if (data.count() >= defaultLocations.count())
-                break;
-            if (data.contains(item))
-                continue;
+    clockPanel->setSmallType(type == IWidget::Small);
 
-            data << item;
-        }
-        m_viewManager->updateModel(data);
-    }
+    const QStringList &defaultLocations = TimezoneModel::defaultLocations();
+    auto data = handler()->value("locations", defaultLocations).toStringList();
+
+    m_viewManager->updateModel(data);
 }
 
 bool WorldClockWidget::enableSettings()
@@ -104,7 +89,7 @@ bool WorldClockWidget::enableSettings()
 void WorldClockWidget::settings()
 {
     auto settingsView = m_viewManager->settingsView();
-    auto pw = m_viewManager->clockView();
+    auto pw = m_viewManager->clockPanel();
 
     settingsView->move(pw->mapToGlobal(pw->geometry().bottomLeft()));
     settingsView->exec();

@@ -27,13 +27,15 @@
 namespace dwclock {
 namespace UI {
 namespace clock {
-    static const int topMargin = 25 - 22; // plat's background has margin with 22px.
-    static const int bottomMargin = 22;
     static const QMargins defaultMargins(0, 0, 0, 0);
-    static const int spacingCityNameAndTimezoneOffset = 3;
-    static const int cellSpacing = 0;
+    static const int spacingCityNameAndTimezoneOffset = 4;
+    static const int spacingCityNameAndClock = 15;
+    static const int cellSpacing = 20;
     static const QColor panelBackground(247, 247, 247, 0.6 * 255);
-    static const int smallAndMiddleDeltaSize = 40;
+    static const QColor middleClockBackground(0, 0, 0, 0.05 * 255);
+    static const int spacingBackgroundAndClock = 8;
+    static const int smallSpacing = 10;
+    static const int middleSpacing = 8;
 }
 }
 }

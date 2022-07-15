@@ -8,7 +8,7 @@ set(HEADERS
     "global.h"
     "mainview.h"
     "timezonemodel.h"
-    "clockview.h"
+    "clockpanel.h"
     "clock.h"
     "settingsview.h"
 )
@@ -20,7 +20,7 @@ set(SOURCES
     "utils/zoneinfo.cpp"
     "mainview.cpp"
     "timezonemodel.cpp"
-    "clockview.cpp"
+    "clockpanel.cpp"
     "clock.cpp"
     "settingsview.cpp"
 )

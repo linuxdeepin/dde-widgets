@@ -21,7 +21,7 @@
 
 #include "mainview.h"
 
-#include "clockview.h"
+#include "clockpanel.h"
 #include "settingsview.h"
 #include "timezonemodel.h"
 
@@ -38,19 +38,19 @@ ViewManager::~ViewManager()
     m_model = nullptr;
 }
 
-ClockView *ViewManager::clockView() const
+ClockPanel *ViewManager::clockPanel() const
 {
-    if (!m_clockView) {
-        m_clockView = new ClockView();
-        m_clockView->setModel(m_model);
+    if (!m_clockPanel) {
+        m_clockPanel = new ClockPanel();
+        m_clockPanel->view()->setModel(m_model);
     }
-    return m_clockView;
+    return m_clockPanel;
 }
 
 SettingsView *ViewManager::settingsView() const
 {
     if (!m_settingsView) {
-        m_settingsView = new SettingsView(m_model);
+        m_settingsView = new SettingsView(m_model, m_clockPanel);
         m_settingsView->setAttribute(Qt::WA_DeleteOnClose, true);
         m_settingsView->selectItem();
     }

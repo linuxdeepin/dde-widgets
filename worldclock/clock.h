@@ -21,25 +21,26 @@
 
 #pragma once
 
-#include <QWidget>
+#include <QFont>
+#include <QPixmap>
 
 namespace dwclock {
-class ClockWidget: public QWidget
+class Clock
 {
-    Q_OBJECT
 public:
-    explicit ClockWidget(QWidget *parent = 0);
-    virtual ~ClockWidget();
+    explicit Clock();
+    virtual ~Clock();
 
     void setUTCOffset(const int utcOffset);
-protected:
-    void paintEvent(QPaintEvent *event);
-    virtual void resizeEvent(QResizeEvent *event) override;
+    void setLocation(const QString &location);
+
+    void paint(QPainter *painter, const QRect &rect);
 
 private:
-    void updateClockPointPixmap();
-    void updateClockPlatPixmap(const bool isNightMode);
+    void updateClockPixmap(const bool isNightMode);
+    void updateLocationFont();
     QPixmap getPixmap(const QString &name, const QSize &size);
+    QPixmap getPixmap(const QString &name, const int size, const bool isDark);
 
     bool m_isBlack = false;
     int m_utcOffset = 0;
@@ -49,5 +50,7 @@ private:
     QPixmap m_sec;
     QSize m_clockPlatSize;
     QSize m_clockPointSize;
+    QString m_location;
+    QFont m_locationTxtFont;
 };
 }

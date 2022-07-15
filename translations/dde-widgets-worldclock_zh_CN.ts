@@ -2,6 +2,24 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="zh_CN">
 <context>
+    <name>dwclock::ClockDelegate</name>
+    <message>
+        <location filename="../worldclock/clockpanel.cpp" line="165"/>
+        <source>Tomorrow</source>
+        <translation>明天</translation>
+    </message>
+    <message>
+        <location filename="../worldclock/clockpanel.cpp" line="167"/>
+        <source>Yesterday</source>
+        <translation>昨天</translation>
+    </message>
+    <message>
+        <location filename="../worldclock/clockpanel.cpp" line="169"/>
+        <source>Today</source>
+        <translation>今天</translation>
+    </message>
+</context>
+<context>
     <name>dwclock::SearchInput</name>
     <message>
         <location filename="../worldclock/utils/searchinput.cpp" line="62"/>
