@@ -62,7 +62,7 @@ namespace Widget {
     static const QSize SmallSize(170, 170);
     static const QSize StoreSmallSize(130, 130);
     static const QSize MiddleSize(360, 170);
-    static const QSize StoreMiddleSize(180, 130);
+    static const QSize StoreMiddleSize(180, 85);
     static const QSize LargeSize(360, 360);
     static const QSize StoreLargeSize(180, 180);
     static const QSize CustomSize(360, 600);
@@ -82,6 +82,7 @@ namespace Store {
     static const int panelWidth = leftMargin + rightMargin + cellSize.width();
     static const QColor cellBackgroundColor(0, 0, 0, 0.05 * 255);
     static const int pluginCellRadius = 18;
+    static const int viewPlaceholderFresherTime = 100;
 }
 namespace Ins {
     static const int spacing = 20;

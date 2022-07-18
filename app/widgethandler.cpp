@@ -29,7 +29,7 @@ QString WidgetHandlerImpl::id() const { return m_id;}
 
 QSize WidgetHandlerImpl::size() const
 {
-    return size(m_type, m_isUserAreaInstance);
+    return size(m_type, true);
 }
 
 QSize WidgetHandlerImpl::size(const IWidget::Type type, const bool instance)

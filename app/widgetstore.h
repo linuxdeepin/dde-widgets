@@ -71,8 +71,16 @@ protected:
     void enterEvent(QEvent *event) override;
     void leaveEvent(QEvent *event) override;
 
+    void timerEvent(QTimerEvent *event);
+    void showEvent(QShowEvent *event);
+    void hideEvent(QHideEvent *event);
+
 private:
+    void updateViewPlaceholder();
+
     QWidget *m_view = nullptr;
+    QLabel *m_viewPlaceholder = nullptr;
+    QBasicTimer m_viewPlaceholderFresher;
 };
 
 class WidgetStore : public QWidget {

@@ -235,6 +235,12 @@ void WidgetStoreCell::setView(QWidget *view)
 {
     m_view = view;
     m_view->setParent(this);
+    m_view->setVisible(false);
+    m_view->resize(m_handler->size());
+    const auto &targetSize = WidgetHandlerImpl::size(m_handler->type(), false);
+
+    m_viewPlaceholder = new QLabel(this);
+    m_viewPlaceholder->resize(targetSize);
 
     auto action = new DIconButton(DStyle::SP_AddButton);
     action->setObjectName("add-button");
@@ -249,12 +255,12 @@ void WidgetStoreCell::setView(QWidget *view)
 
     auto cellAnchors = new DAnchors<WidgetStoreCell>(this);
     auto actionAnchors = new DAnchors<DIconButton>(action);
-    auto viewAnchors = new DAnchors<QWidget>(m_view);
+    auto viewAnchors = new DAnchors<QWidget>(m_viewPlaceholder);
     actionAnchors->setTop(cellAnchors->top());
     actionAnchors->setRight(cellAnchors->right());
     viewAnchors->setBottom(cellAnchors->bottom());
 
-    setFixedSize(m_handler->size() + (UI::Store::AddIconSize / 2));
+    setFixedSize(targetSize + (UI::Store::AddIconSize / 2));
 }
 
 void WidgetStoreCell::startDrag(const QPoint &pos)
@@ -297,5 +303,47 @@ void WidgetStoreCell::leaveEvent(QEvent *event)
 {
     Q_EMIT enterChanged(false);
     QWidget::leaveEvent(event);
+}
+
+void WidgetStoreCell::timerEvent(QTimerEvent *event)
+{
+    do {
+        if (event->timerId() != m_viewPlaceholderFresher.timerId())
+            break;
+
+        updateViewPlaceholder();
+    } while (false);
+
+    return DragDropWidget::timerEvent(event);
+}
+
+void WidgetStoreCell::showEvent(QShowEvent *event)
+{
+    Q_UNUSED(event);
+
+    updateViewPlaceholder();
+
+    m_viewPlaceholderFresher.start(UI::Store::viewPlaceholderFresherTime, this);
+}
+
+void WidgetStoreCell::hideEvent(QHideEvent *event)
+{
+    Q_UNUSED(event);
+
+    m_viewPlaceholderFresher.stop();
+}
+
+void WidgetStoreCell::updateViewPlaceholder()
+{
+    if (!m_viewPlaceholder)
+        return;
+
+    const auto &targetSize = m_viewPlaceholder->size();
+    QPixmap pixmap = m_view->grab();
+    pixmap = pixmap.scaled(targetSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+    pixmap.setMask(WidgetContainer::bitmapOfMask(pixmap.size(), WidgetHandlerImpl::get(m_handler)->m_isUserAreaInstance));
+    m_viewPlaceholder->setPixmap(pixmap);
+
+    update();
 }
 WIDGETS_FRAME_END_NAMESPACE
