@@ -84,9 +84,7 @@ void ClockDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
     m_clock.setUTCOffset(utcOffset);
     const QString &location = index.data().toString();
 
-    if (view->isSmallType()) {
-        m_clock.setLocation(location);
-    }
+    m_clock.setLocation(view->isSmallType() ? location : QString());
 
     // draw clock
     {
