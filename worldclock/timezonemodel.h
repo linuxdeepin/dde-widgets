@@ -25,39 +25,32 @@
 #include <QStandardItemModel>
 
 namespace dwclock {
-class TimezoneListModel : public QAbstractListModel {
-    Q_OBJECT
-public:
-    TimezoneListModel(QObject *parent = nullptr);
-    virtual int rowCount(const QModelIndex &parent) const override;
-    virtual QVariant data(const QModelIndex &index, int role) const override;
-
-private:
-    mutable QStringList m_data;
-};
 
 class TimezoneModel : public QStandardItemModel {
     Q_OBJECT
 public:
-    enum {
+    enum Timezone {
         CityName = Qt::UserRole + 1,
         ZoneName,
         ZoneOffset
-    } Timezone;
+    };
 
     TimezoneModel(QObject *parent = nullptr);
     virtual ~TimezoneModel();
     void appendItems(const QStringList &timezones);
     void updateTimezone(const QModelIndex &index, const QString &timezone);
+    void updateModel(const QStringList &timezones);
     QStringList timezones() const;
 
     static QStringList defaultLocations();
 
 Q_SIGNALS:
     void timezonesChanged();
+    void modifyLocationClicked(const QModelIndex &index);
 
 private Q_SLOTS:
     void emitTimezoneChanged();
+    void onModifyLocationActionTriggered();
 
 protected:
     virtual void timerEvent(QTimerEvent *event) override;

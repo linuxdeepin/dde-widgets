@@ -22,42 +22,22 @@
 #pragma once
 
 #include <DDialog>
-#include <QListView>
-#include <QCompleter>
+#include <DListView>
 DWIDGET_USE_NAMESPACE
 
 namespace dwclock {
 class TimezoneModel;
-class SearchInput;
-class ZoneSearch : public QWidget {
-    Q_OBJECT
-public:
-    explicit ZoneSearch(QWidget *parent = nullptr);
-
-Q_SIGNALS:
-    void timezoneChanged(const QString &timezone);
-
-private Q_SLOTS:
-    void onSelectedChanged();
-
-private:
-    SearchInput *m_searchInput = nullptr;
-    QCompleter *m_completer = nullptr;
-};
-
 class SettingsView : public DDialog {
     Q_OBJECT
 public:
     explicit SettingsView(TimezoneModel *model, QWidget *parent = nullptr);
-
-    void selectItem(const int row = 0);
+    TimezoneModel *model() const;
 
 private Q_SLOTS:
-    void onTimezoneChanged(const QString &timezone);
+    void showModifyLocation(const QModelIndex &index);
 
 public:
-    QListView *m_clockView = nullptr;
+    DListView *m_clockView = nullptr;
     TimezoneModel *m_model = nullptr;
-    ZoneSearch *m_searchInput = nullptr;
 };
 }

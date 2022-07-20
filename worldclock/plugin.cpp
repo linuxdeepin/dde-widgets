@@ -92,7 +92,10 @@ void WorldClockWidget::settings()
     auto pw = m_viewManager->clockPanel();
 
     settingsView->move(pw->mapToGlobal(pw->geometry().bottomLeft()));
-    settingsView->exec();
+    if (QDialog::Accepted == settingsView->exec()) {
+        m_viewManager->updateModel(settingsView->model()->timezones());
+    }
+    settingsView->deleteLater();
 }
 
 QIcon WorldClockWidgetPlugin::logo() const

@@ -25,13 +25,16 @@
 
 #include "clockpanel.h"
 #include "settingsview.h"
+#include "zonechooseview.h"
 #include "clock.h"
 
 // 添加accessible
 namespace dwclock {
 SET_FORM_ACCESSIBLE(ClockView, "ClockView")
 SET_FORM_ACCESSIBLE(SettingsView, "SettingsView")
-SET_FORM_ACCESSIBLE(ZoneSearch, "ZoneSearch")
+SET_FORM_ACCESSIBLE(ZoneSectionView, "ZoneSectionView")
+SET_FORM_ACCESSIBLE(ZoneSection, "ZoneSection")
+SET_FORM_ACCESSIBLE(ZoneChooseView, "ZoneChooseView")
 SET_FORM_ACCESSIBLE(ClockPanel, "ClockPanel")
 
 QAccessibleInterface *accessibleFactory(const QString &classname, QObject *object)
@@ -41,7 +44,9 @@ QAccessibleInterface *accessibleFactory(const QString &classname, QObject *objec
     const QString NamespaceString("dwclock::");
     USE_ACCESSIBLE(QString(classname).replace(NamespaceString, ""), ClockView)
             ELSE_USE_ACCESSIBLE(QString(classname).replace(NamespaceString, ""), SettingsView)
-            ELSE_USE_ACCESSIBLE(QString(classname).replace(NamespaceString, ""), ZoneSearch)
+            ELSE_USE_ACCESSIBLE(QString(classname).replace(NamespaceString, ""), ZoneSectionView)
+            ELSE_USE_ACCESSIBLE(QString(classname).replace(NamespaceString, ""), ZoneSection)
+            ELSE_USE_ACCESSIBLE(QString(classname).replace(NamespaceString, ""), ZoneChooseView)
             ELSE_USE_ACCESSIBLE(QString(classname).replace(NamespaceString, ""), ClockPanel)
 
     return interface;

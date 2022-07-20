@@ -50,9 +50,10 @@ ClockPanel *ViewManager::clockPanel() const
 SettingsView *ViewManager::settingsView() const
 {
     if (!m_settingsView) {
-        m_settingsView = new SettingsView(m_model, m_clockPanel);
-        m_settingsView->setAttribute(Qt::WA_DeleteOnClose, true);
-        m_settingsView->selectItem();
+        TimezoneModel *m = new TimezoneModel();
+        m->appendItems(m_model->timezones());
+        m_settingsView = new SettingsView(m, m_clockPanel);
+        m->setParent(m_settingsView);
     }
     return m_settingsView;
 }
@@ -64,7 +65,6 @@ TimezoneModel *ViewManager::model() const
 
 void ViewManager::updateModel(const QStringList &timezones)
 {
-    m_model->clear();
-    m_model->appendItems(timezones);
+    m_model->updateModel(timezones);
 }
 }

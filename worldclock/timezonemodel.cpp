@@ -27,61 +27,15 @@
 #include <QDBusInterface>
 #include <QDBusPendingReply>
 #include <QEvent>
+#include <DStyledItemDelegate>
+#include <DIconButton>
+
+DWIDGET_USE_NAMESPACE
 
 namespace dwclock {
 static const QString TimedateService = QStringLiteral("com.deepin.daemon.Timedate");
 static const QString TimedatePath = QStringLiteral("/com/deepin/daemon/Timedate");
 static const QString TimedateInterface = QStringLiteral("com.deepin.daemon.Timedate");
-
-static QStringList timezoneAndLocals()
-{
-    QStringList zones;
-    for (const auto &zoneInfo : installer::GetZoneInfoList()) {
-        auto timezone = zoneInfo.timezone;
-        zones << timezone; // timezone as completion candidate.
-
-        // localized timezone as completion candidate.
-        const QString locale = QLocale::system().name();
-        QString localizedTimezone = installer::GetLocalTimezoneName(timezone, locale);
-        zones << localizedTimezone;
-    }
-    return zones;
-}
-
-TimezoneListModel::TimezoneListModel(QObject *parent)
-    : QAbstractListModel(parent)
-{
-
-}
-
-int TimezoneListModel::rowCount(const QModelIndex &parent) const
-{
-    Q_UNUSED(parent);
-
-    if (m_data.isEmpty())
-        m_data = timezoneAndLocals();
-
-    return m_data.count();
-}
-
-QVariant TimezoneListModel::data(const QModelIndex &index, int role) const
-{
-    if (!index.isValid())
-        return QVariant();
-
-    const auto row = index.row();
-
-    const bool isLocalZonetime = row % 2;
-    if (role == Qt::EditRole || role == Qt::DisplayRole) {
-        return m_data[row];
-    } else if (role == TimezoneModel::CityName) {
-        return isLocalZonetime ? m_data[row] : m_data[row + 1];
-    } else if (role == TimezoneModel::ZoneName) {
-        return isLocalZonetime ? m_data[row - 1] : m_data[row];
-    }
-
-    return QVariant();
-}
 
 static QString getTimezoneCity(const QString &timezone)
 {
@@ -114,10 +68,18 @@ void TimezoneModel::appendItems(const QStringList &timezones)
             cityName = timezone;
         }
 
-        auto itemModel = new QStandardItem();
+        auto itemModel = new DStandardItem();
         itemModel->setDragEnabled(true);
         itemModel->setDropEnabled(false);
         itemModel->setEditable(false);
+        auto modifyAction = new DViewItemAction(Qt::AlignVCenter, QSize(), QSize(), true);
+        // TODO Action need to release by creater.
+        modifyAction->setParent(this);
+        // TODO DciIcon
+        modifyAction->setIcon(QIcon::fromTheme("edit-rename"));
+        // TODO can't get index of action triggered when draged, it maybe a bug in DStandardItem.
+        itemModel->setActionList(Qt::RightEdge, {modifyAction});
+        connect(modifyAction, &DViewItemAction::triggered, this, &TimezoneModel::onModifyLocationActionTriggered);
 
         itemModel->setText(cityName);
         itemModel->setData(timezone, ZoneName);
@@ -138,6 +100,19 @@ void TimezoneModel::updateTimezone(const QModelIndex &index, const QString &time
     itemModel->setText(cityName);
     itemModel->setData(timezone, ZoneName);
     updateTimezoneOffset(itemModel, timezone);
+}
+
+void TimezoneModel::updateModel(const QStringList &timezones)
+{
+    // TODO Action need to release by itself.
+    for (int i = 0; i < rowCount(); i++) {
+        auto itemModel = item(i);
+        const auto &actionList = qvariant_cast<DViewItemActionList>(itemModel->data(Dtk::RightActionListRole));
+        for (auto item : actionList)
+            item->deleteLater();
+    }
+    clear();
+    appendItems(timezones);
 }
 
 QStringList TimezoneModel::timezones() const
@@ -188,6 +163,24 @@ void TimezoneModel::emitTimezoneChanged()
         m_timezoneChangedTimer = new QBasicTimer();
 
     m_timezoneChangedTimer->start(100, this);
+}
+
+void TimezoneModel::onModifyLocationActionTriggered()
+{
+    const auto targetAction = qobject_cast<DViewItemAction *>(sender());
+    qDebug() << "onModifyLocationActionTriggered() " << targetAction;
+    for (int i = 0; i < rowCount(); i++) {
+        auto itemModel = item(i);
+        if (!itemModel)
+            continue;
+
+        const DViewItemActionList actionList = qvariant_cast<DViewItemActionList>(itemModel->data(Dtk::RightActionListRole));
+        if (actionList.contains(targetAction)) {
+            qDebug() << "onModifyLocationActionTriggered() the row clicked:" << i;
+            Q_EMIT modifyLocationClicked(index(i, 0));
+            break;
+        }
+    }
 }
 
 void TimezoneModel::timerEvent(QTimerEvent *event)

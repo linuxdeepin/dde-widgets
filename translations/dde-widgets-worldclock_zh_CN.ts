@@ -4,17 +4,17 @@
 <context>
     <name>dwclock::ClockDelegate</name>
     <message>
-        <location filename="../worldclock/clockpanel.cpp" line="165"/>
+        <location filename="../worldclock/clockpanel.cpp" line="167"/>
         <source>Tomorrow</source>
         <translation>明天</translation>
     </message>
     <message>
-        <location filename="../worldclock/clockpanel.cpp" line="167"/>
+        <location filename="../worldclock/clockpanel.cpp" line="169"/>
         <source>Yesterday</source>
         <translation>昨天</translation>
     </message>
     <message>
-        <location filename="../worldclock/clockpanel.cpp" line="169"/>
+        <location filename="../worldclock/clockpanel.cpp" line="171"/>
         <source>Today</source>
         <translation>今天</translation>
     </message>
@@ -25,6 +25,29 @@
         <location filename="../worldclock/utils/searchinput.cpp" line="62"/>
         <source>Search</source>
         <translation>搜索</translation>
+    </message>
+</context>
+<context>
+    <name>dwclock::SettingsView</name>
+    <message>
+        <location filename="../worldclock/settingsview.cpp" line="41"/>
+        <source>Modify City</source>
+        <translation>修改城市</translation>
+    </message>
+    <message>
+        <location filename="../worldclock/settingsview.cpp" line="45"/>
+        <source>Display clocks at different geographical locations</source>
+        <translation>显示不同地区的时钟信息</translation>
+    </message>
+    <message>
+        <location filename="../worldclock/settingsview.cpp" line="48"/>
+        <source>Cancle</source>
+        <translation>取消</translation>
+    </message>
+    <message>
+        <location filename="../worldclock/settingsview.cpp" line="49"/>
+        <source>Save</source>
+        <translation>保存</translation>
     </message>
 </context>
 <context>
@@ -41,11 +64,21 @@
     </message>
 </context>
 <context>
-    <name>dwclock::ZoneSearch</name>
+    <name>dwclock::ZoneChooseView</name>
     <message>
-        <location filename="../worldclock/settingsview.cpp" line="39"/>
-        <source>zonetime name</source>
-        <translation>时区名称</translation>
+        <location filename="../worldclock/zonechooseview.cpp" line="256"/>
+        <source>Modify City</source>
+        <translation>修改城市</translation>
+    </message>
+    <message>
+        <location filename="../worldclock/zonechooseview.cpp" line="260"/>
+        <source>Cancle</source>
+        <translation>取消</translation>
+    </message>
+    <message>
+        <location filename="../worldclock/zonechooseview.cpp" line="261"/>
+        <source>OK</source>
+        <translation>修改</translation>
     </message>
 </context>
 </TS>

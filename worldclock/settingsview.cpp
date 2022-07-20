@@ -20,10 +20,11 @@
  */
 
 #include "settingsview.h"
-#include "utils/searchinput.h"
 #include "timezonemodel.h"
+#include "global.h"
+#include "zonechooseview.h"
 
-#include <DBlurEffectWidget>
+#include <DLabel>
 #include <DListView>
 #include <QDebug>
 #include <QHBoxLayout>
@@ -31,75 +32,48 @@
 
 DWIDGET_USE_NAMESPACE
 namespace dwclock {
-ZoneSearch::ZoneSearch(QWidget *parent)
-    : QWidget(parent)
-    , m_searchInput(new SearchInput())
-{
-    auto layout = new QHBoxLayout(this);
-    m_searchInput->setSearchText(tr("zonetime name"));
-    layout->addWidget(m_searchInput);
-
-    auto completions = new TimezoneListModel();
-    m_completer = new QCompleter(completions, m_searchInput);
-    m_completer->popup()->setAttribute(Qt::WA_InputMethodEnabled);
-    m_completer->setCompletionMode(QCompleter::PopupCompletion);
-    m_completer->popup()->setSelectionMode(QAbstractItemView::SingleSelection);
-    m_completer->setCaseSensitivity(Qt::CaseInsensitive);
-    m_completer->setFilterMode(Qt::MatchContains);
-
-    m_searchInput->setCompleter(m_completer);
-
-    auto completerPopup = m_completer->popup();
-
-    DBlurEffectWidget *blurEffect = new DBlurEffectWidget();
-    blurEffect->setAccessibleName("blurEffect");
-    blurEffect->setMaskColor(Qt::white);
-
-    QHBoxLayout *popuLayout = new QHBoxLayout(completerPopup);
-    popuLayout->setSpacing(0);
-    popuLayout->setMargin(0);
-    popuLayout->addWidget(blurEffect);
-    blurEffect->lower();
-
-    connect(m_searchInput, &SearchInput::returnPressed, this, &ZoneSearch::onSelectedChanged);
-}
-
-void ZoneSearch::onSelectedChanged()
-{
-    const auto popup = m_completer->popup();
-    QModelIndex index = popup->selectionModel()->currentIndex();
-    if (index.isValid()) {
-        const QString &timezone = index.data(TimezoneModel::ZoneName).toString();
-        Q_EMIT timezoneChanged(timezone);
-        popup->close();
-    }
-}
 
 SettingsView::SettingsView(TimezoneModel *model, QWidget *parent)
     : DDialog(parent)
     , m_clockView(new DListView())
-    , m_searchInput(new ZoneSearch())
     , m_model(model)
 {
+    setTitle(tr("Modify City"));
+    addSpacing(UI::edit::spacingDesc);
+    auto desc = new DLabel();
+    DFontSizeManager::instance()->bind(desc, DFontSizeManager::T8);
+    desc->setText(tr("Display clocks at different geographical locations"));
+    addContent(desc, Qt::AlignHCenter);
+    addSpacing(UI::edit::spacingTitle);
+    addButton(tr("Cancle"));
+    addButton(tr("Save"));
+
+    setFixedSize(UI::clock::settingsDialogSize);
     m_clockView->setDragDropMode(QListView::InternalMove);
     m_clockView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    m_clockView->setBackgroundType(DStyledItemDelegate::RoundedBackground);
+    m_clockView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    m_clockView->setSpacing(1);
+    m_clockView->setItemSize(UI::edit::itemSize);
     m_clockView->setModel(m_model);
-    addContent(m_searchInput);
     addContent(m_clockView);
-    connect(m_searchInput, &ZoneSearch::timezoneChanged, this, &SettingsView::onTimezoneChanged);
+    connect(model, &TimezoneModel::modifyLocationClicked, this, &SettingsView::showModifyLocation);
 }
 
-void SettingsView::selectItem(const int row)
+TimezoneModel *SettingsView::model() const
 {
-    m_clockView->setCurrentIndex(m_model->index(row, 0));
+    return m_model;
 }
 
-void SettingsView::onTimezoneChanged(const QString &timezone)
+void SettingsView::showModifyLocation(const QModelIndex &index)
 {
-    const auto index = m_clockView->currentIndex();
-    if (!index.isValid() || index.row() >= m_model->rowCount())
-        return;
-
-    m_model->updateTimezone(index, timezone);
+    qDebug() << "showModifyLocation(): modify the item:" << index;
+    auto chooseView = new ZoneChooseView(this);
+    chooseView->moveToCenter();
+    if (QDialog::Accepted == chooseView->exec()) {
+        const QString &timezone = chooseView->currentZone();
+        m_model->updateTimezone(index, timezone);
+    }
+    chooseView->deleteLater();
 }
 }

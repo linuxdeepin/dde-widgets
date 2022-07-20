@@ -11,6 +11,7 @@ set(HEADERS
     "clockpanel.h"
     "clock.h"
     "settingsview.h"
+    "zonechooseview.h"
 )
 
 set(SOURCES
@@ -23,4 +24,5 @@ set(SOURCES
     "clockpanel.cpp"
     "clock.cpp"
     "settingsview.cpp"
+    "zonechooseview.cpp"
 )
