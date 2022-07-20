@@ -437,7 +437,7 @@ void InstancePanel::onMenuRequested(const InstanceId &id)
             if (!plugin)
                 return;
 
-            InstanceAboutDialog dialog;
+            InstanceAboutDialog dialog(this);
 
             auto logo = plugin->logo();
             if(logo.isNull()) {
@@ -455,6 +455,7 @@ void InstancePanel::onMenuRequested(const InstanceId &id)
                 contributor = qApp->translate("InstancePanel", "anonym");
 
             dialog.setContributor(contributor);
+            dialog.move(instance->view()->mapToGlobal(instance->view()->geometry().bottomLeft()));
 
             dialog.exec();
 

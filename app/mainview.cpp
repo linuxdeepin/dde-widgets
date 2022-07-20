@@ -47,6 +47,9 @@ MainView::MainView( WidgetManager *manager, QWidget *parent)
     setParent(m_animationContainer);
     m_appearancehandler->addTargetWidget(m_animationContainer);
 
+    // don't display tray in Dock
+    topLevelWidget()->setWindowFlag(Qt::Tool);
+
     qApp->installEventFilter(new LongPressEventFilter(this));
     if (releaseMode()) {
         DPlatformWindowHandle handler(parentWidget());

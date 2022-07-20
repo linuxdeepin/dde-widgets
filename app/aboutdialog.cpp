@@ -29,27 +29,27 @@ WIDGETS_FRAME_BEGIN_NAMESPACE
 InstanceAboutDialog::InstanceAboutDialog(QWidget *parent)
     : DDialog(parent)
 {
-    setMinimumWidth(UI::About::width);
+    setFixedSize(UI::About::dialogSize);
     setContentLayoutContentsMargins(UI::About::margins);
 
     m_logo = new DLabel();
-    addContent(m_logo, Qt::AlignCenter);
+    addContent(m_logo, Qt::AlignHCenter);
 
     m_title = new DLabel();
     addSpacing(UI::About::titleSpacing);
-    addContent(m_title, Qt::AlignCenter);
+    addContent(m_title, Qt::AlignHCenter);
 
     m_version = new DLabel();
     addSpacing(UI::About::versionSpacing);
-    addContent(m_version, Qt::AlignCenter);
+    addContent(m_version, Qt::AlignHCenter);
 
     m_contributor = new DLabel();
     addSpacing(UI::About::contributorSpacing);
-    addContent(m_contributor, Qt::AlignCenter);
+    addContent(m_contributor, Qt::AlignHCenter);
 
     m_description = new DLabel();
     addSpacing(UI::About::descriptionSpacing);
-    addContent(m_description, Qt::AlignCenter);
+    addContent(m_description, Qt::AlignHCenter);
 }
 
 void InstanceAboutDialog::setLogo(const QIcon &logo)

@@ -123,7 +123,7 @@ namespace EditMode {
 }
 
 namespace About {
-static const int width = 320;
+static const QSize dialogSize(360, 272);
 static const QMargins margins(11, 0, 11, 10);
 static const QSize logoSize(64, 64);
 static const int titleSpacing = 6;
