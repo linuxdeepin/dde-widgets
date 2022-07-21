@@ -84,7 +84,7 @@ public:
 class LongPressEventFilter : public QObject {
     Q_OBJECT
 public:
-    explicit LongPressEventFilter(QWidget *topWidget);
+    explicit LongPressEventFilter(QWidget *parent = nullptr);
 
 protected:
     virtual bool eventFilter(QObject *obj, QEvent *event) override;
@@ -95,7 +95,6 @@ private:
     void resetLongPressStatus();
 
 private:
-    QWidget *m_topWidget = nullptr;
     bool m_isLongPress = false;
     QBasicTimer m_longPressTimer;
     int m_longPressInterval = 300;

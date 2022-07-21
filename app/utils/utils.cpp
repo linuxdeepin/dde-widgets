@@ -147,17 +147,20 @@ LongPressDragEvent::LongPressDragEvent(const QMouseEvent &me)
 
 }
 
-LongPressEventFilter::LongPressEventFilter(QWidget *topWidget)
-    : m_topWidget (topWidget)
-    , QObject (topWidget)
+LongPressEventFilter::LongPressEventFilter(QWidget *parent)
+    : QObject (parent)
 {
-    Q_ASSERT(m_topWidget);
 }
 
 QWidget *LongPressEventFilter::targetWidget(const QPoint &global) const
 {
-    auto target = m_topWidget->childAt(m_topWidget->mapFromGlobal(global));
+    // get widget at global screen position point instead of children order point.
+    auto target = QApplication::widgetAt(global);
     while (target && target->isWidgetType()) {
+        if ((target->windowType() & Qt::SubWindow) == Qt::SubWindow
+                || (target->windowType() & Qt::Dialog) == Qt::Dialog
+                || (target->windowType() & Qt::Popup) == Qt::Popup)
+            return nullptr;
         // get correct object by class type, customEvent can't be distributed like MouseEvent
         // when using sendEvent, it's not passed to parent class when not processed.
         if (qobject_cast<DragDropWidget *>(target))

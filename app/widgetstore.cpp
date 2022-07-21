@@ -100,8 +100,6 @@ PluginCell *WidgetStore::addPluginCell(const PluginId &pluginId)
 {
     auto plugin = m_manager->getPlugin(pluginId);
     auto pluginCell = new PluginCell(this);
-    pluginCell->setTitle(plugin->title());
-    pluginCell->setDescription(plugin->description());
     for (auto instance: m_manager->createWidgetStoreInstances(pluginId)) {
         auto view = instance->view();
         Q_ASSERT(view);
@@ -110,6 +108,8 @@ PluginCell *WidgetStore::addPluginCell(const PluginId &pluginId)
         cell->setView(view);
         pluginCell->addCell(cell);
     }
+    pluginCell->setTitle(plugin->title());
+    pluginCell->setDescription(plugin->description());
     const int selectedCell = 0;
     pluginCell->setChecked(selectedCell);
     return pluginCell;
