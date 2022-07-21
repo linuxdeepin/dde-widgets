@@ -69,6 +69,8 @@ void DragDropWidget::gobackDrag(const QPixmap &pixmap, const QPoint &pos)
 {
     qDebug() << "gobackDrag" << pos << m_startDrag;
     QLabel *widget = new QLabel();
+    // avoid to being closed because `MainView` is a Tool.
+    widget->setWindowFlag(Qt::SubWindow);
     widget->setAttribute(Qt::WA_TranslucentBackground);
     widget->setWindowFlags(Qt::WindowStaysOnTopHint | Qt::X11BypassWindowManagerHint);
     widget->setFixedSize(pixmap.size());
