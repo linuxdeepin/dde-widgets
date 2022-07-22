@@ -52,9 +52,6 @@ protected:
     void showEvent(QShowEvent *event) override;
     void hideEvent(QHideEvent *event) override;
 
-signals:
-    void focusOnButton();
-
 private:
     QLabel *m_noNotify = nullptr;
     NotifyModel *m_model;

@@ -43,22 +43,27 @@ QWidget *ItemDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem 
     if (!notify)
         return nullptr;
 
+    QWidget *createdWidget = nullptr;
     if (m_model->isCollapse(notify->appName())) {
         OverLapWidet *widget = new OverLapWidet(m_model, notify, parent);
         widget->setParentView(m_view);
-        return widget;
-    }
-
-    if(notify->isTitle()) {
+        createdWidget = widget;
+    } else if (notify->isTitle()) {
         BubbleTitleWidget *titleWidget = new BubbleTitleWidget(m_model, notify, parent);
         titleWidget->setParentView(m_view);
-        return titleWidget;
+        createdWidget = titleWidget;
+    } else {
+        BubbleItem *bubble = new BubbleItem(parent, notify);
+        bubble->setParentModel(m_model);
+        bubble->setParentView(m_view);
+        createdWidget = bubble;
     }
-
-    BubbleItem *bubble = new BubbleItem(parent, notify);
-    bubble->setParentModel(m_model);
-    bubble->setParentView(m_view);
-    return bubble;
+    if (index.row() == index.model()->rowCount() - 1) {
+        m_lastItemView = createdWidget;
+        qDebug() << "lastItemCreated()" << m_lastItemView;
+        Q_EMIT m_view->lastItemCreated();
+    }
+    return createdWidget;
 }
 
 QSize ItemDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
@@ -86,4 +91,16 @@ void ItemDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionViewI
     QRect rect = option.rect;
     QSize size = sizeHint(option, index);
     editor->setGeometry(rect.x(), rect.y(), size.width(), size.height() - BubbleSpacing);
+}
+
+bool ItemDelegate::eventFilter(QObject *object, QEvent *event)
+{
+    // we don't need QStyledItemDelegate's implementation,
+    // because we only use editor to replace display, and don't edit any data.
+    return QAbstractItemDelegate::eventFilter(object, event);
+}
+
+QWidget *ItemDelegate::lastItemView() const
+{
+    return m_lastItemView;
 }

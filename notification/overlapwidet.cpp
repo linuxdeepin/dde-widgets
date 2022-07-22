@@ -107,6 +107,7 @@ void OverLapWidet::initOverlap()
     m_faceBubbleItem->setOverlapWidget(true);
     m_faceBubbleItem->setParentModel(m_model);
     setFocusProxy(m_faceBubbleItem);
+    setFocusPolicy(Qt::TabFocus);
 
     // 通知内容下面表现层叠效果的窗口
     qreal scal_ratio = 1;
@@ -145,14 +146,11 @@ void OverLapWidet::mouseReleaseEvent(QMouseEvent *event)
     return QWidget::mouseReleaseEvent(event);
 }
 
-void OverLapWidet::focusInEvent(QFocusEvent *event)
+void OverLapWidet::keyPressEvent(QKeyEvent *event)
 {
-    m_faceBubbleItem->setHasFocus(true);
-    return DWidget::focusOutEvent(event);
-}
-
-void OverLapWidet::focusOutEvent(QFocusEvent *event)
-{
-    m_faceBubbleItem->setHasFocus(false);
-    return DWidget::focusOutEvent(event);
+    if (event->key() == Qt::Key_Return) {
+        if (!m_view->aniState())
+            expandAppGroup();
+    }
+    return DWidget::keyPressEvent(event);
 }

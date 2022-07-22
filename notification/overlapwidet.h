@@ -62,8 +62,7 @@ private:
 
 protected:
     void mouseReleaseEvent(QMouseEvent *event) override; //鼠标点击时展开重叠的气泡
-    void focusInEvent(QFocusEvent *event) override;          //当焦点移入或移出时背景发生变化
-    void focusOutEvent(QFocusEvent *event) override;
+    void keyPressEvent(QKeyEvent *event) override;
 
 private:
     EntityPtr m_entify;

@@ -42,7 +42,7 @@ public:
 public:
     void setIndexRow(int row);
     int indexRow() { return m_indexRow; }
-    QList<QPointer<QWidget>> bubbleElements();
+    QList<QPointer<QWidget>> bubbleElements() const override;
     static int bubbleTitleWidgetHeight();
 
 private Q_SLOTS:

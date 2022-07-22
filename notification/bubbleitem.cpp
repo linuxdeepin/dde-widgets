@@ -55,6 +55,15 @@ AlphaWidget::AlphaWidget(QWidget *parent)
 {
 }
 
+void AlphaWidget::setHasFocus(bool focus)
+{
+    if (m_hasFocus == focus)
+        return;
+
+    m_hasFocus = focus;
+    update();
+}
+
 void AlphaWidget::paintEvent(QPaintEvent *event)
 {
     Q_UNUSED(event)
@@ -103,6 +112,8 @@ BubbleItem::BubbleItem(QWidget *parent, EntityPtr entity)
 {
     initUI();
     initContent();
+
+    updateTabOrder();
 }
 
 BubbleItem::~BubbleItem()
@@ -124,11 +135,11 @@ void BubbleItem::initUI()
     setFocusPolicy(Qt::StrongFocus);
     resize(OSD::BubbleSize(OSD::BUBBLEWIDGET));
     m_icon->setFixedSize(OSD::IconSize(OSD::BUBBLEWIDGET));
-    m_closeButton->setFixedSize(Notify::BubbleCloseButtonSize - 4, Notify::BubbleCloseButtonSize - 4);
+    m_closeButton->setFixedSize(UI::Bubble::buttonSize);
     m_closeButton->setIconSize(UI::Panel::clearIconSize);
     m_closeButton->setVisible(false);
 
-    m_settingBtn->setFixedSize(Notify::BubbleCloseButtonSize - 4, Notify::BubbleCloseButtonSize - 4);
+    m_settingBtn->setFixedSize(UI::Bubble::buttonSize);
     m_settingBtn->setIconSize(UI::Panel::settingsIconSize);
     m_settingBtn->setVisible(false);
 
@@ -202,7 +213,7 @@ void BubbleItem::initContent()
         if (m_model != nullptr)
             onCloseBubble();
     });
-    connect(this, &BubbleItem::havorStateChanged, this, &BubbleItem::onHavorStateChanged);
+    connect(this, &BubbleItem::focusStateChanged, this, &BubbleItem::onFocusStateChanged);
     connect(m_closeButton, &DIconButton::clicked, this, &BubbleItem::onCloseBubble);
     connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged, this, &BubbleItem::refreshTheme);
     refreshTheme();
@@ -257,7 +268,7 @@ void BubbleItem::mousePressEvent(QMouseEvent *event)
 {
     m_pressPoint = event->pos();
 
-    return DWidget::mousePressEvent(event);
+    return BubbleBase::mousePressEvent(event);
 }
 
 void BubbleItem::mouseReleaseEvent(QMouseEvent *event)
@@ -277,7 +288,7 @@ void BubbleItem::mouseReleaseEvent(QMouseEvent *event)
         }
     }
 
-    return DWidget::mouseReleaseEvent(event);
+    return BubbleBase::mouseReleaseEvent(event);
 }
 
 void BubbleItem::keyPressEvent(QKeyEvent *event)
@@ -292,64 +303,16 @@ void BubbleItem::keyPressEvent(QKeyEvent *event)
                 onCloseBubble();
         }
     }
-    return DWidget::keyPressEvent(event);
+    return BubbleBase::keyPressEvent(event);
 }
 
-void BubbleItem::enterEvent(QEvent *event)
-{
-    if (m_view == nullptr)
-        return;
-    if (!QScroller::hasScroller(m_view)) {
-        setFocus();
-        m_view->setCurrentRow(m_entity->currentIndex());
-        Q_EMIT havorStateChanged(true);
-    }
-
-    return DWidget::enterEvent(event);
-}
-
-void BubbleItem::leaveEvent(QEvent *event)
-{
-    // QScroller::hasScroller用于判断listview是否处于滑动状态，滑动状态不触发paint相关操作，否则滑动动画异常
-    bool hasScroller = QScroller::hasScroller(m_view);
-    if (!hasScroller) {
-        Q_EMIT havorStateChanged(false);
-    } else {
-        // 滚动结束,处理hover变化
-        connect(QScroller::scroller(m_view), &QScroller::stateChanged, this, [this](const QScroller::State state){
-            if (state == QScroller::Inactive) {
-                Q_EMIT havorStateChanged(false);
-            }
-        });
-    }
-
-    return DWidget::leaveEvent(event);
-}
-
-void BubbleItem::focusInEvent(QFocusEvent *event)
-{
-    m_bgWidget->setHasFocus(true);
-    Q_EMIT havorStateChanged(true);
-    return DWidget::focusInEvent(event);
-}
-
-void BubbleItem::focusOutEvent(QFocusEvent *event)
-{
-    m_bgWidget->setHasFocus(false);
-    Q_EMIT havorStateChanged(false);
-    return DWidget::focusOutEvent(event);
-}
-
-void BubbleItem::onHavorStateChanged(bool hover)
+void BubbleItem::onFocusStateChanged(bool focus)
 {
     if (m_showContent) {
-        m_closeButton->setVisible(hover);
-        m_settingBtn->setVisible(hover);
-        if (hover) {
-            QFocusEvent event(QEvent::Leave, Qt::MouseFocusReason);
-            QApplication::sendEvent (m_closeButton, &event);
-        }
-        m_appTimeLabel->setVisible(!hover);
+        m_closeButton->setVisible(focus);
+        m_settingBtn->setVisible(focus);
+        m_appTimeLabel->setVisible(!focus);
+        m_bgWidget->setHasFocus(focus);
     }
 }
 
@@ -382,10 +345,9 @@ void BubbleItem::refreshTheme()
     m_appNameLabel->setForegroundRole(QPalette::BrightText);
 }
 
-QList<QPointer<QWidget>> BubbleItem::bubbleElements()
+QList<QPointer<QWidget>> BubbleItem::bubbleElements() const
 {
-    QList<QPointer<QWidget>> bubble_elements;
-    bubble_elements.append(m_closeButton); m_actionButton->buttonList();
+    QList<QPointer<QWidget>> bubble_elements{BubbleBase::bubbleElements()};
     foreach (auto btn, m_actionButton->buttonList()) {
         bubble_elements.append(btn);
     }
@@ -397,18 +359,36 @@ int BubbleItem::indexRow()
     return m_entity->currentIndex();
 }
 
-void BubbleItem::setHasFocus(bool focus)
-{
-    m_bgWidget->setHasFocus(focus);
-    Q_EMIT havorStateChanged(focus);
-}
-
 int BubbleItem::bubbleItemHeight()
 {
     int appBodyHeight = qMax(AppBody::bubbleWidgetAppBodyHeight(), BubbleItemBodyHeight);
     int bubbleTitleHeight = qMax(QFontMetrics(DFontSizeManager::instance()->t8()).height(), BubbleItemTitleHeight);
 
     return appBodyHeight + bubbleTitleHeight;
+}
+
+bool BubbleItem::realHasFocus() const
+{
+    return hasFocus() || m_settingBtn->hasFocus() || m_closeButton->hasFocus();
+}
+
+bool BubbleItem::eventFilter(QObject *watched, QEvent *event)
+{
+    if (watched == this || watched == m_settingBtn || watched == m_closeButton) {
+        switch (event->type()) {
+        case QEvent::Enter:
+            focusStateChanged(true);
+            break;
+        case QEvent::Leave:
+            focusStateChanged(false);
+            break;
+        case QEvent::FocusIn:
+        case QEvent::FocusOut:
+            focusStateChanged(realHasFocus());
+            break;
+        }
+    }
+    return QWidget::eventFilter(watched, event);
 }
 
 BubbleBase::BubbleBase(QWidget *parent, EntityPtr entity)
@@ -425,6 +405,10 @@ BubbleBase::BubbleBase(QWidget *parent, EntityPtr entity)
     m_closeButton->setAccessibleName("CloseButton");
     m_closeButton->setObjectName(m_appName + "-CloseButton");
     m_closeButton->setIcon(DDciIcon::fromTheme("notify_clear"));
+
+    installEventFilter(this);
+    m_settingBtn->installEventFilter(this);
+    m_closeButton->installEventFilter(this);
 }
 
 void BubbleBase::setParentModel(NotifyModel *model)
@@ -436,6 +420,24 @@ void BubbleBase::setParentModel(NotifyModel *model)
 void BubbleBase::setParentView(NotifyListView *view)
 {
     m_view = view;
+}
+
+QList<QPointer<QWidget> > BubbleBase::bubbleElements() const
+{
+    QList<QPointer<QWidget>> bubble_elements;
+    bubble_elements.append(m_settingBtn);
+    bubble_elements.append(m_closeButton);
+    return bubble_elements;
+}
+
+void BubbleBase::updateTabOrder()
+{
+    auto focusElements = bubbleElements();
+    focusElements.prepend(this);
+    for (int i = 1; i < focusElements.count(); i++) {
+        focusElements[i]->setFocusPolicy(Qt::TabFocus);
+        QWidget::setTabOrder(focusElements[i - 1], focusElements[i]);
+    }
 }
 
 void BubbleBase::showSettingsMenu()
@@ -457,8 +459,10 @@ void BubbleBase::showSettingsMenu()
          connect(action, &QAction::triggered, this, &BubbleBase::showNotificationModuleOfControlCenter);
      } while (false);
 
-     menu->exec(QCursor::pos());
-     menu->deleteLater();
+    // using relation position instead of QCursor's position
+    // avoid to error in triggering by Key_Tab scene.
+    menu->exec(m_settingBtn->mapToGlobal(QPoint(0, 0)));
+    menu->deleteLater();
 }
 
 void BubbleBase::toggleAppTopping()

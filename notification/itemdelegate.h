@@ -38,10 +38,17 @@ public:
     QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const override;
     QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const override;
     void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const override;
+    bool eventFilter(QObject *object, QEvent *event);
+
+    QWidget *lastItemView() const;
+
+Q_SIGNALS:
+    void lastItemCreated();
 
 private:
     NotifyModel *m_model;
     NotifyListView *m_view;
+    mutable QPointer<QWidget> m_lastItemView;
 };
 
 #endif // ItemDelegate_H

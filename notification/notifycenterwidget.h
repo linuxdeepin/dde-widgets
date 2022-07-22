@@ -68,6 +68,7 @@ Q_SIGNALS:
 private Q_SLOTS:
     void CompositeChanged();   //用来设置是否开启窗口特效
     void updateDisplayOfRemainingNotification();
+    void updateTabFocus();
     void expandNotificationFolding();
     void collapesNotificationFolding();
     void toggleNotificationFolding();

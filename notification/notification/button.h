@@ -160,5 +160,6 @@ protected:
     virtual void leaveEvent(QEvent *event) override;
     virtual void focusInEvent(QFocusEvent *event) override;          //当焦点移入或移出时背景发生变化
     virtual void focusOutEvent(QFocusEvent *event) override;
+    virtual void keyPressEvent(QKeyEvent *event) override;
 };
 #endif // BUTTON_H

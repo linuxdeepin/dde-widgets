@@ -217,6 +217,21 @@ Button::Button(QWidget *parent)
     connect(m_menuArea, &ButtonMenu::clicked, this, &Button::onMenuClicked);
 }
 
+void Button::keyPressEvent(QKeyEvent *event)
+{
+    switch (event->key()) {
+    case Qt::Key_Enter:
+    case Qt::Key_Return:
+        if (hasFocus()) {
+            clicked();
+            break;
+        }
+        Q_FALLTHROUGH();
+    default:
+        DWidget::keyPressEvent(event);
+    }
+}
+
 void Button::setPixmap(const QPixmap &pixmap)
 {
     m_button->setPixmap(pixmap);

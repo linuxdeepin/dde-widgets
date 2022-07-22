@@ -111,6 +111,7 @@ void NotifyCenterWidget::initUI()
     m_expandRemaining->setAccessibleName("ExpandRemainingButton");
     connect(m_expandRemaining, &QPushButton::clicked, this, &NotifyCenterWidget::expandNotificationFolding);
     connect(m_notifyWidget->model(), &NotifyModel::modelReset, this, &NotifyCenterWidget::updateDisplayOfRemainingNotification);
+    connect(m_notifyWidget->view(), &NotifyListView::lastItemCreated, this, &NotifyCenterWidget::updateTabFocus);
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
     mainLayout->setContentsMargins(Notify::CenterMargin, Notify::CenterMargin, 0, 0);
@@ -138,12 +139,6 @@ void NotifyCenterWidget::initConnections()
     connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged, this, &NotifyCenterWidget::refreshTheme);
 
     connect(m_wmHelper, &DWindowManagerHelper::hasCompositeChanged, this, &NotifyCenterWidget::CompositeChanged, Qt::QueuedConnection);
-
-    connect(m_notifyWidget, &NotifyWidget::focusOnButton, this, [this] {
-        qDebug() << "set Focus on clearButton";
-        m_clearButton->setFocus();
-        m_clearButton->update();
-    });
 }
 
 void NotifyCenterWidget::refreshTheme()
@@ -166,6 +161,21 @@ void NotifyCenterWidget::updateDisplayOfRemainingNotification()
     } else {
         const int rowCount = m_notifyWidget->model()->remainNotificationCount();
         m_expandRemaining->setText(tr("%1 more notifications").arg(QString::number(rowCount)));
+    }
+}
+
+void NotifyCenterWidget::updateTabFocus()
+{
+    qDebug() << "updateTabFocus()";
+
+    QWidget::setTabOrder(this, m_toggleNotificationFolding);
+    QWidget::setTabOrder(m_toggleNotificationFolding, m_settingBtn);
+    QWidget::setTabOrder(m_settingBtn, m_clearButton);
+    QWidget::setTabOrder(m_clearButton, m_notifyWidget->view());
+    if (auto w = m_notifyWidget->view()->lastItemView()) {
+        QWidget::setTabOrder(w, m_expandRemaining);
+    } else {
+        QWidget::setTabOrder(m_notifyWidget->view(), m_expandRemaining);
     }
 }
 
@@ -213,6 +223,6 @@ void NotifyCenterWidget::showSettingMenu()
         connect(action, &QAction::triggered, this, &NotifyCenterWidget::showNotificationModuleOfControlCenter);
     } while (false);
 
-    menu->exec(QCursor::pos());
+    menu->exec(m_settingBtn->mapToGlobal(QPoint(0, 0)));
     menu->deleteLater();
 }

@@ -29,6 +29,7 @@
 #include "bubbleitem.h"
 #include "overlapwidet.h"
 #include "bubbletitlewidget.h"
+#include "itemdelegate.h"
 #include "notification/iconbutton.h"
 #include "notification/button.h"
 
@@ -53,7 +54,6 @@ NotifyListView::NotifyListView(QWidget *parent)
 {
 //    setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    qApp->installEventFilter(this);
     this->setAccessibleName("List_Notifications");
     m_scrollAni->setEasingCurve(QEasingCurve::OutQuint);
     m_scrollAni->setDuration(800);
@@ -269,61 +269,19 @@ void NotifyListView::setCurrentRow(int row)
     m_currentIndex = row;
 }
 
+QWidget *NotifyListView::lastItemView() const
+{
+    if (auto delegate = qobject_cast<ItemDelegate *>(itemDelegate()))
+        return delegate->lastItemView();
+
+    return nullptr;
+}
+
 void NotifyListView::mousePressEvent(QMouseEvent *event)
 {
     if (m_aniState)
         return;
     return QListView::mousePressEvent(event);
-}
-
-void NotifyListView::keyPressEvent(QKeyEvent *event)
-{
-    if (event->key() == Qt::Key_Return || event->key() == Qt::Key_Enter) {
-        QModelIndex index = this->model()->index(m_currentIndex, 0);
-        QWidget *widget = this->indexWidget(index);
-
-        if (qobject_cast<DIconButton *> (m_prevElement) != nullptr) {
-            DIconButton *itemCloseBtn = qobject_cast<DIconButton *> (m_prevElement);
-            itemCloseBtn->clicked();
-            m_currentIndex --;
-        } else if (qobject_cast<Button *> (m_prevElement) != nullptr) {
-            Button *actionBtn = qobject_cast<Button *> (m_prevElement);
-            actionBtn->clicked();
-            m_currentIndex --;
-        } else {
-            OverLapWidet *overLabWidget = qobject_cast<OverLapWidet *> (widget);
-            if (overLabWidget != nullptr) {
-                overLabWidget->expandAppGroup();
-            }
-        }
-
-    }
-    return QListView::keyPressEvent(event);
-}
-
-bool NotifyListView::eventFilter(QObject *object, QEvent *event)
-{
-    if (event->type() == QEvent::KeyPress) {
-        QKeyEvent *key = static_cast<QKeyEvent *>(event);
-        if (key->key() == Qt::Key_Tab) {
-            if (m_aniState)
-                return true;
-            return tabKeyEvent(object, key);
-        } else if (key->key() == Qt::Key_Down) {
-            return true;
-        } else if (key->key() == Qt::Key_Up) {
-            return true;
-        } else if (key->key() == Qt::Key_Backtab){
-            m_currentIndex --;
-            if (m_currentIndex < 0) {
-                m_currentIndex = 0;
-            }
-            QModelIndex index = this->model()->index(m_currentIndex, 0);
-            setCurrentIndex(index);
-            return true;
-        }
-    }
-    return QListView::eventFilter(object, event);
 }
 
 void NotifyListView::showEvent(QShowEvent *event)
@@ -342,61 +300,6 @@ void NotifyListView::hideEvent(QHideEvent *event)
     m_refreshTimer->stop();
 
     return QListView::hideEvent(event);
-}
-
-bool NotifyListView::tabKeyEvent(QObject *object, QKeyEvent *event)
-{
-    Q_UNUSED(object)
-    Q_UNUSED(event)
-    if (m_currentIndex >= model()->rowCount()) {
-        m_currentIndex = 0;
-        Q_EMIT focusOnButton();
-        return true;
-    }
-    QModelIndex index = this->model()->index(m_currentIndex, 0);
-    QWidget *widget = this->indexWidget(index);
-    scrollTo(index);
-    if (widget == nullptr)
-        return true;
-    // 更新按钮列表
-    widget->setFocus();
-    QList<QPointer<QWidget>> elements;
-    if (qobject_cast<BubbleTitleWidget *> (widget) != nullptr) {
-        m_currentIndex ++;
-        index = this->model()->index(m_currentIndex, 0);
-        widget = this->indexWidget(index);
-    }
-    setCurrentIndex(index);
-    m_prevElement = nullptr;
-    if (qobject_cast<BubbleItem *> (widget) != nullptr) {
-        BubbleItem *itemWidget = qobject_cast<BubbleItem *> (widget);
-        elements = itemWidget->bubbleElements();
-    } else if (qobject_cast<OverLapWidet *> (widget) != nullptr) {
-        OverLapWidet *overLabWidget = qobject_cast<OverLapWidet *> (widget);
-        elements = overLabWidget->bubbleElements();
-        overLabWidget->setFocus();
-    }
-    if (m_currentElement == nullptr && !elements.isEmpty()) {
-        m_currentElement = elements.first();
-    } else {
-        if (qobject_cast<DIconButton *> (m_currentElement) != nullptr) {
-            DIconButton *itemCloseBtn = qobject_cast<DIconButton *> (m_currentElement);
-            QFocusEvent e(QEvent::Enter, Qt::MouseFocusReason);
-            QApplication::sendEvent (itemCloseBtn, &e);
-        } else if (qobject_cast<Button *> (m_currentElement) != nullptr) {
-            Button *actionBtn = qobject_cast<Button *> (m_currentElement);
-            actionBtn->setFocus();
-        }
-        m_prevElement = m_currentElement;
-        const int last_pos = elements.indexOf(m_currentElement) + 1;
-        if (last_pos < elements.size()) {
-            m_currentElement = elements.at(last_pos);
-        } else { // 到item最后一个按钮
-            m_currentElement = nullptr;
-            m_currentIndex ++;
-        }
-    }
-    return true;
 }
 
 void NotifyListView::wheelEvent(QWheelEvent *event)
@@ -457,5 +360,5 @@ bool NotifyListView::event(QEvent *event)
     default:
         break;
     }
-    return DListView::event(event);
+    return QListView::event(event);
 }

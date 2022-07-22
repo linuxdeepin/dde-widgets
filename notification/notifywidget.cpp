@@ -67,12 +67,6 @@ void NotifyWidget::initView(AbstractPersistence *database)
     m_mainList->setSelectionMode(QListView::NoSelection);
     m_mainList->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
     m_mainList->setFocusPolicy(Qt::NoFocus);
-
-    QPalette pa = m_mainList->palette();
-    pa.setColor(QPalette::Highlight, Qt::transparent);
-    m_mainList->setPalette(pa);
-
-    connect(m_mainList, &NotifyListView::focusOnButton, this, &NotifyWidget::focusOnButton);
 }
 
 void NotifyWidget::showEvent(QShowEvent *event)

@@ -63,7 +63,7 @@ public:
     int unHoverAlpha() {return m_unHoverAlpha;}
     void setUnHoverAlpha(int alpha) {m_unHoverAlpha = alpha; update();}
 
-    void setHasFocus(bool focus) { m_hasFocus = focus; }
+    void setHasFocus(bool focus);
 protected:
     void paintEvent(QPaintEvent *event) override;
 
@@ -83,6 +83,8 @@ public:
 
     virtual void setParentModel(NotifyModel *model);
     virtual void setParentView(NotifyListView *view);
+    virtual QList<QPointer<QWidget>> bubbleElements() const;
+    void updateTabOrder();
 
 public slots:
     void showSettingsMenu();
@@ -112,20 +114,19 @@ public:
     virtual void setParentView(NotifyListView *view) override;
     const QPixmap converToPixmap(const QDBusArgument &value);
     void setAlpha(int alpha);
-    QList<QPointer<QWidget>> bubbleElements();
+    QList<QPointer<QWidget>> bubbleElements() const override;
     int indexRow();
-    void setHasFocus(bool focus);
     EntityPtr getEntity() { return m_entity; }
     // 通知列表在显示之前会获取所有item的sizeHint，bubbleItem中的控件字体有一些是不一样的，大小也不同
     // 所以需要根据实际的情况去获取每个控件的在当前字体字号情况下的高度，求和组成BubbleItem的高度
     static int bubbleItemHeight();
 
 Q_SIGNALS:
-    void havorStateChanged(bool);
     void bubbleRemove();
+    void focusStateChanged(bool focus);
 
 public Q_SLOTS:
-    void onHavorStateChanged(bool hover);
+    void onFocusStateChanged(bool focus);
     void onCloseBubble();
     void onRefreshTime();
     void setOverlapWidget(bool isOverlap);
@@ -135,10 +136,8 @@ protected:
     void mousePressEvent(QMouseEvent *event) override;       //获取当前鼠标点击的位置
     void mouseReleaseEvent(QMouseEvent *event) override;     //判断鼠标松开的位置是否与点击的位置相同,相同移除通知
     void keyPressEvent(QKeyEvent *event) override;
-    void enterEvent(QEvent *event) override;                 //鼠标移动到通知窗口上,隐藏时间显示关闭按钮
-    void leaveEvent(QEvent *event) override;                 //鼠标移出通知窗口,隐藏关闭按钮显示时间
-    void focusInEvent(QFocusEvent *event) override;          //当焦点移入或移出时背景发生变化
-    void focusOutEvent(QFocusEvent *event) override;
+    bool eventFilter(QObject *watched, QEvent *event) override;
+    bool realHasFocus() const;
 
 private:
     void initUI();          //初始化UI界面

@@ -78,6 +78,7 @@ BubbleTitleWidget::BubbleTitleWidget(NotifyModel *model, EntityPtr entity, QWidg
     });
 
     updateNotificationFoldingStatus();
+    updateTabOrder();
 }
 
 void BubbleTitleWidget::setIndexRow(int row)
@@ -85,10 +86,10 @@ void BubbleTitleWidget::setIndexRow(int row)
     m_indexRow = row;
 }
 
-QList<QPointer<QWidget> > BubbleTitleWidget::bubbleElements()
+QList<QPointer<QWidget> > BubbleTitleWidget::bubbleElements() const
 {
-    QList<QPointer<QWidget>> bubble_elements;
-    bubble_elements.append(m_closeButton);
+    QList<QPointer<QWidget>> bubble_elements{BubbleBase::bubbleElements()};
+    bubble_elements.prepend(m_toggleNotificationFolding);
     return bubble_elements;
 }
 

@@ -50,14 +50,12 @@ public:
     void createExpandAnimation(int idx, const ListItemPtr appItem);
     bool aniState() { return m_aniState; }
     void setCurrentRow(int row);
+    QWidget *lastItemView() const;
 
 protected:
     void mousePressEvent(QMouseEvent *event) override;
-    void keyPressEvent(QKeyEvent *event) override;
-    bool eventFilter(QObject *object, QEvent *event) override;
     void showEvent(QShowEvent *event) override;
     void hideEvent(QHideEvent *event) override;
-    bool tabKeyEvent(QObject *object, QKeyEvent *event);   //处理键盘TAB键按下的事件,QListView过滤了TAB按键事件
     void wheelEvent(QWheelEvent *event) override;
     virtual bool event(QEvent *event) override;
 
@@ -71,7 +69,7 @@ signals:
     void expandAniFinished(QString appName);
     void addedAniFinished(EntityPtr entity);
     void refreshItemTime();
-    void focusOnButton();
+    void lastItemCreated();
 
 private:
     bool m_aniState = false;
