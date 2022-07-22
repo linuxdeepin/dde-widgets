@@ -31,6 +31,7 @@
 #include <QVBoxLayout>
 #include <QScrollArea>
 #include <QAbstractButton>
+#include <QTimer>
 
 DWIDGET_USE_NAMESPACE
 namespace dwclock {
@@ -278,6 +279,10 @@ ZoneChooseView::ZoneChooseView(QWidget *parent)
     addContent(scrollView);
 
     connect(m_search, &DSearchEdit::textChanged, this, &ZoneChooseView::onSearchTextChanged);
+    // using QueuedConnection way to fresh section's visible, because it's section are alwayse hide before exec.
+    QTimer::singleShot(0, this, [this]() {
+        onSearchTextChanged(QString());
+    });
 }
 
 QWidget *ZoneChooseView::fillZones()
