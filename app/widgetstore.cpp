@@ -76,6 +76,8 @@ QScrollArea *WidgetStore::scrollView()
     if (!m_scrollView) {
         auto scrollArea = new QScrollArea();
 
+        scrollArea->setObjectName(QString("WidgetStore"));
+        scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         QPalette pt = scrollArea->palette();
         pt.setColor(QPalette::Window, Qt::transparent);
         scrollArea->setPalette(pt);
@@ -197,16 +199,20 @@ void PluginCell::setDescription(const QString &text)
 
 void PluginCell::addCell(WidgetStoreCell *cell)
 {
+    m_cells << cell;
     const auto text= WidgetHandlerImpl::get(cell->m_handler)->typeString();
     auto btn = new DButtonBoxButton(text, cell);
     btn->setText(text);
+    QWidget::setTabOrder(btn, cell->action());
+    btn->installEventFilter(this);
     QList<DButtonBoxButton *> tmpBtnList;
     for (auto item : m_typeBox->buttonList()) {
         tmpBtnList << qobject_cast<DButtonBoxButton *>(item);
     }
     tmpBtnList << btn;
     m_typeBox->setButtonList(tmpBtnList, true);
-    for (int i = 0; i < tmpBtnList.count(); ++i) {
+    // m_typeBox and m_cells are mapped by index.
+    for (int i = 0; i < m_cells.count(); ++i) {
         m_typeBox->setId(tmpBtnList[i], i);
     }
     // put in a layout because of different cell's size.
@@ -222,6 +228,20 @@ void PluginCell::setChecked(const int index, const bool checked)
         return;
 
     m_typeBox->buttonList()[index]->click();
+}
+
+bool PluginCell::eventFilter(QObject *watched, QEvent *event)
+{
+    if (auto btn = qobject_cast<DButtonBoxButton *>(watched)) {
+        switch (event->type()) {
+        case QEvent::FocusIn:
+            const int index = m_typeBox->id(btn);
+            Q_ASSERT(index >= 0 && index < m_cells.count());
+            Q_EMIT m_cells[index]->enterChanged(true);
+            break;
+        }
+    }
+    return DBlurEffectWidget::eventFilter(watched, event);
 }
 
 WidgetStoreCell::WidgetStoreCell(WidgetHandler *handler, QWidget *parent)
@@ -252,6 +272,8 @@ void WidgetStoreCell::setView(QWidget *view)
     connect(action, &DIconButton::clicked, this, [this](){
         Q_EMIT addWidget(m_handler->pluginId(), m_handler->type());
     });
+    m_action = action;
+    m_action->installEventFilter(this);
 
     auto cellAnchors = new DAnchors<WidgetStoreCell>(this);
     auto actionAnchors = new DAnchors<DIconButton>(action);
@@ -261,6 +283,11 @@ void WidgetStoreCell::setView(QWidget *view)
     viewAnchors->setBottom(cellAnchors->bottom());
 
     setFixedSize(targetSize + (UI::Store::AddIconSize / 2));
+}
+
+QWidget *WidgetStoreCell::action() const
+{
+    return m_action;
 }
 
 void WidgetStoreCell::startDrag(const QPoint &pos)
@@ -303,6 +330,19 @@ void WidgetStoreCell::leaveEvent(QEvent *event)
 {
     Q_EMIT enterChanged(false);
     QWidget::leaveEvent(event);
+}
+
+bool WidgetStoreCell::eventFilter(QObject *watched, QEvent *event)
+{
+    if (watched == m_action) {
+        switch (event->type()) {
+        case QEvent::FocusIn:
+        case QEvent::FocusOut:
+            Q_EMIT enterChanged(event->type() == QEvent::FocusIn);
+            break;
+        }
+    }
+    return DragDropWidget::eventFilter(watched, event);
 }
 
 void WidgetStoreCell::timerEvent(QTimerEvent *event)

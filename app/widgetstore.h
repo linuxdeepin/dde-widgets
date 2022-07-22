@@ -48,11 +48,15 @@ public:
     void addCell(WidgetStoreCell *cell);
     void setChecked(const int index, const bool checked = true);
 
+protected:
+    virtual bool eventFilter(QObject *watched, QEvent *event) override;
+
 private:
     QLabel *m_title = nullptr;
     QLabel *m_description = nullptr;
     QStackedLayout *m_layout = nullptr;
     DButtonBox *m_typeBox = nullptr;
+    QVector<WidgetStoreCell *> m_cells;
 };
 
 class WidgetStoreCell : public DragDropWidget {
@@ -60,6 +64,7 @@ class WidgetStoreCell : public DragDropWidget {
 public:
     explicit WidgetStoreCell(WidgetHandler *handler, QWidget *parent = nullptr);
     void setView(QWidget *view);
+    QWidget *action() const;
     WidgetHandler *m_handler = nullptr;
 
 Q_SIGNALS:
@@ -67,13 +72,15 @@ Q_SIGNALS:
     void addWidget(const PluginId &pluginId, int type);
 
 protected:
-    void startDrag(const QPoint &pos) override;
-    void enterEvent(QEvent *event) override;
-    void leaveEvent(QEvent *event) override;
+    virtual void startDrag(const QPoint &pos) override;
+    virtual void enterEvent(QEvent *event) override;
+    virtual void leaveEvent(QEvent *event) override;
 
-    void timerEvent(QTimerEvent *event);
-    void showEvent(QShowEvent *event);
-    void hideEvent(QHideEvent *event);
+    virtual void timerEvent(QTimerEvent *event) override;
+    virtual void showEvent(QShowEvent *event) override;
+    virtual void hideEvent(QHideEvent *event) override;
+
+    virtual bool eventFilter(QObject *watched, QEvent *event) override;
 
 private:
     void updateViewPlaceholder();
@@ -81,6 +88,7 @@ private:
     QWidget *m_view = nullptr;
     QLabel *m_viewPlaceholder = nullptr;
     QBasicTimer m_viewPlaceholderFresher;
+    QWidget *m_action = nullptr;
 };
 
 class WidgetStore : public QWidget {
