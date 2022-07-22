@@ -77,6 +77,11 @@ bool InstancePanelCell::isCustom() const
     return WidgetHandlerImpl::get(m_instance->handler())->isCustom();
 }
 
+QList<QWidget *> InstancePanelCell::focusWidgetList() const
+{
+    return {};
+}
+
 void InstancePanelCell::startDrag(const QPoint &pos)
 {
     QWidget *child = view();
@@ -128,6 +133,7 @@ InstancePanel::InstancePanel(WidgetManager *manager, QWidget *parent)
 
     // TODO DFlowLayout seems to have the smallest size, it causes extra space even though add stretch.
     // and it's ok replaced `QVBoxLayout`, it maybe a `DFlowLayout` bug.
+    connect(this, &InstancePanel::tabOrderChanged, this, &InstancePanel::updateTabOrder);
 }
 
 InstancePanel::~InstancePanel()
@@ -159,6 +165,7 @@ void InstancePanel::setEnabledMode(bool mode)
     } else {
         setVisible(m_mode);
     }
+    tabOrderChanged();
 }
 
 QScrollArea *InstancePanel::scrollView()
@@ -204,6 +211,7 @@ void InstancePanel::addWidget(const InstanceId &key, InstancePos pos)
     });
 
     m_layout->insertItem(pos, new AnimationWidgetItem(cell));
+    tabOrderChanged();
 }
 
 void InstancePanel::moveWidget(const InstancePos &source, InstancePos target)
@@ -218,6 +226,7 @@ void InstancePanel::moveWidget(const InstancePos &source, InstancePos target)
 
     m_layout->removeWidget(cell);
     m_layout->insertItem(target, new AnimationWidgetItem(cell));
+    tabOrderChanged();
 }
 
 void InstancePanel::removeWidget(const InstanceId &id)
@@ -229,6 +238,7 @@ void InstancePanel::removeWidget(const InstanceId &id)
 
     m_layout->removeWidget(cell);
     cell->deleteLater();
+    tabOrderChanged();
 }
 
 void InstancePanel::replaceWidget(const InstanceId &id, InstancePos /*pos*/)
@@ -250,6 +260,7 @@ void InstancePanel::replaceWidget(const InstanceId &id, InstancePos /*pos*/)
     if (isEnabledMode()) {
         cell->setView();
     }
+    tabOrderChanged();
 }
 
 void InstancePanel::setView()
@@ -464,5 +475,22 @@ void InstancePanel::onMenuRequested(const InstanceId &id)
 
     menu->exec(QCursor::pos());
     menu->deleteLater();
+}
+
+void InstancePanel::updateTabOrder()
+{
+    if (!isEnabledMode())
+        return;
+
+    QList<QWidget *> focusList;
+    for (int i = 0; i < m_layout->count(); i++) {
+        auto cell = qobject_cast<InstancePanelCell *>(m_layout->itemAt(i)->widget());
+        Q_ASSERT(cell);
+        focusList << cell->focusWidgetList();
+    }
+
+    for (int i = 1; i < focusList.count(); ++i) {
+        QWidget::setTabOrder(focusList[i - 1], focusList[i]);
+    }
 }
 WIDGETS_FRAME_END_NAMESPACE

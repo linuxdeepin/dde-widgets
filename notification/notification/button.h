@@ -23,6 +23,7 @@
 #include <QIcon>
 
 #include <DWidget>
+#include <DPushButton>
 
 #include "constants.h"
 
@@ -161,5 +162,15 @@ protected:
     virtual void focusInEvent(QFocusEvent *event) override;          //当焦点移入或移出时背景发生变化
     virtual void focusOutEvent(QFocusEvent *event) override;
     virtual void keyPressEvent(QKeyEvent *event) override;
+};
+
+class TransparentButton : public DTK_WIDGET_NAMESPACE::DPushButton {
+    Q_OBJECT
+public:
+    explicit TransparentButton(QWidget *parent = nullptr);
+
+protected:
+    virtual void keyPressEvent(QKeyEvent *event) override;
+
 };
 #endif // BUTTON_H

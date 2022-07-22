@@ -58,6 +58,9 @@ namespace UI {
     static const qreal RoundedRectRadius = 18;
     static const qreal DataStoreRoundedRectRadius = 12;
 
+namespace Control {
+    static const QColor transparentButtonBackground(0, 0, 0, 0.1 * 255);
+}
 namespace Widget {
     static const QSize SmallSize(170, 170);
     static const QSize StoreSmallSize(130, 130);

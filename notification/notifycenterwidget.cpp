@@ -27,6 +27,7 @@
 #include "notification/persistence.h"
 #include "notification/constants.h"
 #include "notification/iconbutton.h"
+#include "notification/button.h"
 #include "style.h"
 #include "helper.hpp"
 
@@ -106,7 +107,7 @@ void NotifyCenterWidget::initUI()
     head_Layout->addWidget(m_clearButton, 0, Qt::AlignRight | Qt::AlignTop);
     m_headWidget->setLayout(head_Layout);
 
-    m_expandRemaining = new QPushButton();
+    m_expandRemaining = new TransparentButton();
     m_expandRemaining->setFlat(true);
     m_expandRemaining->setAccessibleName("ExpandRemainingButton");
     connect(m_expandRemaining, &QPushButton::clicked, this, &NotifyCenterWidget::expandNotificationFolding);

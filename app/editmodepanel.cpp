@@ -27,6 +27,7 @@
 #include "instanceproxy.h"
 #include "widgetmanager.h"
 #include "utils.h"
+#include "button.h"
 
 #include <QScrollArea>
 #include <QDebug>
@@ -81,6 +82,7 @@ void EditModePanelCell::init(const QString &title)
         connect(action, &DIconButton::clicked, this, [this](){
             Q_EMIT removeWidget(m_instance->handler()->id());
         });
+        m_action = action;
     }
     layout->addLayout(topLayout);
 }
@@ -90,6 +92,15 @@ void EditModePanelCell::setView()
     layout()->addWidget(view());
     // TODO it's exist the `spacing` if only hide the view, it maybe DFlowLayout's bug.
     setVisible(!isCustom());
+}
+
+QList<QWidget *> EditModePanelCell::focusWidgetList() const
+{
+    QList<QWidget *> results;
+    if (m_action)
+        results << m_action;
+
+    return results;
 }
 
 EditModePanel::EditModePanel(WidgetManager *manager, QWidget *parent)
@@ -107,7 +118,7 @@ void EditModePanel::init()
 
     layout->addWidget(m_views);
 
-    auto button = new QPushButton();
+    auto button = new TransparentButton();
     button->setObjectName("complete-button");
     button->setText(qApp->translate("EditModePanel","complete"));
     button->setFixedSize(UI::Edit::CompleteSize);

@@ -24,6 +24,7 @@
 #include "widgethandler.h"
 #include "widgetmanager.h"
 #include "utils.h"
+#include "button.h"
 
 #include <QScrollArea>
 #include <QDebug>
@@ -61,7 +62,7 @@ void DisplayModePanel::init()
 
     layout->addWidget(m_views);
 
-    auto button = new QPushButton();
+    auto button = new TransparentButton();
     button->setObjectName("edit-button");
     button->setText(qApp->translate("DisplayModePanel","edit widget"));
     button->setFixedSize(UI::Display::EditSize);

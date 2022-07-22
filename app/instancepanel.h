@@ -44,6 +44,8 @@ public:
     bool isFixted() const;
     bool isCustom() const;
 
+    virtual QList<QWidget *> focusWidgetList() const;
+
 protected:
     virtual void startDrag(const QPoint &pos) override;
 
@@ -63,11 +65,15 @@ public:
     void setEnabledMode(bool mode);
 
     virtual InstancePanelCell *createWidget(Instance *instance) = 0;
+
+Q_SIGNALS:
+    void tabOrderChanged();
 public Q_SLOTS:
     void addWidget(const InstanceId &key, InstancePos pos);
     void moveWidget(const InstancePos &source, InstancePos target);
     void removeWidget(const InstanceId &id);
     void replaceWidget(const InstanceId &id, InstancePos pos);
+    void updateTabOrder();
 
 protected:
     int positionCell(const QPoint &pos) const;

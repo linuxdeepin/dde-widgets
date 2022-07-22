@@ -22,40 +22,17 @@
 #pragma once
 
 #include "global.h"
-#include "instancepanel.h"
-
-DWIDGET_USE_NAMESPACE
+#include <DPushButton>
 
 WIDGETS_FRAME_BEGIN_NAMESPACE
-class WidgetManager;
-class EditModePanelCell : public InstancePanelCell {
+class TransparentButton : public DTK_WIDGET_NAMESPACE::DPushButton {
     Q_OBJECT
 public:
-    explicit EditModePanelCell(Instance *instance, QWidget *parent = nullptr);
-    void init(const QString &title);
-    virtual void setView() override;
-    virtual QList<QWidget *> focusWidgetList() const override;
-
-Q_SIGNALS:
-    void removeWidget(const InstanceId &id);
-private:
-    QWidget *m_action = nullptr;
-};
-
-class EditModePanel : public InstancePanel {
-    Q_OBJECT
-public:
-    explicit EditModePanel (WidgetManager *manager, QWidget *parent = nullptr);
-    void init();
-
-    virtual InstancePanelCell *createWidget(Instance *instance) override;
+    explicit TransparentButton(QWidget *parent = nullptr);
 
 protected:
-    void dragEnterEvent(QDragEnterEvent *event) override;
-    void dragMoveEvent(QDragMoveEvent *event) override;
-    void dropEvent(QDropEvent *event) override;
+    virtual void keyPressEvent(QKeyEvent *event) override;
 
-Q_SIGNALS:
-    void editCompleted();
 };
+
 WIDGETS_FRAME_END_NAMESPACE

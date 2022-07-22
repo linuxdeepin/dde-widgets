@@ -40,6 +40,7 @@ DWIDGET_USE_NAMESPACE
 DGUI_USE_NAMESPACE
 
 class CicleIconButton;
+class TransparentButton;
 class AbstractPersistence;
 class QVariantAnimation;
 class QPropertyAnimation;
@@ -80,7 +81,7 @@ private:
     NotifyWidget *m_notifyWidget;
     DLabel *title_label = nullptr;
     CicleIconButton *m_clearButton = nullptr;
-    QPushButton *m_expandRemaining = nullptr;
+    TransparentButton *m_expandRemaining = nullptr;
     CicleIconButton *m_settingBtn = nullptr;
     CicleIconButton *m_toggleNotificationFolding = nullptr;
     bool m_isCollapesNotificationFolding = true;

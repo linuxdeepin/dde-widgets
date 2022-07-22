@@ -22,6 +22,7 @@ set(HEADERS
     ${CMAKE_CURRENT_LIST_DIR}/utils/geometryhandler.h
     ${CMAKE_CURRENT_LIST_DIR}/utils/animationviewcontainer.h
     ${CMAKE_CURRENT_LIST_DIR}/utils/appearancehandler.h
+    ${CMAKE_CURRENT_LIST_DIR}/utils/button.h
     ${CMAKE_CURRENT_LIST_DIR}/accessible/accessible.h
 )
 set(SOURCES
@@ -41,6 +42,7 @@ set(SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/utils/geometryhandler.cpp
     ${CMAKE_CURRENT_LIST_DIR}/utils/animationviewcontainer.cpp
     ${CMAKE_CURRENT_LIST_DIR}/utils/appearancehandler.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/utils/button.cpp
 )
 
 include_directories(${CMAKE_CURRENT_LIST_DIR}/utils)
