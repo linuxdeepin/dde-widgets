@@ -210,7 +210,14 @@ void InstancePanel::addWidget(const InstanceId &key, InstancePos pos)
         onMenuRequested(cell->id());
     });
 
-    m_layout->insertItem(pos, new AnimationWidgetItem(cell));
+    auto newItem = new AnimationWidgetItem(cell);
+    m_layout->insertItem(pos, newItem);
+    // ensureWidgetVisible when Widget is added.
+    // we need delay to execute `ensureWidgetVisible` because of Animation.
+    connect(newItem, &AnimationWidgetItem::moveFinished, this, [this, newItem, cell]() {
+        scrollView()->ensureWidgetVisible(cell);
+        disconnect(newItem, &AnimationWidgetItem::moveFinished, this, nullptr);
+    });
     tabOrderChanged();
 }
 

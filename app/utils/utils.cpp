@@ -109,6 +109,7 @@ AnimationWidgetItem::AnimationWidgetItem(QWidget *widget)
     m_currentXAni->setEasingCurve(QEasingCurve::Linear);
     m_currentXAni->setDirection(QAbstractAnimation::Forward);
     m_currentXAni->setDuration(AnimationTime);
+    connect(m_currentXAni, &QPropertyAnimation::finished, this, &AnimationWidgetItem::moveFinished);
 }
 
 void AnimationWidgetItem::setGeometry(const QRect &rect)

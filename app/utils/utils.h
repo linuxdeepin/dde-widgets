@@ -63,6 +63,8 @@ public:
     explicit AnimationWidgetItem(QWidget *widget);
     virtual void setGeometry(const QRect &rect) override;
 
+Q_SIGNALS:
+    void moveFinished();
 public Q_SLOTS:
     void updateGeometry(const QRect &rect);
 
