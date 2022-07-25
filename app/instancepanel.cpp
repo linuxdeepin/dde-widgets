@@ -150,8 +150,9 @@ void InstancePanel::setModel(InstanceModel *model)
 
     for (int i = 0; i < m_model->count(); i++) {
         auto instance = m_model->getInstance(i);
-        addWidget(instance->handler()->id(), i);
+        addWidgetImpl(instance->handler()->id(), i);
     }
+    Q_EMIT tabOrderChanged();
 }
 
 void InstancePanel::setEnabledMode(bool mode)
@@ -189,6 +190,22 @@ QScrollArea *InstancePanel::scrollView()
 
 void InstancePanel::addWidget(const InstanceId &key, InstancePos pos)
 {
+    addWidgetImpl(key, pos);
+
+    auto newItem = dynamic_cast< AnimationWidgetItem *>(m_layout->itemAt(pos));
+    Q_ASSERT(newItem);
+
+    // ensureWidgetVisible when Widget is added.
+    // we need delay to execute `ensureWidgetVisible` because of Animation.
+    connect(newItem, &AnimationWidgetItem::moveFinished, this, [this, newItem]() {
+        scrollView()->ensureWidgetVisible(newItem->widget());
+        disconnect(newItem, &AnimationWidgetItem::moveFinished, this, nullptr);
+    });
+    tabOrderChanged();
+}
+
+void InstancePanel::addWidgetImpl(const InstanceId &key, InstancePos pos)
+{
     auto instance = m_model->getInstance(key);
     Q_ASSERT(instance);
 
@@ -212,13 +229,6 @@ void InstancePanel::addWidget(const InstanceId &key, InstancePos pos)
 
     auto newItem = new AnimationWidgetItem(cell);
     m_layout->insertItem(pos, newItem);
-    // ensureWidgetVisible when Widget is added.
-    // we need delay to execute `ensureWidgetVisible` because of Animation.
-    connect(newItem, &AnimationWidgetItem::moveFinished, this, [this, newItem, cell]() {
-        scrollView()->ensureWidgetVisible(cell);
-        disconnect(newItem, &AnimationWidgetItem::moveFinished, this, nullptr);
-    });
-    tabOrderChanged();
 }
 
 void InstancePanel::moveWidget(const InstancePos &source, InstancePos target)

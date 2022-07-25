@@ -91,6 +91,7 @@ protected:
     bool canDragDrop(const InstancePos pos) const;
 private:
     bool canDragDrop(QDropEvent *event) const;
+    void addWidgetImpl(const InstanceId &key, InstancePos pos);
 
 protected:
     WidgetManager *m_manager = nullptr;
