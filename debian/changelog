@@ -1,3 +1,37 @@
+dde-widgets (0.0.3) unstable; urgency=medium
+
+  [ TagBuilder ]
+  * chore: Add namespace for app(Task: 111599)(Influence: 不涉及)
+  * fix: Reloaded for None Normal widgets(Task: 111599)(Influence: 不涉及)
+  * fix: some error for Translator and Accessible(Task: 111599)(Influence: 小组件翻译和自动化测试问题)
+  * feat: Add MemoryMonitor widget(Task: 155251)(Influence: 不涉及)
+  * fix: Position error for Added Widget(Task: 111599)(Influence: 不涉及)
+  * feat: Add InstanceProxy for Widget(Task: 111599)(Influence: 小组件显示增加圆角功能，圆角存在锯齿)
+  * feat: Add WorldClock widget(Task: 154343)(Influence: 不涉及)
+  * feat: Delay call typeChanged after initialized.(Task: 111599)(Influence: 不涉及)
+  * chore: Move loadTranslator's define to common file(Task: 111599)(Influence: 不涉及)
+  * fix: Fixed installation path for dev package(Task: 111599)
+  * fix: Double free when view() returns itself(Task: 111599)(Influence: 不涉及)
+  * chore: Modify some inessential behavior(Task: 136345)(Influence: `编辑`改为`编辑小组件`；通知数量为0时，只提示没有通知信息)
+  * chore: Remove warning when cppcheck(Task: 136345)(Influence: 不涉及)
+  * feat: Add about for widget(Task: 111599)(Influence: 右键菜单新增"关于"对话框，展示小组件信息)
+  * feat: Adjust style for NotificationWidget(Task: 136345)(Influence: 通知小组件的样式，交互逻辑)
+  * fix: Adjust WorldClock Style(Task: 154343)(Influence: none)
+  * fix: Display Location error when switch SizeType(Task: 154343)(Influence: none)
+  * feat: Thumbnail to display Widget in Store(Task: 160605)(Influence: none)
+  * fix: Adjust Widgets style(Task: 160605)(Influence: 显示小组件时，影响任务栏状态)
+  * fix: Exit when drag(Task: 160605)(Influence: none)
+  * feat: Adjust WorldClock style for settings(Task: 154343)(Influence: none)
+  * fix: Widgets some error(Task: 160605)(Influence: 插件库组件未翻译，部分控件错误处理长按拖拽)
+  * feat: Adjust focus for PluginStore(Task: 160605)(Influence: 调整插件库的focus)
+  * chore: Some warning(Task: 160605)(Influence: none)
+  * feat: Adjust NotifyWidget's focus(Task: 160605)(Influence: 小组件框架及其它小组件的focus问题)
+  * fix: Incorrect display some location sections(Task: 160605)(Influence: none)
+  * feat: Adjust Widgets's focus order(Task: 160605)(Influence: 小组件框架焦点顺序)
+  * feat: Ensure Widget visible when added(Influence: none)
+
+ -- caixiangrong <caixiangrong@uniontech.com>  Mon, 25 Jul 2022 14:04:03 +0800
+
 dde-widgets (0.0.2) unstable; urgency=low
 
   * release Tag 0.0.2
