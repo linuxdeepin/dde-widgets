@@ -32,12 +32,12 @@
     <message>
         <location filename="../worldclock/settingsview.cpp" line="41"/>
         <source>Modify City</source>
-        <translation>修改城市</translation>
+        <translation>更换城市和显示顺序</translation>
     </message>
     <message>
         <location filename="../worldclock/settingsview.cpp" line="45"/>
         <source>Display clocks at different geographical locations</source>
-        <translation>显示不同地区的时钟信息</translation>
+        <translation>查看全球多个城市的时间</translation>
     </message>
     <message>
         <location filename="../worldclock/settingsview.cpp" line="48"/>
@@ -60,7 +60,7 @@
     <message>
         <location filename="../worldclock/plugin.cpp" line="37"/>
         <source>Display clocks at different geographical locations</source>
-        <translation>显示不同地区的时钟信息</translation>
+        <translation>查看全球多个城市的时间</translation>
     </message>
 </context>
 <context>
@@ -68,7 +68,7 @@
     <message>
         <location filename="../worldclock/zonechooseview.cpp" line="256"/>
         <source>Modify City</source>
-        <translation>修改城市</translation>
+        <translation>更换城市</translation>
     </message>
     <message>
         <location filename="../worldclock/zonechooseview.cpp" line="260"/>
@@ -78,7 +78,7 @@
     <message>
         <location filename="../worldclock/zonechooseview.cpp" line="261"/>
         <source>OK</source>
-        <translation>修改</translation>
+        <translation>保存</translation>
     </message>
 </context>
 </TS>

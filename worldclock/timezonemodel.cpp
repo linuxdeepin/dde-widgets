@@ -126,7 +126,7 @@ QStringList TimezoneModel::timezones() const
 
 QStringList TimezoneModel::defaultLocations()
 {
-    return QStringList{"Asia/Beijing", "Asia/Shanghai", "Asia/Wuhan", "Asia/Xian"};
+    return QStringList{"Asia/Beijing", "America/New_York", "Europe/London", "Australia/Sydney"};
 }
 
 void TimezoneModel::updateTimezoneOffset(QStandardItem *item, const QString &timezone)
