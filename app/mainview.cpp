@@ -44,6 +44,10 @@ MainView::MainView( WidgetManager *manager, QWidget *parent)
     , m_geometryHandler(new GeometryHandler())
     , m_appearancehandler(new Appearancehandler(this))
 {
+    // TODO DBlurEffectWidget is black when changing BlurEnabled but none Composite, it's maybe a bug.
+    // But we can not consider this scene.
+    setBlurEnabled(false);
+
     setParent(m_animationContainer);
     m_appearancehandler->addTargetWidget(m_animationContainer);
 
@@ -87,6 +91,10 @@ MainView::MainView( WidgetManager *manager, QWidget *parent)
     });
 
     m_layout->addStretch();
+
+    DPlatformWindowHandle handler(parentWidget());
+    handler.setBorderWidth(0);
+    handler.setShadowRadius(0);
 }
 
 MainView::~MainView()
@@ -145,9 +153,6 @@ void MainView::switchToEditMode()
     const auto targetRect = m_geometryHandler->getGeometry(expectedWidth());
     updateGeometry(targetRect);
 
-    if (hasComposite()) {
-        setBlurEnabled(true);
-    }
     m_storeView->scrollView()->setVisible(true);
     m_layout->addWidget(m_storeView->scrollView());
 
@@ -166,10 +171,7 @@ void MainView::switchToDisplayMode()
 
     const auto targetRect = m_geometryHandler->getGeometry(expectedWidth());
     updateGeometry(targetRect);
-    // TODO DBlurEffectWidget is black when changing BlurEnabled but none Composite, it's maybe a bug.
-    if (hasComposite()) {
-        setBlurEnabled(false);
-    }
+
     m_storeView->scrollView()->setVisible(false);
     m_layout->removeWidget(m_storeView->scrollView());
     m_layout->removeWidget(m_editModeView->scrollView());

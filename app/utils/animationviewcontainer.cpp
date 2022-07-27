@@ -36,6 +36,7 @@ WIDGETS_FRAME_BEGIN_NAMESPACE
 AnimationViewContainer::AnimationViewContainer(QWidget *parent)
     : DBlurEffectWidget (parent)
 {
+    setBlurEnabled(false);
     setAttribute(Qt::WA_TranslucentBackground);
     setFixedWidth(0);
 }
@@ -73,6 +74,10 @@ void AnimationViewContainer::unRegisterRegion()
 
 void AnimationViewContainer::regionMonitorHide(const QPoint &p)
 {
+    // avoid to being hiden when app still is active.
+    if (qApp->activeWindow())
+        return;
+
     auto m_scale = qApp->primaryScreen()->devicePixelRatio();
     QPoint pScale(int(qreal(p.x() / m_scale)), int(qreal(p.y() / m_scale)));
     if (!geometry().contains(pScale)){

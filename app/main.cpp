@@ -39,6 +39,8 @@ int main(int argc, char *argv[])
     a.setOrganizationName("deepin");
     a.setApplicationName("dde-widgets");
 
+    // avoid to being quit when dialog is closed with it's parent invisible.
+    a.setQuitOnLastWindowClosed(false);
     // enable accessible
     QAccessible::installFactory(accessibleFactory);
 
