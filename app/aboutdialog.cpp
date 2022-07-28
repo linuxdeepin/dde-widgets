@@ -22,10 +22,13 @@
 
 #include "aboutdialog.h"
 #include <DLabel>
+#include <DTipLabel>
+#include <DFontSizeManager>
 #include <QCoreApplication>
 
 WIDGETS_FRAME_BEGIN_NAMESPACE
 
+DWIDGET_USE_NAMESPACE
 InstanceAboutDialog::InstanceAboutDialog(QWidget *parent)
     : DDialog(parent)
 {
@@ -47,7 +50,9 @@ InstanceAboutDialog::InstanceAboutDialog(QWidget *parent)
     addSpacing(UI::About::contributorSpacing);
     addContent(m_contributor, Qt::AlignHCenter);
 
-    m_description = new DLabel();
+    m_description = new DTipLabel();
+    m_description->setWordWrap(true);
+    DFontSizeManager::instance()->bind(m_description, DFontSizeManager::T9);
     addSpacing(UI::About::descriptionSpacing);
     addContent(m_description, Qt::AlignHCenter);
 }

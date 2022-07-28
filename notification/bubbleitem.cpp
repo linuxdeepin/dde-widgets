@@ -197,6 +197,10 @@ void BubbleItem::initUI()
     BubbleTool::processIconData(m_icon, m_entity);
     m_defaultAction = BubbleTool::processActions(m_actionButton, m_entity->actions());
     setFixedHeight(bubbleItemHeight());
+
+    installEventFilter(this);
+    m_settingBtn->installEventFilter(this);
+    m_closeButton->installEventFilter(this);
 }
 
 void BubbleItem::initContent()
@@ -374,19 +378,21 @@ bool BubbleItem::realHasFocus() const
 
 bool BubbleItem::eventFilter(QObject *watched, QEvent *event)
 {
-    if (watched == this || watched == m_settingBtn || watched == m_closeButton) {
-        switch (event->type()) {
-        case QEvent::Enter:
-            focusStateChanged(true);
-            break;
-        case QEvent::Leave:
-            focusStateChanged(false);
-            break;
-        case QEvent::FocusIn:
-        case QEvent::FocusOut:
+    switch (event->type()) {
+    case QEvent::FocusIn:
+    case QEvent::FocusOut:
+        if (watched == this || watched == m_settingBtn || watched == m_closeButton)
             focusStateChanged(realHasFocus());
-            break;
-        }
+
+        break;
+    case QEvent::Enter:
+    case QEvent::Leave:
+        if (watched == this)
+            focusStateChanged(event->type() == QEvent::Enter);
+
+        break;
+    default:
+        break;
     }
     return QWidget::eventFilter(watched, event);
 }
@@ -405,10 +411,6 @@ BubbleBase::BubbleBase(QWidget *parent, EntityPtr entity)
     m_closeButton->setAccessibleName("CloseButton");
     m_closeButton->setObjectName(m_appName + "-CloseButton");
     m_closeButton->setIcon(DDciIcon::fromTheme("notify_clear"));
-
-    installEventFilter(this);
-    m_settingBtn->installEventFilter(this);
-    m_closeButton->installEventFilter(this);
 }
 
 void BubbleBase::setParentModel(NotifyModel *model)

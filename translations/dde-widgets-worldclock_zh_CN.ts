@@ -4,17 +4,17 @@
 <context>
     <name>dwclock::ClockDelegate</name>
     <message>
-        <location filename="../worldclock/clockpanel.cpp" line="167"/>
+        <location filename="../worldclock/clockpanel.cpp" line="169"/>
         <source>Tomorrow</source>
         <translation>明天</translation>
     </message>
     <message>
-        <location filename="../worldclock/clockpanel.cpp" line="169"/>
+        <location filename="../worldclock/clockpanel.cpp" line="171"/>
         <source>Yesterday</source>
         <translation>昨天</translation>
     </message>
     <message>
-        <location filename="../worldclock/clockpanel.cpp" line="171"/>
+        <location filename="../worldclock/clockpanel.cpp" line="173"/>
         <source>Today</source>
         <translation>今天</translation>
     </message>
@@ -62,21 +62,26 @@
         <source>Display clocks at different geographical locations</source>
         <translation>查看全球多个城市的时间</translation>
     </message>
+    <message>
+        <location filename="../worldclock/plugin.cpp" line="42"/>
+        <source>Viewing the time and time difference of multiple cities around the world</source>
+        <translation>世界时钟支持查看全球多个城市的时间以及时差</translation>
+    </message>
 </context>
 <context>
     <name>dwclock::ZoneChooseView</name>
     <message>
-        <location filename="../worldclock/zonechooseview.cpp" line="256"/>
+        <location filename="../worldclock/zonechooseview.cpp" line="258"/>
         <source>Modify City</source>
         <translation>更换城市</translation>
     </message>
     <message>
-        <location filename="../worldclock/zonechooseview.cpp" line="260"/>
+        <location filename="../worldclock/zonechooseview.cpp" line="262"/>
         <source>Cancle</source>
         <translation>取消</translation>
     </message>
     <message>
-        <location filename="../worldclock/zonechooseview.cpp" line="261"/>
+        <location filename="../worldclock/zonechooseview.cpp" line="263"/>
         <source>OK</source>
         <translation>保存</translation>
     </message>

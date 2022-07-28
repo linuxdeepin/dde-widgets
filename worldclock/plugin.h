@@ -53,6 +53,7 @@ class WorldClockWidgetPlugin : public IWidgetPlugin
 public:
     QString title() const override;
     virtual QString description() const override;
+    virtual QString aboutDescription() const override;
     IWidget *createWidget() override;
     virtual QVector<IWidget::Type> supportTypes() const { return {IWidget::Middle, IWidget::Small};}
 

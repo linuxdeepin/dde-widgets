@@ -48,8 +48,6 @@ MemoryWidget::MemoryWidget(QWidget *parent)
     changeFont(DApplication::font());
     connect(dynamic_cast<QGuiApplication *>(DApplication::instance()), &DApplication::fontChanged,
             this, &MemoryWidget::changeFont);
-
-    installEventFilter(this);
 }
 MemoryWidget::~MemoryWidget() {}
 
@@ -97,22 +95,11 @@ void MemoryWidget::paintEvent(QPaintEvent *e)
     QPainterPath path;
     path.addRoundedRect(rect(), 8, 8);
     painter.setClipPath(path);
-    if (m_isHover) {
-        painter.fillRect(rect(), QBrush(QColor(255, 255, 255, 50)));
-    } else {
-        painter.fillRect(rect(), QBrush(QColor(255, 255, 255, 0)));
-    }
-
     //背景
     QRect contentRect(rect());
-    if (m_isHover) {
-        painter.fillRect(contentRect, QBrush(QColor(255, 255, 255,100)));
-    } else {
-        painter.fillRect(contentRect, QBrush(QColor(255, 255, 255,50)));
-    }
+    painter.fillRect(contentRect, QBrush(QColor(255, 255, 255,100)));
 
     int sectionSize = 6;
-
 
     QString memoryContent = QString("%1 (%2%)")
                           .arg(tr("Memory"))//Memory
@@ -148,7 +135,6 @@ void MemoryWidget::paintEvent(QPaintEvent *e)
     QPainterPath section;
     section.addEllipse(memIndicatorRect);
     painter.fillPath(section, memoryColor);
-
 
     painter.setFont(m_memTxtFont);
     painter.setPen(QPen(summaryColor));
@@ -191,23 +177,6 @@ void MemoryWidget::paintEvent(QPaintEvent *e)
                            insideRingRadius * 2),
                      Qt::AlignHCenter | Qt::AlignVCenter,
                      QString("%1%").arg(QString::number(m_memPercent.toDouble(), 'f', 1)));
-}
-
-bool MemoryWidget::eventFilter(QObject *target, QEvent *event)
-{
-    if (target == this) {
-        if (event->type() == QEvent::Enter) {
-            m_isHover = true;
-            update();
-            return true;
-        }
-        if (event->type() == QEvent::Leave) {
-            m_isHover = false;
-            update();
-            return true;
-        }
-    }
-    return QWidget::eventFilter(target, event);
 }
 
 void MemoryWidget::changeFont(const QFont &font)

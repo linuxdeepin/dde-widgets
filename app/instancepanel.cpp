@@ -475,7 +475,7 @@ void InstancePanel::onMenuRequested(const InstanceId &id)
             }
             dialog.setLogo(logo);
             dialog.setTitle(plugin->title());
-            dialog.setDescription(plugin->description());
+            dialog.setDescription(plugin->aboutDescription());
             dialog.setVersion(plugin->version());
 
             QString contributor = plugin->contributors().join(", ");

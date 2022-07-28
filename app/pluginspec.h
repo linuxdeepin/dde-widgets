@@ -44,6 +44,7 @@ public:
     WIDGETS_FRAME_NAMESPACE::PluginId id() const;
     QString title() const;
     QString description() const;
+    QString aboutDescription() const;
     IWidgetPlugin::Type type() const;
     QString version() const;
     QIcon logo() const;

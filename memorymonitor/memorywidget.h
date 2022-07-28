@@ -31,14 +31,13 @@ class MemoryWidget : public QWidget
 
 public:
     explicit MemoryWidget(QWidget *parent = nullptr);
-    ~MemoryWidget();
+    virtual ~MemoryWidget() override;
 
     void updateMemoryInfo(const QString &memPercent,
                           const QString &swapPercent);
 
 protected:
-    void paintEvent(QPaintEvent *event);
-    bool eventFilter(QObject *target, QEvent *event);
+    virtual void paintEvent(QPaintEvent *event) override;
 
 private:
     void changeTheme(DApplicationHelper::ColorType themeType);
@@ -67,6 +66,4 @@ private:
     QString m_memPercent;
     //交换内存
     QString m_swapPercent;
-
-    bool m_isHover = false;
 };

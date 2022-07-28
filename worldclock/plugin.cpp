@@ -37,6 +37,11 @@ QString WorldClockWidgetPlugin::description() const
     return tr("Display clocks at different geographical locations");
 }
 
+QString WorldClockWidgetPlugin::aboutDescription() const
+{
+    return tr("Viewing the time and time difference of multiple cities around the world");
+}
+
 IWidget *WorldClockWidgetPlugin::createWidget()
 {
     return new WorldClockWidget();

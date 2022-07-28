@@ -27,6 +27,7 @@
 
 DWIDGET_BEGIN_NAMESPACE
 class DLabel;
+class DTipLabel;
 DWIDGET_END_NAMESPACE
 DWIDGET_USE_NAMESPACE
 
@@ -46,7 +47,7 @@ private:
     DLabel *m_logo = nullptr;
     DLabel *m_version = nullptr;
     DLabel *m_title = nullptr;
-    DLabel *m_description = nullptr;
+    DTipLabel *m_description = nullptr;
     DLabel *m_contributor = nullptr;
 };
 

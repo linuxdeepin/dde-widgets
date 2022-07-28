@@ -103,6 +103,11 @@ QString WidgetPluginSpec::description() const
     return m_plugin->description();
 }
 
+QString WidgetPluginSpec::aboutDescription() const
+{
+    return m_plugin->aboutDescription();
+}
+
 IWidgetPlugin::Type WidgetPluginSpec::type() const
 {
     return m_plugin->type();

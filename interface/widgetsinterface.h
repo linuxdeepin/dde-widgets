@@ -201,9 +201,14 @@ public:
     virtual QString title() const = 0;
 
     /**
-     * @brief 组件描述信息
+     * @brief 组件功能描述信息
      */
     virtual QString description() const { return QString();}
+
+    /**
+     * @brief 组件关于描述信息
+     */
+    virtual QString aboutDescription() const { return description();}
 
     /**
      * @brief 组件图片
