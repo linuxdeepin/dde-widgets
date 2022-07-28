@@ -90,12 +90,9 @@ Qt::ItemFlags NotifyModel::flags(const QModelIndex &index) const
 
 int NotifyModel::remainNotificationCount() const
 {
-    // 剩余条数 = 显示项的隐藏条数 + 未显示项的所有条数
+    // 剩余条数 = 未显示项的所有条数(不显示项的隐藏条数)
     int count = 0;
-    int i = 0;
-    while (i < showCount()) {
-        count += m_notifications[i++]->hideCount();
-    }
+    int i = showCount();
     while (i < m_notifications.count()) {
         count += m_notifications[i++]->count();
     }

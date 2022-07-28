@@ -39,6 +39,7 @@
 #include <QTimer>
 #include <QScreen>
 #include <QMenu>
+#include <QStackedLayout>
 
 #include <DLabel>
 #include <DFontSizeManager>
@@ -107,10 +108,28 @@ void NotifyCenterWidget::initUI()
     head_Layout->addWidget(m_clearButton, 0, Qt::AlignRight | Qt::AlignTop);
     m_headWidget->setLayout(head_Layout);
 
+    auto bottomTipView = new QWidget();
+    m_bottomTipLayout = new QStackedLayout(bottomTipView);
+
     m_expandRemaining = new TransparentButton();
     m_expandRemaining->setFlat(true);
     m_expandRemaining->setAccessibleName("ExpandRemainingButton");
     connect(m_expandRemaining, &QPushButton::clicked, this, &NotifyCenterWidget::expandNotificationFolding);
+    m_bottomTipLayout->addWidget(m_expandRemaining);
+
+    m_noNotifyLabel = new DLabel();
+    m_noNotifyLabel->setText(tr("No new notifications"));
+    m_noNotifyLabel->setAccessibleName("NoNotifyLabel");
+    DFontSizeManager::instance()->bind(m_noNotifyLabel, DFontSizeManager::T9);
+    {
+        auto pt = m_noNotifyLabel->palette();
+        auto background = pt.brush(QPalette::WindowText).color();
+        background.setAlpha(UI::Panel::noNotifyLabelFontAlpha);
+        pt.setBrush(QPalette::WindowText, background);
+        m_noNotifyLabel->setPalette(pt);
+    }
+    m_bottomTipLayout->addWidget(m_noNotifyLabel);
+
     connect(m_notifyWidget->model(), &NotifyModel::modelReset, this, &NotifyCenterWidget::updateDisplayOfRemainingNotification);
     connect(m_notifyWidget->view(), &NotifyListView::lastItemCreated, this, &NotifyCenterWidget::updateTabFocus);
 
@@ -118,12 +137,16 @@ void NotifyCenterWidget::initUI()
     mainLayout->setContentsMargins(Notify::CenterMargin, Notify::CenterMargin, 0, 0);
     mainLayout->addWidget(m_headWidget);
     mainLayout->addWidget(m_notifyWidget);
-    mainLayout->addWidget(m_expandRemaining);
+    mainLayout->addWidget(bottomTipView, 0, Qt::AlignHCenter);
 
     setLayout(mainLayout);
 
     connect(m_clearButton, &CicleIconButton::clicked, this, [this]() {
         m_notifyWidget->model()->removeAllData();
+    });
+    connect(m_bottomTipLayout, &QStackedLayout::currentChanged, this, [this](int index) {
+        const bool isShowNoNotifyLabel = (index == m_bottomTipLayout->indexOf(m_noNotifyLabel));
+        m_clearButton->setVisible(!isShowNoNotifyLabel);
     });
 
     connect(m_notifyWidget->model(), &NotifyModel::appCountChanged, this, &NotifyCenterWidget::updateDisplayOfRemainingNotification);
@@ -158,10 +181,19 @@ void NotifyCenterWidget::updateDisplayOfRemainingNotification()
 {
     const bool hasAppNotification = m_notifyWidget->model()->rowCount() > 0;
     if (!hasAppNotification) {
-        m_expandRemaining->setText(tr("No new notifications"));
+        if (m_bottomTipLayout->parentWidget()->isHidden())
+            m_bottomTipLayout->parentWidget()->show();
+        m_bottomTipLayout->setCurrentWidget(m_noNotifyLabel);
     } else {
         const int rowCount = m_notifyWidget->model()->remainNotificationCount();
-        m_expandRemaining->setText(tr("%1 more notifications").arg(QString::number(rowCount)));
+        if (rowCount > 0) {
+            if (m_bottomTipLayout->parentWidget()->isHidden())
+                m_bottomTipLayout->parentWidget()->show();
+            m_expandRemaining->setText(tr("%1 more notifications").arg(QString::number(rowCount)));
+            m_bottomTipLayout->setCurrentWidget(m_expandRemaining);
+        } else {
+            m_bottomTipLayout->parentWidget()->hide();
+        }
     }
 }
 
@@ -176,7 +208,8 @@ void NotifyCenterWidget::updateTabFocus()
     if (auto w = m_notifyWidget->view()->lastItemView()) {
         QWidget::setTabOrder(w, m_expandRemaining);
     } else {
-        QWidget::setTabOrder(m_notifyWidget->view(), m_expandRemaining);
+        if (!m_bottomTipLayout->parentWidget()->isHidden())
+            QWidget::setTabOrder(m_notifyWidget->view(), m_expandRemaining);
     }
 }
 

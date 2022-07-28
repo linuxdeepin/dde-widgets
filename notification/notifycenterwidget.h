@@ -47,6 +47,7 @@ class QPropertyAnimation;
 class QSequentialAnimationGroup;
 class IconButton;
 class QPushButton;
+class QStackedLayout;
 /*!
  * \~chinese \class NotifyCenterWidget
  * \~chinese \brief 继承于DBlurEffectWidget,DBlurEffectWidget是DTK库中的类,继承自QWidget.
@@ -82,6 +83,8 @@ private:
     DLabel *title_label = nullptr;
     CicleIconButton *m_clearButton = nullptr;
     TransparentButton *m_expandRemaining = nullptr;
+    DLabel *m_noNotifyLabel = nullptr;
+    QStackedLayout *m_bottomTipLayout = nullptr;
     CicleIconButton *m_settingBtn = nullptr;
     CicleIconButton *m_toggleNotificationFolding = nullptr;
     bool m_isCollapesNotificationFolding = true;
