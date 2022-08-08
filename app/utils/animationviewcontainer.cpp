@@ -39,6 +39,7 @@ AnimationViewContainer::AnimationViewContainer(QWidget *parent)
     setBlurEnabled(false);
     setAttribute(Qt::WA_TranslucentBackground);
     setFixedWidth(0);
+    setWindowFlags(Qt::Tool);
 }
 
 AnimationViewContainer::~AnimationViewContainer()
