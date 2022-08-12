@@ -99,6 +99,13 @@ int NotifyModel::remainNotificationCount() const
     return count;
 }
 
+int NotifyModel::rowOfFirstNotification() const
+{
+    if (m_notifications.count() <= 0)
+        return -1;
+    return countOfEachTitle(m_notifications[0]->isCollapse());
+}
+
 void NotifyModel::addNotify(EntityPtr entity)
 {
     qDebug() << "addNotify(): Notification's appName:" << entity->appName()

@@ -191,10 +191,14 @@ void NotifyListView::createAddedAnimation(EntityPtr entity, const ListItemPtr ap
     if (m_aniState)
         return;
 
-    const QModelIndex &index = this->model()->index(1, 0);
+    NotifyModel *notifyModel= qobject_cast<NotifyModel *> (model());
+    const int firstNotificationRow = notifyModel->rowOfFirstNotification();
+    const QModelIndex &index = this->model()->index(firstNotificationRow, 0);
     QWidget *currentWidget = this->indexWidget(index);
-    if (!currentWidget)
+    if (!currentWidget) {
+        qWarning() << "createAddedAnimation() it maybe lost notification:" << entity->appName() << entity->id();
         return;
+    }
 
     QParallelAnimationGroup *addedAniGroup = new QParallelAnimationGroup(this);
     connect(addedAniGroup, &QParallelAnimationGroup::finished, this, [ = ] { //动画完成发出动画完成的信号
@@ -219,8 +223,8 @@ void NotifyListView::createAddedAnimation(EntityPtr entity, const ListItemPtr ap
     addAni->setDuration(AnimationTime);
     addedAniGroup->addAnimation(addAni);
 
-    if (appItem->showCount() != 3 && canShow(appItem->showLast())) {
-        for (int i = 1; i < this->model()->rowCount(QModelIndex()); ++i) {
+    if (!appItem->isCollapse() && canShow(appItem->showLast())) {
+        for (int i = firstNotificationRow; i < this->model()->rowCount(QModelIndex()); ++i) {
             QWidget *widget = this->indexWidget(this->model()->index(i, 0));
             if (!widget) {
                 break;
@@ -233,10 +237,10 @@ void NotifyListView::createAddedAnimation(EntityPtr entity, const ListItemPtr ap
         }
     } else {
         for (int i = 0; i < appItem->showCount(); i++) {
-            if (i > 1 || !canShow(appItem->at(i))) {
+            if (!canShow(appItem->at(i))) {
                 break;
             }
-            QWidget *widget = this->indexWidget(this->model()->index(1 + i, 0));
+            QWidget *widget = this->indexWidget(this->model()->index(i, 0));
             QPropertyAnimation *downMoveAni = new QPropertyAnimation(widget, "pos", this);
             downMoveAni->setStartValue(widget->pos());
             downMoveAni->setEndValue(widget->pos() + QPoint(0, bubbleItemHight + BubbleSpacing));

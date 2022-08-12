@@ -175,6 +175,7 @@ public:
     QVariant data(const QModelIndex &index, int role) const override;
     Qt::ItemFlags flags(const QModelIndex &index) const override;
     int remainNotificationCount() const;
+    int rowOfFirstNotification() const;
 
 public slots:
     void addNotify(EntityPtr entity);                   // 添加一条通知，并更新视图
