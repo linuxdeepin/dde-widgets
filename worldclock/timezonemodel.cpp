@@ -47,6 +47,7 @@ TimezoneModel::TimezoneModel(QObject *parent)
     : QStandardItemModel(parent)
 {
     connect(this, &TimezoneModel::dataChanged, this, &TimezoneModel::emitTimezoneChanged);
+    setItemPrototype(new DStandardItem());
 }
 
 TimezoneModel::~TimezoneModel()
@@ -170,11 +171,11 @@ void TimezoneModel::onModifyLocationActionTriggered()
     const auto targetAction = qobject_cast<DViewItemAction *>(sender());
     qDebug() << "onModifyLocationActionTriggered() " << targetAction;
     for (int i = 0; i < rowCount(); i++) {
-        auto itemModel = item(i);
+        auto itemModel = dynamic_cast<DStandardItem *>(item(i));
         if (!itemModel)
             continue;
 
-        const DViewItemActionList actionList = qvariant_cast<DViewItemActionList>(itemModel->data(Dtk::RightActionListRole));
+        const DViewItemActionList actionList = itemModel->actionList(Qt::RightEdge);
         if (actionList.contains(targetAction)) {
             qDebug() << "onModifyLocationActionTriggered() the row clicked:" << i;
             Q_EMIT modifyLocationClicked(index(i, 0));
