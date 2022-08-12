@@ -257,6 +257,8 @@ void NotifyCenterWidget::showSettingMenu()
         connect(action, &QAction::triggered, this, &NotifyCenterWidget::showNotificationModuleOfControlCenter);
     } while (false);
 
-    menu->exec(m_settingBtn->mapToGlobal(QPoint(0, 0)));
+    m_settingBtn->setDown(true);
+    menu->exec(m_settingBtn->mapToGlobal(QPoint(0, m_settingBtn->geometry().bottom() + UI::Panel::settingSpacingBetweenMenu)));
     menu->deleteLater();
+    m_settingBtn->setDown(false);
 }

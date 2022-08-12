@@ -463,8 +463,10 @@ void BubbleBase::showSettingsMenu()
 
     // using relation position instead of QCursor's position
     // avoid to error in triggering by Key_Tab scene.
-    menu->exec(m_settingBtn->mapToGlobal(QPoint(0, 0)));
+    m_settingBtn->setDown(true);
+    menu->exec(m_settingBtn->mapToGlobal(QPoint(0, m_settingBtn->geometry().bottom() + UI::Panel::settingSpacingBetweenMenu)));
     menu->deleteLater();
+    m_settingBtn->setDown(false);
 }
 
 void BubbleBase::toggleAppTopping()

@@ -35,6 +35,7 @@ namespace Panel{
     static const QSize clearIconSize(settingsIconSize);
     static const QSize collapseIconSize(settingsIconSize);
     static const int noNotifyLabelFontAlpha(0.6 * 255);
+    static const int settingSpacingBetweenMenu(4);
 }
 namespace Bubble {
     static const QSize buttonSize(24, 24);
