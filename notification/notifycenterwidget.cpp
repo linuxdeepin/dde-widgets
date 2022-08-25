@@ -97,6 +97,7 @@ void NotifyCenterWidget::initUI()
     m_clearButton->setAccessibleName("ClearButton");
     m_clearButton->setIcon(DDciIcon::fromTheme("notify_clear"));
     m_clearButton->setFixedSize(UI::Panel::buttonSize);
+    m_clearButton->setVisible(false);
 //    m_clearButton->setFocusPolicy(Qt::StrongFocus);
 
     QHBoxLayout *head_Layout = new QHBoxLayout;
@@ -144,18 +145,16 @@ void NotifyCenterWidget::initUI()
     connect(m_clearButton, &CicleIconButton::clicked, this, [this]() {
         m_notifyWidget->model()->removeAllData();
     });
-    connect(m_bottomTipLayout, &QStackedLayout::currentChanged, this, [this](int index) {
-        const bool isShowNoNotifyLabel = (index == m_bottomTipLayout->indexOf(m_noNotifyLabel));
-        m_clearButton->setVisible(!isShowNoNotifyLabel);
-    });
-
     connect(m_notifyWidget->model(), &NotifyModel::appCountChanged, this, &NotifyCenterWidget::updateDisplayOfRemainingNotification);
+
+    connect(m_notifyWidget->model(), &NotifyModel::appCountChanged, this, &NotifyCenterWidget::updateClearButtonVisible, Qt::QueuedConnection);
 
     refreshTheme();
 
     collapesNotificationFolding();
 
     updateDisplayOfRemainingNotification();
+    updateClearButtonVisible();
 }
 
 void NotifyCenterWidget::initConnections()
@@ -179,8 +178,7 @@ void NotifyCenterWidget::CompositeChanged()
 
 void NotifyCenterWidget::updateDisplayOfRemainingNotification()
 {
-    const bool hasAppNotification = m_notifyWidget->model()->rowCount() > 0;
-    if (!hasAppNotification) {
+    if (!hasAppNotification()) {
         if (m_bottomTipLayout->parentWidget()->isHidden())
             m_bottomTipLayout->parentWidget()->show();
         m_bottomTipLayout->setCurrentWidget(m_noNotifyLabel);
@@ -245,6 +243,18 @@ void NotifyCenterWidget::toggleNotificationFolding()
 void NotifyCenterWidget::showNotificationModuleOfControlCenter()
 {
     Helper::instance()->showNotificationModuleOfControlCenter();
+}
+
+void NotifyCenterWidget::updateClearButtonVisible()
+{
+    const bool changed = (m_clearButton->isVisible() != hasAppNotification());
+    if (changed)
+        m_clearButton->setVisible(!m_clearButton->isVisible());
+}
+
+bool NotifyCenterWidget::hasAppNotification() const
+{
+    return m_notifyWidget->model()->rowCount() > 0;
 }
 
 void NotifyCenterWidget::showSettingMenu()

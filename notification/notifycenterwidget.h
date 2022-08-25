@@ -76,8 +76,11 @@ private Q_SLOTS:
     void toggleNotificationFolding();
     void showSettingMenu();
     void showNotificationModuleOfControlCenter();
+    void updateClearButtonVisible();
 
 private:
+    inline bool hasAppNotification() const;
+
     QWidget *m_headWidget;
     NotifyWidget *m_notifyWidget;
     DLabel *title_label = nullptr;
