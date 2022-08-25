@@ -247,13 +247,19 @@ void NotifyListView::createAddedAnimation(EntityPtr entity, const ListItemPtr ap
             downMoveAni->setDuration(AnimationTime);
             addedAniGroup->addAnimation(downMoveAni);
         }
-        QWidget *lastWidget = this->indexWidget(this->model()->index(appItem->showCount(), 0));
+        QWidget *lastWidget = this->indexWidget(this->model()->index(appItem->showLastRow(), 0));
         OverLapWidet *overLapWidget = qobject_cast<OverLapWidet *> (lastWidget);
         QWidget *faceWidget = nullptr;
         if (overLapWidget != nullptr) {
             faceWidget = overLapWidget->getFaceItem();
         } else {
             faceWidget = qobject_cast<BubbleItem *> (lastWidget);
+        }
+
+        if (!faceWidget) {
+            qWarning() << "createAddedAnimation() error for the notify:" << appItem->appName()
+                       << ", faceWidget is null, and it is illegal.";
+            return;
         }
 
         QRect startRect1 = QRect(faceWidget->pos(), faceWidget->size());

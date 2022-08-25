@@ -88,6 +88,10 @@ public:
     {
         return m_isCollapse ? qMin(AppShowMaxCount, m_data.count()) : m_data.count();
     }
+    inline  int showLastRow() const
+    {
+        return showCount() - 1;
+    }
     // 最后一个显示项
     inline EntityPtr showLast() const
     {
