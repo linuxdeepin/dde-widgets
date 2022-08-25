@@ -28,12 +28,16 @@
 #include <DWidgetUtil>
 #include <DApplication>
 #include <DLog>
+#include <DGuiApplicationHelper>
+DGUI_USE_NAMESPACE
 
 WIDGETS_USE_NAMESPACE
 DWIDGET_USE_NAMESPACE
 
 int main(int argc, char *argv[])
 {
+    // no inactive color for the application, and it need to be set before DApplication constructor.
+    DGuiApplicationHelper::instance()->setAttribute(DGuiApplicationHelper::UseInactiveColorGroup, false);
     DApplication a(argc, argv);
     a.setApplicationVersion("1.0.0");
     a.setOrganizationName("deepin");
