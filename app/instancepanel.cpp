@@ -222,10 +222,12 @@ void InstancePanel::addWidgetImpl(const InstanceId &key, InstancePos pos)
         cell->setView();
     }
 
-    cell->setContextMenuPolicy(Qt::CustomContextMenu);
-    connect(cell, &QWidget::customContextMenuRequested, this, [this, cell]{
-        onMenuRequested(cell->id());
-    });
+    if (!WidgetHandlerImpl::get(instance->handler())->isCustom()) {
+        cell->setContextMenuPolicy(Qt::CustomContextMenu);
+        connect(cell, &QWidget::customContextMenuRequested, this, [this, cell]{
+            onMenuRequested(cell->id());
+        });
+    }
 
     auto newItem = new AnimationWidgetItem(cell);
     m_layout->insertItem(pos, newItem);
