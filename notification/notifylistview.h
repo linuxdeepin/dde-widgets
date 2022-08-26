@@ -33,6 +33,7 @@
 class QPropertyAnimation;
 class QScrollBar;
 class QTimer;
+class QBasicTimer;
 class BubbleItem;
 
 DWIDGET_USE_NAMESPACE
@@ -58,11 +59,13 @@ protected:
     void hideEvent(QHideEvent *event) override;
     void wheelEvent(QWheelEvent *event) override;
     virtual bool event(QEvent *event) override;
+    virtual void timerEvent(QTimerEvent *e) override;
 
 private:
     bool canShow(EntityPtr ptr); // 判断消息是否应该层叠[即超过4小时]
     void handleScrollValueChanged();
     void handleScrollFinished();
+    void updateViewHeight();
 
 signals:
     void removeAniFinished(EntityPtr ptr);
@@ -79,6 +82,7 @@ private:
     QPointer<QWidget> m_prevElement = nullptr;
     QPointer<QWidget> m_currentElement = nullptr;
     QTimer *m_refreshTimer = nullptr;
+    QBasicTimer *m_layoutRequestTimer = nullptr;
 };
 
 #endif // NOTIFYLISTVIEW_H

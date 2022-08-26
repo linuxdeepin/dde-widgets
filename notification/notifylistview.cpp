@@ -44,13 +44,17 @@
 #include <QScrollBar>
 #include <QScroller>
 #include <QTimer>
+#include <QBasicTimer>
 
 #define RefreshTime 900
 
+// TODO: need to setFixedHeight Mini Height, other it's default contentSize is 150 px.
+static const int ListViewMinHeight = 1;
 NotifyListView::NotifyListView(QWidget *parent)
     : DListView(parent)
     , m_scrollAni(new QPropertyAnimation(verticalScrollBar(), "value" ,this))
     , m_refreshTimer(new QTimer(this))
+    , m_layoutRequestTimer(new QBasicTimer())
 {
 //    setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -352,23 +356,37 @@ void NotifyListView::handleScrollFinished()
     emit entered(indexAt(pos));
 }
 
+void NotifyListView::updateViewHeight()
+{
+    if (model() && model()->rowCount() <= 0) {
+        setFixedHeight(ListViewMinHeight);
+    } else {
+        setFixedHeight(contentsSize().height());
+    }
+}
+
 bool NotifyListView::event(QEvent *event)
 {
-    // TODO: need to setFixedHeight Mini Height, other it's default contentSize is 150 px.
-    static const int MinHeight = 1;
     switch (event->type()) {
     case QEvent::Polish:
-        setFixedHeight(MinHeight);
+        setFixedHeight(ListViewMinHeight);
         break;
     case QEvent::LayoutRequest: {
-        if (model() && model()->rowCount() <= 0) {
-            setFixedHeight(MinHeight);
-        } else {
-            setFixedHeight(contentsSize().height());
-        }
+        if (!m_layoutRequestTimer->isActive())
+            m_layoutRequestTimer->start(0, this);
     } break;
     default:
         break;
     }
-    return QListView::event(event);
+    return DListView::event(event);
+}
+
+void NotifyListView::timerEvent(QTimerEvent *e)
+{
+    if (e->timerId() == m_layoutRequestTimer->timerId()) {
+        updateViewHeight();
+        m_layoutRequestTimer->stop();
+        e->accept();
+    }
+    return DListView::timerEvent(e);
 }
