@@ -164,7 +164,7 @@ void BubbleItem::initUI()
     m_appTimeLabel->setOpacity(0.6);
     m_appTimeLabel->setForegroundRole(QPalette::BrightText);
     m_appTimeLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-    m_actionButton->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    m_actionButton->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
     DFontSizeManager::instance()->bind(m_appNameLabel, DFontSizeManager::T8);
     DFontSizeManager::instance()->bind(m_appTimeLabel, DFontSizeManager::T8);
 

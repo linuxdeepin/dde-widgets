@@ -44,6 +44,7 @@ BubbleTitleWidget::BubbleTitleWidget(NotifyModel *model, EntityPtr entity, QWidg
     m_titleLabel = new DLabel;
     m_titleLabel->setForegroundRole(QPalette::BrightText);
     m_titleLabel->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+    m_titleLabel->setElideMode(Qt::ElideRight);
 
     QFont font = m_titleLabel->font();
     font.setBold(true);

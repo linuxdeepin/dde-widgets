@@ -110,12 +110,12 @@ static int drawText(QPainter *painter, const QRectF &rect, int lineHeight, QText
 
 QSize AppBodyLabel::sizeHint() const
 {
-    return QSize(width(), fontMetrics().height() * m_lineCount);
+    return QSize(QLabel::sizeHint().width(), fontMetrics().height() * m_lineCount);
 }
 
 QSize AppBodyLabel::minimumSizeHint() const
 {
-    QSize size(width(), fontMetrics().height());
+    QSize size(50, fontMetrics().height());
 
     return size;
 }
