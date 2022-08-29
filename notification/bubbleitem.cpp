@@ -381,6 +381,11 @@ bool BubbleItem::eventFilter(QObject *watched, QEvent *event)
     switch (event->type()) {
     case QEvent::FocusIn:
     case QEvent::FocusOut:
+        // it maybe a bug for Qt, QAbstractItemView::edit() would execute `w->setFocus()`
+        // when Mouse Moveing while ItemDelegate's flags has ItemIsEditable,
+        // so we remove flags of Model's ItemIsEditable.
+//            if (e->reason() == Qt::OtherFocusReason)
+//                break;
         if (watched == this || watched == m_settingBtn || watched == m_closeButton)
             focusStateChanged(realHasFocus());
 

@@ -83,7 +83,7 @@ Qt::ItemFlags NotifyModel::flags(const QModelIndex &index) const
 {
     if (index.isValid()) {
         if (m_view != nullptr) m_view->openPersistentEditor(index);
-        return QAbstractListModel::flags(index) | Qt::ItemIsEditable;
+        return QAbstractListModel::flags(index);
     }
     return QAbstractListModel::flags(index);
 }
