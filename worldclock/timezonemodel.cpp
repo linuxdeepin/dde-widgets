@@ -33,9 +33,6 @@
 DWIDGET_USE_NAMESPACE
 
 namespace dwclock {
-static const QString TimedateService = QStringLiteral("com.deepin.daemon.Timedate");
-static const QString TimedatePath = QStringLiteral("/com/deepin/daemon/Timedate");
-static const QString TimedateInterface = QStringLiteral("com.deepin.daemon.Timedate");
 
 static QString getTimezoneCity(const QString &timezone)
 {
@@ -132,7 +129,7 @@ QStringList TimezoneModel::defaultLocations()
 
 void TimezoneModel::updateTimezoneOffset(QStandardItem *item, const QString &timezone)
 {
-    QDBusInterface interface (TimedateService, TimedatePath, TimedateInterface, QDBusConnection::sessionBus());
+    QDBusInterface interface ("org.deepin.daemon.Timedate1", "/org/deepin/daemon/Timedate1", "org.deepin.daemon.Timedate1", QDBusConnection::sessionBus());
     auto reply = interface.asyncCall("GetZoneInfo", timezone);
     QDBusPendingCallWatcher *watcher = new QDBusPendingCallWatcher(reply, this);
 
