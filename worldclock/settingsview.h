@@ -27,11 +27,15 @@ DWIDGET_USE_NAMESPACE
 
 namespace dwclock {
 class TimezoneModel;
+class ZoneChooseView;
 class SettingsView : public DDialog {
     Q_OBJECT
 public:
     explicit SettingsView(TimezoneModel *model, QWidget *parent = nullptr);
     TimezoneModel *model() const;
+
+protected:
+    virtual void closeEvent(QCloseEvent *event) override;
 
 private Q_SLOTS:
     void showModifyLocation(const QModelIndex &index);
@@ -39,5 +43,6 @@ private Q_SLOTS:
 public:
     DListView *m_clockView = nullptr;
     TimezoneModel *m_model = nullptr;
+    ZoneChooseView* m_chooseView = nullptr;
 };
 }

@@ -103,6 +103,11 @@ void WorldClockWidget::settings()
     settingsView->deleteLater();
 }
 
+void WorldClockWidget::hideWidgets()
+{
+    m_viewManager->settingsView()->close();
+}
+
 QIcon WorldClockWidgetPlugin::logo() const
 {
     return QIcon::fromTheme("dcc_nav_datetime");

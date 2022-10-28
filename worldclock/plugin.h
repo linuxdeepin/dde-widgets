@@ -38,6 +38,7 @@ public:
 
     virtual bool enableSettings() override;
     virtual void settings() override;
+    virtual void hideWidgets() override;
 
 private:
 

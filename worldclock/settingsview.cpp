@@ -65,15 +65,24 @@ TimezoneModel *SettingsView::model() const
     return m_model;
 }
 
+void SettingsView::closeEvent(QCloseEvent *event)
+{
+    if (m_chooseView) {
+        m_chooseView->close();
+    }
+    DDialog::closeEvent(event);
+}
+
 void SettingsView::showModifyLocation(const QModelIndex &index)
 {
     qDebug() << "showModifyLocation(): modify the item:" << index;
-    auto chooseView = new ZoneChooseView(this);
-    chooseView->moveToCenter();
-    if (QDialog::Accepted == chooseView->exec()) {
-        const QString &timezone = chooseView->currentZone();
+    m_chooseView = new ZoneChooseView(this);
+    m_chooseView->moveToCenter();
+    if (QDialog::Accepted == m_chooseView->exec()) {
+        const QString &timezone = m_chooseView->currentZone();
         m_model->updateTimezone(index, timezone);
     }
-    chooseView->deleteLater();
+    m_chooseView->deleteLater();
+    m_chooseView = nullptr;
 }
 }
