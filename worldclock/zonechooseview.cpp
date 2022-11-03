@@ -171,8 +171,6 @@ ZoneSection::ZoneSection(const QString &sectionKey, QWidget *parent)
     : QWidget(parent)
     , m_sectionKey(sectionKey)
 {
-    setAttribute(Qt::WA_TranslucentBackground);
-
     auto layout = new QVBoxLayout(this);
     auto margins = layout->contentsMargins();
     margins.setLeft(UI::clock::defaultMargins.left());
@@ -265,6 +263,10 @@ ZoneChooseView::ZoneChooseView(QWidget *parent)
     m_okBtn->setEnabled(false);
 
     auto scrollView = new QScrollArea();
+    auto pt = scrollView->palette();
+    pt.setBrush(QPalette::Window, Qt::transparent);
+    scrollView->setPalette(pt);
+
     scrollView->setWidgetResizable(true);
     scrollView->setFrameShape(QFrame::NoFrame);
 
@@ -288,7 +290,6 @@ ZoneChooseView::ZoneChooseView(QWidget *parent)
 QWidget *ZoneChooseView::fillZones()
 {
     auto zonesView = new QWidget();
-    zonesView->setAttribute(Qt::WA_TranslucentBackground);;
     auto layout = new QVBoxLayout(zonesView);
     layout->setContentsMargins(UI::clock::defaultMargins);
 
