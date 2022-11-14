@@ -27,8 +27,8 @@
 #include <QScreen>
 
 WIDGETS_FRAME_BEGIN_NAMESPACE
-static const QString DBusServie = "com.deepin.daemon.Appearance";
-static const QString DBusPath = "/com/deepin/daemon/Appearance";
+static const QString DBusServie = "org.deepin.dde.Appearance1";
+static const QString DBusPath = "/org/deepin/dde/Appearance1";
 
 Appearancehandler::Appearancehandler(QObject *parent)
     : QObject (parent)

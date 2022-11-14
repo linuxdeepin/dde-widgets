@@ -27,11 +27,11 @@
 #include <QScreen>
 
 WIDGETS_FRAME_BEGIN_NAMESPACE
-using MonitorInter = com::deepin::daemon::display::Monitor;
-static const QString DisplayDaemonDBusServie = "com.deepin.daemon.Display";
-static const QString DisplayDaemonDBusPath = "/com/deepin/daemon/Display";
-static const QString DockDaemonDBusServie = "com.deepin.dde.daemon.Dock";
-static const QString DockDaemonDBusPath = "/com/deepin/dde/daemon/Dock";
+using MonitorInter = org::deepin::dde::display1::Monitor;
+static const QString DisplayDaemonDBusServie = "org.deepin.dde.Display1";
+static const QString DisplayDaemonDBusPath = "/org/deepin/dde/Display1";
+static const QString DockDaemonDBusServie = "org.deepin.dde.daemon.Dock1";
+static const QString DockDaemonDBusPath = "/org/deepin/dde/daemon/Dock1";
 namespace Geo
 {
     static const int DockMargin = 5;
@@ -123,7 +123,7 @@ QRect GeometryHandler::calcDisplayRect(const QRect &dockRect)
     QList<QDBusObjectPath> screenList = m_displayInter->monitors();
 
     for (const auto &screen : screenList) {
-        MonitorInter monitor("com.deepin.daemon.Display", screen.path(), QDBusConnection::sessionBus());
+        MonitorInter monitor("org.deepin.dde.Display1", screen.path(), QDBusConnection::sessionBus());
         QRect monitorRect(monitor.x(), monitor.y(), monitor.width(), monitor.height());
         if (monitor.enabled() && monitorRect.contains(dockRect.center())) {
             displayRect = QRect(monitorRect.x(), monitorRect.y(),

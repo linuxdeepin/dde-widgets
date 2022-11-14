@@ -1,4 +1,4 @@
-<interface name='org.deepin.dde.Widgets'>
+<interface name='org.deepin.dde.Widgets1'>
     <method name='Toggle'>
     </method>
     <method name='Show'>

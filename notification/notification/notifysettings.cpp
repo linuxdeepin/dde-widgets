@@ -28,9 +28,9 @@
 #include <QDBusPendingCall>
 #include <QDBusPendingReply>
 
-static const QString DDENotifyDBusServer = "com.deepin.dde.Notification";
-static const QString DDENotifyDBusInterface = "com.deepin.dde.Notification";
-static const QString DDENotifyDBusPath = "/com/deepin/dde/Notification";
+static const QString DDENotifyDBusServer = "org.deepin.dde.Notification1";
+static const QString DDENotifyDBusInterface = "org.deepin.dde.Notification1";
+static const QString DDENotifyDBusPath = "/org/deepin/dde/Notification1";
 
 NotifySettingsObserver::NotifySettingsObserver(QObject *parent)
     : AbstractNotifySetting(parent)

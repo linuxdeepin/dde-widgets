@@ -14,6 +14,12 @@ else ()
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Ofast")
 endif ()
 
+include_directories(
+    ${PROJECT_SOURCE_DIR}/app/utils/dbus/xml2cpp/types/
+    ${PROJECT_SOURCE_DIR}/app/utils/dbus/xml2cpp/
+    ${PROJECT_SOURCE_DIR}/app/utils/dbus/qtdbusextended/
+)
+
 add_subdirectory(interface)
 add_subdirectory(app)
 add_subdirectory(tests)

@@ -21,6 +21,7 @@
 
 #pragma once
 
+#include <QDebug>
 #include <QCoreApplication>
 #include <QDBusInterface>
 
@@ -42,8 +43,8 @@ void Helper::showNotificationModuleOfControlCenter()
 {
     // TODO it reports warning of `QDBusConnection: warning: blocking call took a long time`,
     // and the second called is invaild, maybe it's a bug.
-    QDBusInterface interface("com.deepin.dde.ControlCenter", "/com/deepin/dde/ControlCenter",
-                             "com.deepin.dde.ControlCenter");
+    QDBusInterface interface("org.deepin.dde.ControlCenter1", "/org/deepin/dde/ControlCenter1",
+                             "org.deepin.dde.ControlCenter1");
     if (!interface.isValid()) {
         qWarning() << "Get com.deepin.dde.ControlCenter interface error." << interface.lastError().message();
         return;

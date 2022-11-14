@@ -34,9 +34,9 @@
 
 #include "notificationentity.h"
 
-static const QString DDENotifyDBusServer = "com.deepin.dde.Notification";
-static const QString DDENotifyDBusInterface = "com.deepin.dde.Notification";
-static const QString DDENotifyDBusPath = "/com/deepin/dde/Notification";
+static const QString DDENotifyDBusServer = "org.deepin.dde.Notification1";
+static const QString DDENotifyDBusInterface = "org.deepin.dde.Notification1";
+static const QString DDENotifyDBusPath = "/org/deepin/dde/Notification1";
 
 PersistenceObserver::PersistenceObserver(QObject *parent)
     : AbstractPersistence(parent)

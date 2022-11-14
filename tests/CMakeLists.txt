@@ -1,4 +1,3 @@
-PROJECT(tests)
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 
 set(REQUIRED_QT_VERSION 5.11.3)
@@ -37,13 +36,24 @@ list(
     ut_instancemodel.cpp
 )
 
-ADD_EXECUTABLE(dde-widgets-test main.cpp ${HEADERS} ${SOURCES} ${DBUS_XML})
+file(GLOB DBUS_TYPES "../app/utils/dbus/xml2cpp/types/*.*")
+file(GLOB DBUS_INTERFACES "../app/utils/dbus/xml2cpp/*.*")
+file(GLOB DBUS_EXTENDED "../app/utils/dbus/qtdbusextended/*.*")
+
+ADD_EXECUTABLE(dde-widgets-test
+    main.cpp
+    ${HEADERS}
+    ${SOURCES}
+    ${DBUS_XML}
+    ${DBUS_TYPES}
+    ${DBUS_INTERFACES}
+    ${DBUS_EXTENDED}
+)
 
 target_include_directories(dde-widgets-test PUBLIC
     ../app
     ${CMAKE_CURRENT_BINARY_DIR}
     ${CMAKE_SOURCE_DIR}
-    ${DFrameworkDBus_INCLUDE_DIRS}
 )
 
 set(COMMON_LIBS
@@ -53,7 +63,6 @@ set(COMMON_LIBS
     Qt5::Test
     Qt5::DBus
     ${DtkWidget_LIBRARIES}
-    ${DFrameworkDBus_LIBRARIES}
 )
 
 target_link_libraries(dde-widgets-test PUBLIC ${COMMON_LIBS}

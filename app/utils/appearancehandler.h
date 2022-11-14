@@ -22,13 +22,13 @@
 #pragma once
 
 #include "global.h"
+#include "appearance_interface.h"
 #include <QObject>
 #include <DBlurEffectWidget>
 
-#include <com_deepin_daemon_appearance.h>
 WIDGETS_FRAME_BEGIN_NAMESPACE
 DWIDGET_USE_NAMESPACE
-using Appearance = com::deepin::daemon::Appearance;
+    using Appearance = org::deepin::dde::Appearance1;
 
 class Appearancehandler : public QObject {
     Q_OBJECT

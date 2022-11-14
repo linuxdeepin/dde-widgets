@@ -1,6 +1,6 @@
 include_directories(../interface)
 
-qt5_add_dbus_adaptor(DBUS_XML ${CMAKE_CURRENT_LIST_DIR}/services/org.deepin.dde.Widgets.xml
+qt5_add_dbus_adaptor(DBUS_XML ${CMAKE_CURRENT_LIST_DIR}/services/org.deepin.dde.Widgets1.xml
     widgetsserver.h WidgetsServer
     dbusserver_adaptor DBusServer)
 

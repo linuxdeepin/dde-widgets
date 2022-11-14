@@ -27,7 +27,7 @@
 #include "dbusserver_adaptor.h"
 #include <QDebug>
 
-#define DDE_WIDGETS_SERVICE "org.deepin.dde.Widgets"
+#define DDE_WIDGETS_SERVICE "org.deepin.dde.Widgets1"
 
 WIDGETS_FRAME_USE_NAMESPACE
 WidgetsServer::WidgetsServer(QObject *parent)
@@ -56,7 +56,7 @@ bool WidgetsServer::registerService()
         qWarning() << QString("Can't register the %1 service, error:%2.").arg(DDE_WIDGETS_SERVICE).arg(bus.lastError().message());
         return false;
     }
-    if (!bus.registerObject("/", this)) {
+    if (!bus.registerObject("/org/deepin/dde/Widgets1", this)) {
         qWarning() << QString("Can't register to the D-Bus object.");
         return false;
     }
@@ -66,7 +66,7 @@ bool WidgetsServer::registerService()
 void WidgetsServer::start()
 {
     m_manager->loadPlugins();
-    Show();
+//    Show();
 }
 
 void WidgetsServer::Toggle()

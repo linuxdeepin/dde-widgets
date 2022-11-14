@@ -24,12 +24,12 @@
 #include "global.h"
 #include <QObject>
 
-#include <com_deepin_daemon_display.h>
-#include <com_deepin_daemon_display_monitor.h>
-#include <com_deepin_dde_daemon_dock.h>
+#include "display_interface.h"
+#include "monitor_interface.h"
+#include "dock_interface.h"
 WIDGETS_FRAME_BEGIN_NAMESPACE
-using DisplayInter = com::deepin::daemon::Display;
-using DockInter = com::deepin::dde::daemon::Dock;
+using DisplayInter = org::deepin::dde::Display1;
+using DockInter = org::deepin::dde::daemon::Dock1;
 
 class GeometryHandler : public QObject {
     Q_OBJECT
