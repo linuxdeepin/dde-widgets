@@ -1,3 +1,12 @@
+dde-widgets (6.0.5) unstable; urgency=medium
+
+  [ TagBuilder ]
+  * fix: 组件面板消失后，自定义的窗口仍然存在(Bug: 166183)(Influence: 时钟组件设置弹出时收起面板效果)
+  * fix: WorldClock's Window transparent on wayland(Bug: 166177)(Influence: 时钟小组件使用不便)
+  * chore: V23接口改造适配(Task: 207483)(Influence: 无)
+
+ -- zhaoyingzhen <zhaoyingzhen@uniontech.com>  Tue, 13 Dec 2022 19:22:02 +0800
+
 dde-widgets (6.0.4) unstable; urgency=medium
 
   [ Deepin Packages Builder ]
