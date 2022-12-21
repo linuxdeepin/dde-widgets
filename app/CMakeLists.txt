@@ -48,7 +48,6 @@ generation_dbus_interface(
 
 file(GLOB DBUS_TYPES "utils/dbus/xml2cpp/types/*.*")
 file(GLOB DBUS_INTERFACES "utils/dbus/xml2cpp/*.*")
-file(GLOB DBUS_EXTENDED "utils/dbus/qtdbusextended/*.*")
 
 include(src.cmake)
 
@@ -60,7 +59,6 @@ ADD_EXECUTABLE(${PROJECT_NAME}
     ${DBUS_XML}
     ${DBUS_TYPES}
     ${DBUS_INTERFACES}
-    ${DBUS_EXTENDED}
 )
 
 SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES OUTPUT_NAME dde-widgets)

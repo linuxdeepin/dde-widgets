@@ -27,7 +27,6 @@ generation_dbus_interface(
 )
 file(GLOB DBUS_TYPES "utils/dbus/xml2cpp/types/*.*")
 file(GLOB DBUS_INTERFACES "utils/dbus/xml2cpp/*.*")
-file(GLOB DBUS_EXTENDED "../app/utils/dbus/qtdbusextended/*.*")
 
 include(src.cmake)
 
@@ -40,7 +39,6 @@ add_library(${PROJECT_NAME} SHARED
     image.qrc
     ${DBUS_TYPES}
     ${DBUS_INTERFACES}
-    ${DBUS_EXTENDED}
 )
 
 set(COMMON_LIBS
@@ -64,7 +62,6 @@ target_include_directories(${PROJECT_NAME} PUBLIC
     ${CMAKE_SOURCE_DIR}
     ${DtkWidget_INCLUDE_DIRS}
     utils/dbus/xml2cpp/
-    ../app/utils/dbus/qtdbusextended/
     utils/dbus/xml2cpp/types/
 )
 include_directories(

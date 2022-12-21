@@ -38,7 +38,6 @@ list(
 
 file(GLOB DBUS_TYPES "../app/utils/dbus/xml2cpp/types/*.*")
 file(GLOB DBUS_INTERFACES "../app/utils/dbus/xml2cpp/*.*")
-file(GLOB DBUS_EXTENDED "../app/utils/dbus/qtdbusextended/*.*")
 
 ADD_EXECUTABLE(dde-widgets-test
     main.cpp

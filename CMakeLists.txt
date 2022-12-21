@@ -17,7 +17,6 @@ endif ()
 include_directories(
     ${PROJECT_SOURCE_DIR}/app/utils/dbus/xml2cpp/types/
     ${PROJECT_SOURCE_DIR}/app/utils/dbus/xml2cpp/
-    ${PROJECT_SOURCE_DIR}/app/utils/dbus/qtdbusextended/
 )
 
 add_subdirectory(interface)
