@@ -50,7 +50,7 @@ void Helper::showNotificationModuleOfControlCenter()
         return;
     }
     const QString NotificationModuleName("notification");
-    interface.call("ShowModule", NotificationModuleName);
+    interface.call("ShowPage", NotificationModuleName);
 }
 }
 using namespace notify;
