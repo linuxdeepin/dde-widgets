@@ -129,7 +129,7 @@ QStringList TimezoneModel::defaultLocations()
 
 void TimezoneModel::updateTimezoneOffset(QStandardItem *item, const QString &timezone)
 {
-    QDBusInterface interface ("org.deepin.daemon.Timedate1", "/org/deepin/daemon/Timedate1", "org.deepin.daemon.Timedate1", QDBusConnection::sessionBus());
+    QDBusInterface interface ("org.deepin.dde.Timedate1", "/org/deepin/dde/Timedate1", "org.deepin.dde.Timedate1", QDBusConnection::sessionBus());
     auto reply = interface.asyncCall("GetZoneInfo", timezone);
     QDBusPendingCallWatcher *watcher = new QDBusPendingCallWatcher(reply, this);
 
