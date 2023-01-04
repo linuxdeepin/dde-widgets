@@ -62,8 +62,7 @@ QPixmap Clock::getPixmap(const QString &name, const QSize &size)
 QPixmap Clock::getPixmap(const QString &name, const int size, const bool isDark)
 {
     const auto &icon = DDciIcon::fromTheme(name);
-    const auto ratio = qApp->devicePixelRatio();
-    return icon.pixmap(ratio, size, isDark ? DDciIcon::Dark : DDciIcon::Light);
+    return icon.pixmap(1, size, isDark ? DDciIcon::Dark : DDciIcon::Light);
 }
 
 void Clock::paint(QPainter *painter, const QRect &rect)
