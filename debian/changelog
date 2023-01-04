@@ -1,3 +1,11 @@
+dde-widgets (6.0.6) unstable; urgency=medium
+
+  [ TagBuilder ]
+  * fix: 修复桌面的通知中心的通知设置按钮点击无效(Bug: 181065)(Influence: 通知中心调起控制中心通知模块)
+  * fix: 修复桌面的通知中心的通知设置按钮点击无效2(Bug: 181065)(Influence: 通知中心调起控制中心通知模块)
+
+ -- zhaoyingzhen <zhaoyingzhen@uniontech.com>  Wed, 04 Jan 2023 11:51:13 +0800
+
 dde-widgets (6.0.5) unstable; urgency=medium
 
   [ TagBuilder ]
