@@ -1,3 +1,11 @@
+dde-widgets (6.0.7) unstable; urgency=medium
+
+  [ TagBuilder ]
+  * fix: 修复缩放调整为1以上时 时钟面板指针显示错位(Task: 234687)(Influence: 时钟小组件时间显示)
+  * fix: 修复时钟小组件中各地区的时间显示均相同(Bug: 181489)(Influence: 时钟小组件时间显示)
+
+ -- lvpeilong <lvpeilong@uniontech.com>  Fri, 06 Jan 2023 15:50:04 +0800
+
 dde-widgets (6.0.6) unstable; urgency=medium
 
   [ TagBuilder ]
