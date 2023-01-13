@@ -36,6 +36,8 @@ MainView::MainView( WidgetManager *manager, QWidget *parent)
 
     // don't display tray in Dock
     topLevelWidget()->setWindowFlag(Qt::Tool);
+    // on top for all window avoid to being covered.
+    topLevelWidget()->setWindowFlag(Qt::WindowStaysOnTopHint);
 
     qApp->installEventFilter(new LongPressEventFilter(this));
     if (releaseMode()) {
@@ -152,7 +154,7 @@ void MainView::switchToDisplayMode()
     m_mode = Display;
     setContentsMargins(UI::DisMode::leftMargin, UI::topMargin, UI::DisMode::rightMargin, UI::bottomMargin);
 
-    const auto targetRect = m_geometryHandler->getGeometry(expectedWidth());
+    const auto targetRect = m_geometryHandler->getGeometry(expectedWidth(), true);
     updateGeometry(targetRect);
 
     m_storeView->scrollView()->setVisible(false);
