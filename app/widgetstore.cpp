@@ -160,6 +160,7 @@ PluginCell::PluginCell(QWidget *parent)
     m_title->setAlignment(Qt::AlignHCenter);
     layout->addWidget(m_title);
     m_description = new QLabel();
+    m_description->setWordWrap(true);
     m_title->setObjectName("store-description-label");
     m_description->setAlignment(Qt::AlignHCenter);
     {
@@ -172,7 +173,7 @@ PluginCell::PluginCell(QWidget *parent)
 
     m_layout = new QStackedLayout(cellViews);
     m_typeBox = new DButtonBox;
-    m_typeBox->setFixedSize(UI::Store::TypeBoxSize);
+    m_typeBox->setFixedHeight(UI::Store::TypeBoxSize.height());
     viewsLayout->addWidget(m_typeBox, 0, Qt::AlignHCenter);
     viewsLayout->addWidget(cellViews, 0, Qt::AlignHCenter);
     connect(m_typeBox, &DButtonBox::buttonClicked, this, [this](QAbstractButton *btn) {
