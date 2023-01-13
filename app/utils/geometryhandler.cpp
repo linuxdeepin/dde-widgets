@@ -20,8 +20,10 @@
  */
 
 #include "geometryhandler.h"
-#include <QDebug>
 
+#include <DDBusInterface>
+
+#include <QDebug>
 #include <QApplication>
 #include <QScrollArea>
 #include <QScreen>
@@ -71,9 +73,13 @@ GeometryHandler::~GeometryHandler()
     }
 }
 
-QRect GeometryHandler::getGeometry(const int expectedWidth)
+QRect GeometryHandler::getGeometry(const int expectedWidth, const bool reduceDockHeight)
 {
-    QRect dockRect = m_dockDeamonInter->frontendWindowRect();
+    // TODO value of returned `frontendWindowRect()` is invalid, it's maybe a bug in dtkcore.
+//    QRect dockRect = m_dockDeamonInter->frontendWindowRect();
+    DTK_CORE_NAMESPACE::DDBusInterface dockInterface(m_dockDeamonInter->service(), m_dockDeamonInter->path(),
+                                 m_dockDeamonInter->interface());
+    QRect dockRect = qdbus_cast<DockRect>(dockInterface.property("FrontendWindowRect"));
 
     auto displayRect = calcDisplayRect(dockRect);
 
@@ -82,13 +88,13 @@ QRect GeometryHandler::getGeometry(const int expectedWidth)
 
     int height = displayRect.height() - Geo::CenterMargin * 2;
     if (dockPos == Geo::DockPosition::Top || dockPos == Geo::DockPosition::Bottom) {
-        if(dockMode == Geo::DockModel::Fashion) {
+        if (reduceDockHeight)
             height = displayRect.height() - Geo::CenterMargin * 2 - dockRect.height();
+
+        if(dockMode == Geo::DockModel::Fashion) {
             if (dockRect.height() != 0) {
                 height -= Geo::DockMargin * 2;
             }
-        } else {
-            height = displayRect.height() - Geo::CenterMargin * 2 - dockRect.height();
         }
     }
 
