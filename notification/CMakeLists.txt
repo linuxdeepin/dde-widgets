@@ -16,7 +16,7 @@ set(XML2CPP_DIR ${PROJECT_SOURCE_DIR}/utils/dbus/xml2cpp)
 
 #dbus xml
 function(generation_dbus_interface xml class_name class_file)
-    execute_process(COMMAND qdbusxml2cpp-fix -c ${class_name} -p ${class_file} ${xml}
+    execute_process(COMMAND ${CMAKE_INSTALL_PREFIX}/bin/qdbusxml2cpp-fix -c ${class_name} -p ${class_file} ${xml}
         WORKING_DIRECTORY ${XML2CPP_DIR})
 endfunction(generation_dbus_interface)
 
