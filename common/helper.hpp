@@ -8,7 +8,9 @@
 #include <QTranslator>
 #include <DStandardPaths>
 #include <QCoreApplication>
+#include <dsysinfo.h>
 
+DCORE_USE_NAMESPACE
 WIDGETS_BEGIN_NAMESPACE
 class BuildinWidgetsHelper {
 public:
@@ -24,7 +26,8 @@ public:
 
     inline QString contributor() const
     {
-        return qApp->translate("BuildinWidgetsHelper", "https://www.chinauos.com");
+        return DSysInfo::isCommunityEdition() ? QLatin1String("https://www.deepin.org")
+                                              : QLatin1String("https://www.chinauos.com");
     }
 };
 
