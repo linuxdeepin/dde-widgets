@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2023 UnionTech Software Technology Co., Ltd.
+#
+# SPDX-License-Identifier: CC0-1.0
+
 include_directories(../interface)
 
 qt5_add_dbus_adaptor(DBUS_XML ${CMAKE_CURRENT_LIST_DIR}/services/org.deepin.dde.Widgets1.xml

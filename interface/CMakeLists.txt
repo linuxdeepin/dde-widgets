@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2023 UnionTech Software Technology Co., Ltd.
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 PROJECT(interface)
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 

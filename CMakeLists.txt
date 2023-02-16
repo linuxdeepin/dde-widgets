@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2023 UnionTech Software Technology Co., Ltd.
+#
+# SPDX-License-Identifier: CC0-1.0
+
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 
 set(VERSION 3.7)
