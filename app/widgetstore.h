@@ -22,6 +22,7 @@ DWIDGET_END_NAMESPACE
 WIDGETS_FRAME_BEGIN_NAMESPACE
 class WidgetManager;
 class WidgetStoreCell;
+class PlaceholderWidget;
 class PluginCell : public DBlurEffectWidget {
     Q_OBJECT
 public:
@@ -69,7 +70,7 @@ private:
     void updateViewPlaceholder();
 
     QWidget *m_view = nullptr;
-    QLabel *m_viewPlaceholder = nullptr;
+    PlaceholderWidget *m_viewPlaceholder = nullptr;
     QBasicTimer m_viewPlaceholderFresher;
     QWidget *m_action = nullptr;
 };

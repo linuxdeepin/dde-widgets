@@ -9,23 +9,37 @@
 #include <QPointer>
 #include <QWidget>
 #include <widgetsinterface.h>
+#include <DWidget>
+
+DWIDGET_BEGIN_NAMESPACE
+class DClipEffectWidget;
+DWIDGET_END_NAMESPACE
 
 WIDGETS_FRAME_BEGIN_NAMESPACE
 WIDGETS_USE_NAMESPACE
 class WidgetContainer : public QWidget {
     Q_OBJECT
 public:
-    explicit WidgetContainer(QWidget *view, QWidget *parent = nullptr);
+    explicit WidgetContainer(QWidget *view, bool isCustom, QWidget *parent = nullptr);
     virtual ~WidgetContainer() override;
     void setIsUserAreaInstance(const bool isUserAreaInstance);
 
-    static QBitmap bitmapOfMask(const QSize &size, const bool isUserAreaInstance);
-    static QBitmap bitmapOfMask(const QSize &size, const qreal radius);
-
+    static QPainterPath clipPathOfRound(const QRect &rect, const bool isUserAreaInstance);
 protected:
     virtual void resizeEvent(QResizeEvent *event) override;
     bool m_isUserAreaInstance = false;
     QPointer<QWidget> m_view = nullptr;
+    DTK_WIDGET_NAMESPACE::DClipEffectWidget *m_clipView = nullptr;
+};
+
+class PlaceholderWidget : public QWidget {
+    Q_OBJECT
+public:
+    PlaceholderWidget(QWidget *view, QWidget *parent = nullptr);
+protected:
+    virtual void paintEvent(QPaintEvent *event) override;
+private:
+    QWidget *m_view = nullptr;
 };
 
 class InstanceProxy : public QObject {
