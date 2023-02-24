@@ -20,7 +20,7 @@ public:
     explicit GeometryHandler(QObject *parent = nullptr);
     virtual ~GeometryHandler() override;
 
-    QRect getGeometry(const int expectedWidth);
+    QRect getGeometry(const int expectedWidth, const bool reduceDockHeight = false);
 
     QRect calcDisplayRect(const QRect &dockRect);
 private:

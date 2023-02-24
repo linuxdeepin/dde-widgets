@@ -7,6 +7,7 @@
 #include <QDebug>
 #include <QCoreApplication>
 #include <QDBusInterface>
+#include <QDBusPendingCall>
 
 namespace notify {
 class Helper {
