@@ -23,6 +23,7 @@
 #include <DAnchors>
 #include <DFontSizeManager>
 #include <DButtonBox>
+#include <DClipEffectWidget>
 
 WIDGETS_FRAME_BEGIN_NAMESPACE
 WidgetStore::WidgetStore(WidgetManager *manager, QWidget *parent)
@@ -242,7 +243,7 @@ void WidgetStoreCell::setView(QWidget *view)
     m_view->resize(m_handler->size());
     const auto &targetSize = WidgetHandlerImpl::size(m_handler->type(), false);
 
-    m_viewPlaceholder = new QLabel(this);
+    m_viewPlaceholder = new PlaceholderWidget(m_view, this);
     m_viewPlaceholder->resize(targetSize);
 
     auto action = new DIconButton(DStyle::SP_AddButton);
@@ -275,7 +276,7 @@ QWidget *WidgetStoreCell::action() const
 
 void WidgetStoreCell::startDrag(const QPoint &pos)
 {
-    QWidget *child = m_view;
+    QWidget *child = m_viewPlaceholder;
     if (!child)
         return;
 
@@ -290,7 +291,6 @@ void WidgetStoreCell::startDrag(const QPoint &pos)
     mimeData->setData(EditModeMimeDataFormat, itemData);
 
     QPixmap pixmap(child->grab());
-    pixmap.setMask(WidgetContainer::bitmapOfMask(pixmap.size(), WidgetHandlerImpl::get(m_handler)->m_isUserAreaInstance));
 
     QDrag *drag = new QDrag(this);
     drag->setMimeData(mimeData);
@@ -360,12 +360,6 @@ void WidgetStoreCell::updateViewPlaceholder()
 {
     if (!m_viewPlaceholder)
         return;
-
-    const auto &targetSize = m_viewPlaceholder->size();
-    QPixmap pixmap = m_view->grab();
-    pixmap = pixmap.scaled(targetSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-    pixmap.setMask(WidgetContainer::bitmapOfMask(pixmap.size(), WidgetHandlerImpl::get(m_handler)->m_isUserAreaInstance));
-    m_viewPlaceholder->setPixmap(pixmap);
 
     update();
 }

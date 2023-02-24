@@ -12,7 +12,9 @@
 #include <QPainter>
 #include <QResizeEvent>
 #include <QWidget>
+#include <DClipEffectWidget>
 
+DWIDGET_USE_NAMESPACE
 WIDGETS_FRAME_BEGIN_NAMESPACE
 
 InstanceProxy::InstanceProxy(IWidget *impl)
@@ -30,7 +32,8 @@ InstanceProxy::~InstanceProxy()
 QWidget *InstanceProxy::view() const
 {
     if (!m_containerView) {
-        m_containerView = new WidgetContainer(m_impl->view());
+        const bool isCustom = WidgetHandlerImpl::get(m_impl->handler())->isCustom();
+        m_containerView = new WidgetContainer(m_impl->view(), isCustom);
         m_containerView->setIsUserAreaInstance(isUserAreaInstance());
     }
 
@@ -87,13 +90,16 @@ bool InstanceProxy::isUserAreaInstance() const
     return WidgetHandlerImpl::get(m_impl->handler())->m_isUserAreaInstance;
 }
 
-WidgetContainer::WidgetContainer(QWidget *view, QWidget *parent)
+WidgetContainer::WidgetContainer(QWidget *view,  bool isCustom, QWidget *parent)
     : QWidget(parent)
     , m_view(view)
 {
     Q_ASSERT(m_view);
     auto layout = new QVBoxLayout(this);
     layout->setContentsMargins(UI::defaultMargins);
+    if (!isCustom)
+        m_clipView = new DClipEffectWidget(m_view);
+
     layout->addWidget(m_view);
 }
 
@@ -112,24 +118,12 @@ void WidgetContainer::setIsUserAreaInstance(const bool isUserAreaInstance)
     m_isUserAreaInstance = isUserAreaInstance;
 }
 
-QBitmap WidgetContainer::bitmapOfMask(const QSize &size, const bool isUserAreaInstance)
+QPainterPath WidgetContainer::clipPathOfRound(const QRect &rect, const bool isUserAreaInstance)
 {
+    QPainterPath path;
     const qreal radius = isUserAreaInstance ? UI::RoundedRectRadius : UI::DataStoreRoundedRectRadius;
-    return bitmapOfMask(size, radius);
-}
-
-QBitmap WidgetContainer::bitmapOfMask(const QSize &size, const qreal radius)
-{
-    QBitmap bitMap(size);
-    bitMap.fill(Qt::color0);
-
-    QPainter painter(&bitMap);
-    painter.setRenderHint(QPainter::SmoothPixmapTransform);
-    painter.setPen(Qt::NoPen);
-    painter.setBrush(Qt::color1);
-    painter.drawRoundedRect(bitMap.rect(), radius, radius);
-
-    return bitMap;
+    path.addRoundedRect(rect, radius, radius);
+    return path;
 }
 
 void WidgetContainer::resizeEvent(QResizeEvent *event)
@@ -137,8 +131,30 @@ void WidgetContainer::resizeEvent(QResizeEvent *event)
     if (event->oldSize() == event->size())
         return QWidget::resizeEvent(event);
 
-    setMask(bitmapOfMask(event->size(), m_isUserAreaInstance));
+    if (m_clipView)
+        m_clipView->setClipPath(clipPathOfRound(rect(), m_isUserAreaInstance));
 
     return QWidget::resizeEvent(event);
+}
+
+PlaceholderWidget::PlaceholderWidget(QWidget *view, QWidget *parent)
+    : QWidget(parent)
+    , m_view(view)
+{
+    Q_ASSERT(m_view);
+}
+
+void PlaceholderWidget::paintEvent(QPaintEvent *event)
+{
+    QPixmap pixmap = m_view->grab();
+    pixmap = pixmap.scaled(size(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+    QPainter painter(this);
+
+    painter.setRenderHint(QPainter::Antialiasing);
+    painter.setCompositionMode(QPainter::CompositionMode_Source);
+    painter.setClipPath(WidgetContainer::clipPathOfRound(rect(), false));
+    painter.drawPixmap(rect(), pixmap);
+
+    return QWidget::paintEvent(event);
 }
 WIDGETS_FRAME_END_NAMESPACE

@@ -84,7 +84,6 @@ void InstancePanelCell::startDrag(const QPoint &pos)
     mimeData->setData(MoveMimeDataFormat, itemData);
 
     QPixmap pixmap(child->grab());
-    pixmap.setMask(WidgetContainer::bitmapOfMask(pixmap.size(), m_instance->isUserAreaInstance()));
 
     QDrag *drag = new QDrag(this);
     drag->setMimeData(mimeData);
@@ -454,7 +453,6 @@ void InstancePanel::onMenuRequested(const InstanceId &id)
             auto logo = plugin->logo();
             if(logo.isNull()) {
                 QPixmap pixmap(instance->view()->grab());
-                pixmap.setMask(WidgetContainer::bitmapOfMask(pixmap.size(), instance->isUserAreaInstance()));
                 logo = QIcon(pixmap);
             }
             dialog.setLogo(logo);
