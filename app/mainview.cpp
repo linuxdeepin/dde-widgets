@@ -27,10 +27,6 @@ MainView::MainView( WidgetManager *manager, QWidget *parent)
     , m_geometryHandler(new GeometryHandler())
     , m_appearancehandler(new Appearancehandler(this))
 {
-    // TODO DBlurEffectWidget is black when changing BlurEnabled but none Composite, it's maybe a bug.
-    // But we can not consider this scene.
-    setBlurEnabled(false);
-
     setParent(m_animationContainer);
     m_appearancehandler->addTargetWidget(m_animationContainer);
 
