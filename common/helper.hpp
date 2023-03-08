@@ -26,8 +26,8 @@ public:
 
     inline QString contributor() const
     {
-        return DSysInfo::isCommunityEdition() ? QLatin1String("https://www.deepin.org")
-                                              : QLatin1String("https://www.chinauos.com");
+        return DSysInfo::isCommunityEdition() ? QLatin1String("deepin")
+                                              : QLatin1String("UOS");
     }
 };
 
