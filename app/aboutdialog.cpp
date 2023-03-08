@@ -21,6 +21,7 @@ InstanceAboutDialog::InstanceAboutDialog(QWidget *parent)
     addContent(m_logo, Qt::AlignHCenter);
 
     m_title = new DLabel();
+    DFontSizeManager::instance()->bind(m_title, DFontSizeManager::T8, QFont::Bold);
     addSpacing(UI::About::titleSpacing);
     addContent(m_title, Qt::AlignHCenter);
 
