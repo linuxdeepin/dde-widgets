@@ -109,8 +109,8 @@ InstancePanel::InstancePanel(WidgetManager *manager, QWidget *parent)
     pt.setColor(QPalette::Window, Qt::transparent);
     setPalette(pt);
     setAutoFillBackground(true);
-    m_layout->setContentsMargins(UI::defaultMargins);
-    m_layout->setSpacing(UI::Ins::spacing);
+    m_layout->setContentsMargins(QMargins(10, 0, 0, 0));
+    m_layout->setSpacing(UI::Ins::spacing - 10);
 
     // TODO DFlowLayout seems to have the smallest size, it causes extra space even though add stretch.
     // and it's ok replaced `QVBoxLayout`, it maybe a `DFlowLayout` bug.

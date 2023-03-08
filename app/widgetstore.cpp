@@ -32,6 +32,7 @@ WidgetStore::WidgetStore(WidgetManager *manager, QWidget *parent)
     , m_views(new QWidget(this))
     , m_layout(new QVBoxLayout(m_views))
 {
+    m_layout->setContentsMargins(UI::Store::leftMargin, 0, UI::Store::rightMargin, 0);
     m_layout->setSpacing(UI::Store::spacing);
 
     QPalette pt = palette();

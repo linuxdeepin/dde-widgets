@@ -40,7 +40,7 @@ void DisplayModePanel::init()
     auto layout = new QVBoxLayout(this);
     layout->setContentsMargins(UI::defaultMargins);
     layout->setSpacing(0);
-    m_views->setFixedWidth(width());
+    m_views->setFixedWidth(width() - 10);
 
     layout->addWidget(m_views);
 

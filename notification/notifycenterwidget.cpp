@@ -114,7 +114,7 @@ void NotifyCenterWidget::initUI()
     connect(m_notifyWidget->view(), &NotifyListView::lastItemCreated, this, &NotifyCenterWidget::updateTabFocus);
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
-    mainLayout->setContentsMargins(Notify::CenterMargin, Notify::CenterMargin, 0, 0);
+    mainLayout->setContentsMargins(0, Notify::CenterMargin, 0, 0);
     mainLayout->addWidget(m_headWidget);
     mainLayout->addWidget(m_notifyWidget);
     mainLayout->addWidget(bottomTipView, 0, Qt::AlignHCenter);
