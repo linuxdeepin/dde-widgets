@@ -112,9 +112,9 @@ namespace About {
 static const QSize dialogSize(360, 272);
 static const QMargins margins(11, 0, 11, 10);
 static const QSize logoSize(64, 64);
-static const int titleSpacing = 6;
-static const int versionSpacing = 6;
-static const int contributorSpacing = 8;
+static const int titleSpacing = 12;
+static const int versionSpacing = 12;
+static const int contributorSpacing = 6;
 static const int descriptionSpacing = 12;
 
 }

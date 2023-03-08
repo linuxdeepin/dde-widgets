@@ -21,6 +21,7 @@ InstanceAboutDialog::InstanceAboutDialog(QWidget *parent)
     addContent(m_logo, Qt::AlignHCenter);
 
     m_title = new DLabel();
+    DFontSizeManager::instance()->bind(m_title, DFontSizeManager::T8, QFont::Bold);
     addSpacing(UI::About::titleSpacing);
     addContent(m_title, Qt::AlignHCenter);
 
@@ -46,7 +47,7 @@ void InstanceAboutDialog::setLogo(const QIcon &logo)
 
 void InstanceAboutDialog::setVersion(const QString &version)
 {
-    m_version->setText(qApp->translate("InstanceAboutDialog", "version: %1").arg(version));
+    m_version->setText(qApp->translate("InstanceAboutDialog", "version:  %1").arg(version));
 }
 
 void InstanceAboutDialog::setTitle(const QString &title)
@@ -61,6 +62,6 @@ void InstanceAboutDialog::setDescription(const QString &description)
 
 void InstanceAboutDialog::setContributor(const QString &contributor)
 {
-    m_contributor->setText(qApp->translate("InstanceAboutDialog", "contributor: %1").arg(contributor));
+    m_contributor->setText(qApp->translate("InstanceAboutDialog", "contributor:  %1").arg(contributor));
 }
 WIDGETS_FRAME_END_NAMESPACE
