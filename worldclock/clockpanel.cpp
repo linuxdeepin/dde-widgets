@@ -16,6 +16,7 @@
 #include <QDateTime>
 #include <QtMath>
 
+#include <DPaletteHelper>
 #include <DStyleOption>
 DWIDGET_USE_NAMESPACE
 
@@ -235,7 +236,10 @@ void ClockPanel::paintEvent(QPaintEvent *event)
 {
     Q_UNUSED(event);
 
+    QColor color = DPaletteHelper::instance()->palette(this->topLevelWidget()).color(QPalette::Base);
+    color.setAlpha(100);
+
     QPainter painter(this);
-    painter.fillRect(rect(), UI::clock::panelBackground);
+    painter.fillRect(rect(), color);
 }
 }

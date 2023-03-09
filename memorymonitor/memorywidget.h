@@ -37,6 +37,7 @@ private:
     QColor swapBackgroundColor;
     QColor swapColor {"#FEDF19"};
     QColor swapForegroundColor {"#FEDF19"};
+    QColor backgroundBase {"FFFFFF"};
 
     qreal memoryBackgroundOpacity = 0.1;
     qreal memoryForegroundOpacity = 1.0;
