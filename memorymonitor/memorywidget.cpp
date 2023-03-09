@@ -7,6 +7,7 @@
 
 #include <DApplication>
 #include <DApplicationHelper>
+#include <DPaletteHelper>
 
 #include <QApplication>
 #include <QDebug>
@@ -59,14 +60,16 @@ void MemoryWidget::changeTheme(DApplicationHelper::ColorType themeType)
     }
 
     // init colors
-    auto palette = DApplicationHelper::instance()->applicationPalette();
+    auto palette = DPaletteHelper::instance()->palette(this);
 #ifndef THEME_FALLBACK_COLOR
-    numberColor = palette.color(DPalette::TextTitle);
+    numberColor = palette.color(QPalette::BrightText); // was DPalette::TextTitle
 #else
     numberColor = palette.color(DPalette::Text);
 #endif
 
     summaryColor = palette.color(DPalette::TextTips);
+    backgroundBase = palette.color(QPalette::Base);
+    backgroundBase.setAlpha(100);
 }
 
 void MemoryWidget::paintEvent(QPaintEvent *e)
@@ -80,7 +83,7 @@ void MemoryWidget::paintEvent(QPaintEvent *e)
     painter.setClipPath(path);
     //背景
     QRect contentRect(rect());
-    painter.fillRect(contentRect, QBrush(QColor(255, 255, 255,100)));
+    painter.fillRect(contentRect, QBrush(backgroundBase));
 
     int sectionSize = 6;
 
@@ -120,7 +123,7 @@ void MemoryWidget::paintEvent(QPaintEvent *e)
     painter.fillPath(section, memoryColor);
 
     painter.setFont(m_memTxtFont);
-    painter.setPen(QPen(summaryColor));
+    painter.setPen(QPen(numberColor));
     painter.drawText(memTxtRect, Qt::AlignLeft | Qt::AlignVCenter, memoryContent);
 
     QRect swapTxtRect(memTxtRect.left(), memTxtRect.bottom() + margin,//+ topsize
@@ -135,7 +138,7 @@ void MemoryWidget::paintEvent(QPaintEvent *e)
     painter.fillPath(section2, swapColor);
 
     painter.setFont(m_memTxtFont);
-    painter.setPen(QPen(summaryColor));
+    painter.setPen(QPen(numberColor));
     painter.drawText(swapTxtRect, Qt::AlignLeft | Qt::AlignVCenter, swapContent);
 
     const int outsideRingRadius = (contentRect.bottom() - swapTxtRect.bottom() - topMargin) / 2;
