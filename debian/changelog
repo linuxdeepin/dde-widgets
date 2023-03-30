@@ -1,3 +1,11 @@
+dde-widgets (6.0.10) unstable; urgency=medium
+
+  * fix: Remove aliasing for Panel.
+  * fix: Add blur background for frame.
+  * fix: incorrent background for memory and clock Widget.
+
+ -- Deepin Packages Builder <packages@deepin.com>  Thu, 30 Mar 2023 14:35:56 +0800
+
 dde-widgets (6.0.8) unstable; urgency=medium
 
   [ TagBuilder ]
