@@ -196,7 +196,7 @@ const QString BubbleTool::getDeepinDesktopPath(const QString &name)
     QString desktopPath;
 
     for (const auto dataPath : DStandardPaths::standardLocations(QStandardPaths::ApplicationsLocation)) {
-        auto path = QStringList{ dataPath, QString("%1.desktop").arg(name)}.join(QDir::separator()));
+        auto path = QStringList{ dataPath, QString("%1.desktop").arg(name)}.join(QDir::separator());
             if (QFile::exists(path)) {
                 desktopPath = path;
                 break;
