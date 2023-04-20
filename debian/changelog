@@ -1,3 +1,11 @@
+dde-widgets (6.0.11) unstable; urgency=medium
+
+  * fix: 修复玲珑应用通知无法跳转
+  * chore: Compile error
+  * fix: Adaptor XEventMonitor1 updated(Issue: https://github.com/linuxdeepin/developer-center/issues/4132)
+
+ -- Deepin Packages Builder <packages@deepin.org>  Thu, 20 Apr 2023 13:41:28 +0800
+
 dde-widgets (6.0.10) unstable; urgency=medium
 
   * fix: Remove aliasing for Panel.
