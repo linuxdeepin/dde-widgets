@@ -32,8 +32,8 @@ AnimationViewContainer::~AnimationViewContainer()
 void AnimationViewContainer::registerRegion()
 {
     if (!m_regionMonitor) {
-        QDBusInterface interface("org.deepin.api.XEventMonitor1", "/org/deepin/api/XEventMonitor1",
-                                 "org.deepin.api.XEventMonitor1",
+        QDBusInterface interface("org.deepin.dde.XEventMonitor1", "/org/deepin/dde/XEventMonitor1",
+                                 "org.deepin.dde.XEventMonitor1",
                                  QDBusConnection::sessionBus());
         if (!interface.isValid()) {
             qWarning(dwLog()) << "registerRegion error." << interface.lastError().message();
