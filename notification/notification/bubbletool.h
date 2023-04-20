@@ -25,7 +25,6 @@ public:
     static void processIconData(AppIcon *icon, EntityPtr entity); //从entity提取出图标信息设置到icon上
     static void actionInvoke(const QString &actionId, EntityPtr entity);//从entity提取出命令信息,执行命令产生相应动作
     static const QString getDeepinAppName(const QString &name);//获取应用名称
-    static const QString getDeepinDesktopPath(const QString &name);//获取desktop文件路径
 
 private:
     /*!
