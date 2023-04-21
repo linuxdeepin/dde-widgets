@@ -219,10 +219,13 @@ bool PluginCell::eventFilter(QObject *watched, QEvent *event)
 {
     if (auto btn = qobject_cast<DButtonBoxButton *>(watched)) {
         switch (event->type()) {
-        case QEvent::FocusIn:
+        case QEvent::FocusIn: {
             const int index = m_typeBox->id(btn);
             Q_ASSERT(index >= 0 && index < m_cells.count());
             Q_EMIT m_cells[index]->enterChanged(true);
+            break;
+        }
+        default:
             break;
         }
     }
@@ -323,6 +326,8 @@ bool WidgetStoreCell::eventFilter(QObject *watched, QEvent *event)
         case QEvent::FocusIn:
         case QEvent::FocusOut:
             Q_EMIT enterChanged(event->type() == QEvent::FocusIn);
+            break;
+        default:
             break;
         }
     }
