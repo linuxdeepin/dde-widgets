@@ -1,3 +1,12 @@
+dde-widgets (6.0.12) unstable; urgency=medium
+
+  * fix: Icon blur in high devicePixelRatio(Issue: https://github.com/linuxdeepin/dde-widgets/issues/4)
+  * fix: WidgetStore's widget is blur
+  * feat: Add startup parameter to show dde-widgets
+  * chore: Removing cppcheck warning
+
+ -- Deepin Packages Builder <packages@deepin.org>  Fri, 21 Apr 2023 20:09:01 +0800
+
 dde-widgets (6.0.11) unstable; urgency=medium
 
   * fix: 修复玲珑应用通知无法跳转
