@@ -27,6 +27,18 @@ int main(int argc, char *argv[])
     a.setOrganizationName("deepin");
     a.setApplicationName("dde-widgets");
 
+    QCommandLineOption showOption(QStringList() << "s"
+                                                << "show",
+                                  "Show dde-widgets(hide for default).");
+    QCommandLineParser parser;
+    parser.setApplicationDescription("dde-widgets is the desktop widgets service/implementation for DDE.\n"
+                                     "We can show it by call `qdbus org.deepin.dde.Widgets1 /org/deepin/dde/Widgets1 org.deepin.dde.Widgets1.Show`");
+    parser.addHelpOption();
+    parser.addVersionOption();
+    parser.addOption(showOption);
+    parser.process(a);
+    const bool isShow = parser.isSet(showOption);
+
     // avoid to being quit when dialog is closed with it's parent invisible.
     a.setQuitOnLastWindowClosed(false);
     // enable accessible
@@ -47,6 +59,8 @@ int main(int argc, char *argv[])
         return 1;
     }
     server.start();
+    if (isShow)
+        server.Show();
 
     return a.exec();
 }
