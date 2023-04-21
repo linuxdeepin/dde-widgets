@@ -147,7 +147,6 @@ PlaceholderWidget::PlaceholderWidget(QWidget *view, QWidget *parent)
 void PlaceholderWidget::paintEvent(QPaintEvent *event)
 {
     QPixmap pixmap = m_view->grab();
-    pixmap = pixmap.scaled(size(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
     QPainter painter(this);
 
     painter.setRenderHint(QPainter::Antialiasing);
