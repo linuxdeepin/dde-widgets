@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: CC0-1.0
 
-CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.10)
 
 set(VERSION 3.7)
 
@@ -43,10 +43,3 @@ endif()
 file(GLOB QM_FILES "translations/*.qm")
 install(FILES ${QM_FILES} DESTINATION ${CMAKE_INSTALL_PREFIX}/share/dde-widgets/translations)
 
-# copy plugin's translation to app/translations for dbug.
-set(PLUGIN_QM_FILES ${QM_FILES})
-list(FILTER PLUGIN_QM_FILES EXCLUDE REGEX dde-widgets_)
-file(COPY ${PLUGIN_QM_FILES} DESTINATION ${PROJECT_BINARY_DIR}/app/translations)
-set(APP_QM_FILES ${QM_FILES})
-list(FILTER APP_QM_FILES EXCLUDE REGEX dde-widgets-)
-file(COPY ${APP_QM_FILES} DESTINATION $ENV{HOME}/.local/share/dde-widgets/translations)
