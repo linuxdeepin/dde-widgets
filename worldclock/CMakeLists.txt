@@ -38,4 +38,4 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 )
 include_directories(../interface/)
 
-install(TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/dde-widgets/plugins)
+install(TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_INSTALL_LIBDIR}/dde-widgets/plugins)

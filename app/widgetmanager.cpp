@@ -14,6 +14,8 @@
 #include <QtConcurrent/QtConcurrent>
 #include <QWidget>
 
+const QString PLUGIN_DIRECTORY = QStringLiteral(DefaultPluginDirectory);
+
 WIDGETS_FRAME_BEGIN_NAMESPACE
 static QPair<quint16, quint16> parseVersion(const QString &version)
 {
@@ -415,7 +417,7 @@ QStringList WidgetManager::pluginPaths() const
 {
     // The same pluginid will be overwritten by later, `DDE_WIDGETS_PLUGIN_DIRS` > `./plugins` > `/usr`
     QStringList dirs;
-    dirs << "/usr/lib/dde-widgets/plugins";
+    dirs << PLUGIN_DIRECTORY;
     dirs << QCoreApplication::applicationDirPath() + "/plugins";
     const QString &envPaths = qEnvironmentVariable("DDE_WIDGETS_PLUGIN_DIRS");
     if (!envPaths.isEmpty()) {
