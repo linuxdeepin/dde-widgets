@@ -12,11 +12,15 @@ if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
     set(CMAKE_INSTALL_PREFIX /usr)
 endif ()
 
+include(GNUInstallDirs)
+
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -g -fsanitize=address -fno-omit-frame-pointer")
 else ()
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Ofast")
 endif ()
+
+add_definitions(-DDefaultPluginDirectory="${CMAKE_INSTALL_FULL_LIBDIR}/dde-widgets/plugins")
 
 include_directories(
     ${PROJECT_SOURCE_DIR}/app/utils/dbus/xml2cpp/types/
