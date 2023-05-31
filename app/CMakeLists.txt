@@ -94,8 +94,12 @@ install(FILES services/org.deepin.dde.Widgets1.service DESTINATION ${CMAKE_INSTA
 
 install(TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
 
+configure_file(
+	${CMAKE_SOURCE_DIR}/app/services/systemd/dde-widgets.service.in
+	${CMAKE_CURRENT_BINARY_DIR}/dde-widgets.service
+	@ONLY)
 set(SYSTEMD_FILES
-    ${CMAKE_SOURCE_DIR}/app/services/systemd/dde-widgets.service
+    ${CMAKE_CURRENT_BINARY_DIR}/dde-widgets.service
 )
 
 macro(install_symlink filepath wantsdir)

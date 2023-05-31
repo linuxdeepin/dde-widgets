@@ -7,4 +7,4 @@ After=dde-osd.target
 [Service]
 Type=simple
 RemainAfterExit=no
-ExecStart=/usr/bin/dde-widgets
+ExecStart=@CMAKE_INSTALL_FULL_BINDIR@/dde-widgets
