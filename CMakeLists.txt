@@ -8,6 +8,7 @@ set(VERSION 3.7)
 
 project(dde-widgets)
 
+set(CMAKE_CXX_STANDARD 17)
 if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
     set(CMAKE_INSTALL_PREFIX /usr)
 endif ()
