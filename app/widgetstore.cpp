@@ -269,7 +269,7 @@ void WidgetStoreCell::setView(QWidget *view)
     actionAnchors->setTop(cellAnchors->top());
     actionAnchors->setRight(cellAnchors->right());
     viewAnchors->setBottom(cellAnchors->bottom());
-
+    viewAnchors->setHorizontalCenter(cellAnchors->horizontalCenter());
     setFixedSize(targetSize + (UI::Store::AddIconSize / 2));
 }
 
