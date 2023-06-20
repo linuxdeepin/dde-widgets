@@ -76,9 +76,9 @@ void AppBody::refreshTheme()
     if (m_showStyle == OSD::BUBBLEWIDGET) {
         m_titleLbl->setOpacity(1.0);
         m_bodyLbl->setOpacity(Notify::BubbleOpacity);
-
-        m_titleLbl->setFont(DFontSizeManager::instance()->t6());
-        m_bodyLbl->setFont(DFontSizeManager::instance()->t7());
+        DFontSizeManager *fontManager =  DFontSizeManager::instance();
+        fontManager->bind(m_titleLbl, DFontSizeManager::T6);
+        fontManager->bind(m_bodyLbl, DFontSizeManager::T7);
     } else {
         m_titleLbl->setOpacity(Notify::BubbleOpacity);
         m_bodyLbl->setOpacity(1.0);

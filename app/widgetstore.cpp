@@ -134,22 +134,17 @@ PluginCell::PluginCell(QWidget *parent)
     auto layout = new QVBoxLayout(this);
     layout->setContentsMargins(UI::Store::leftMargin, UI::Store::topMargin, UI::Store::rightMargin, UI::Store::bottomMargin);
     layout->setAlignment(Qt::AlignHCenter);
+    DFontSizeManager *fontManager =  DFontSizeManager::instance();
     m_title = new QLabel();
     m_title->setObjectName("store-title-label");
-    {
-        QFont font;
-        font.setBold(true);
-        m_title->setFont(DFontSizeManager::instance()->t5(font));
-    }
+    fontManager->bind(m_title, DFontSizeManager::T5, QFont::Bold);
     m_title->setAlignment(Qt::AlignHCenter);
     layout->addWidget(m_title);
     m_description = new QLabel();
     m_description->setWordWrap(true);
     m_title->setObjectName("store-description-label");
     m_description->setAlignment(Qt::AlignHCenter);
-    {
-        m_description->setFont(DFontSizeManager::instance()->t8());
-    }
+    fontManager->bind(m_description, DFontSizeManager::T8);
 
     QWidget *views = new QWidget();
     auto viewsLayout = new QVBoxLayout(views);
