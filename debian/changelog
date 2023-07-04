@@ -1,3 +1,23 @@
+dde-widgets (6.0.13) unstable; urgency=medium
+
+  * chore: Sync by https://github.com/linuxdeepin/.github/commit/2e5e092ba3f86b16d1aabbabcf0bfd2ae65b19c8(Influence: none)
+  * fix: never install to home when released
+  * feat: Use find_program to find qdbusxml2cpp-fix
+  * fix: do not hardcord libdir
+    Thanks to Hillwood Yang
+  * chore: avoid use hardcode path in services
+  * fix: build error due to xml2cpp varible's change in dtkcore
+  * feat: support tzdir variable
+  * fix: widget in cell isn't center-align(Issue: #22)
+  * fix: font size don't synchronize changes(Issue: #5)
+  * fix: set offset diff to local time
+    Thanks to rewine
+  * chore(CI): Update obs tag build workflow
+  * Revert "fix: 修复玲珑应用通知无法跳转"
+  * fix: 调整关于对话框的文字排版
+
+ -- Deepin Packages Builder <packages@deepin.org>  Tue, 04 Jul 2023 15:56:08 +0800
+
 dde-widgets (6.0.12) unstable; urgency=medium
 
   * fix: Icon blur in high devicePixelRatio(Issue: https://github.com/linuxdeepin/dde-widgets/issues/4)
