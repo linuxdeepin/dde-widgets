@@ -2,16 +2,17 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "mainview.h"
-#include "widgetmanager.h"
 #include "widgetsserver.h"
-#include "displaymodepanel.h"
 #include "accessible/accessible.h"
+
+#include <QCommandLineOption>
+#include <QCommandLineParser>
 
 #include <DWidgetUtil>
 #include <DApplication>
 #include <DLog>
 #include <DGuiApplicationHelper>
+
 DGUI_USE_NAMESPACE
 
 WIDGETS_USE_NAMESPACE
