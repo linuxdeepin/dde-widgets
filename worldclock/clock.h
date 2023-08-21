@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include <QDateTime>
 #include <QFont>
 #include <QPixmap>
 
@@ -18,6 +19,8 @@ public:
     void setLocation(const QString &location);
 
     void paint(QPainter *painter, const QRect &rect);
+
+    static int timeDiff(int utcOffset, const QDateTime &localTime = QDateTime());
 
 private:
     void updateClockPixmap(const bool isNightMode);
