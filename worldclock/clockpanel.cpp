@@ -137,8 +137,7 @@ void ClockDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
 
 QString ClockDelegate::utcOffsetText(const int offset) const
 {
-    const QDateTime localTime(QDateTime::currentDateTime());
-    const int time = (offset - localTime.offsetFromUtc()) / 3600;
+    const int time = (Clock::timeDiff(offset)) / 3600;
     return QString("%1%2h").arg(time > 0 ? "+" : "").arg(time);
 }
 
@@ -146,7 +145,7 @@ QString ClockDelegate::promptOfUtcOffsetText(const int offset) const
 {
     const QDateTime localTime(QDateTime::currentDateTime());
 
-    const double timeDelta = (offset - localTime.offsetFromUtc()) / 3600.0;
+    const double timeDelta = (Clock::timeDiff(offset, localTime)) / 3600.0;
 
     QString dateLiteral;
     if (localTime.time().hour() + timeDelta >= 24) {

@@ -55,7 +55,7 @@ void Clock::paint(QPainter *painter, const QRect &rect)
     m_clockPointSize = basePointSize * ratio;
 
     QDateTime datetime(QDateTime::currentDateTime());
-    datetime = datetime.addSecs(datetime.offsetFromUtc() - m_utcOffset);
+    datetime = datetime.addSecs(timeDiff(m_utcOffset, datetime));
     const QTime time(datetime.time());
 
     const bool nightMode = !(time.hour() >= 6 && time.hour() < 18);
@@ -114,6 +114,15 @@ void Clock::paint(QPainter *painter, const QRect &rect)
                          txt);
         painter->restore();
     }
+}
+
+int Clock::timeDiff(int utcOffset,  const QDateTime &localTime)
+{
+    if (!localTime.isValid()) {
+        QDateTime *currentTime = const_cast<QDateTime *>(&localTime);
+        *currentTime = QDateTime::currentDateTime();
+    }
+    return utcOffset - localTime.offsetFromUtc();
 }
 
 void Clock::setUTCOffset(const int utcOffset)
