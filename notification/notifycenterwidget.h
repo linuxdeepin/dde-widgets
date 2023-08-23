@@ -51,7 +51,9 @@ private Q_SLOTS:
     void updateDisplayOfRemainingNotification();
     void updateTabFocus();
     void expandNotificationFolding();
+    void expandNotificationFoldingImpl(const bool refreshData);
     void collapesNotificationFolding();
+    void collapesNotificationFoldingImpl(const bool refreshData);
     void toggleNotificationFolding();
     void showSettingMenu();
     void showNotificationModuleOfControlCenter();

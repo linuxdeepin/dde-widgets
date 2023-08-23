@@ -64,6 +64,7 @@ void NotifyCenterWidget::initUI()
     m_toggleNotificationFolding = new CicleIconButton(nullptr);
     m_toggleNotificationFolding->setAccessibleName("ToggleNotificationFolding");
     m_toggleNotificationFolding->setFixedSize(UI::Panel::buttonSize);
+    m_toggleNotificationFolding->setIcon(DDciIcon::fromTheme("arrow_ordinary_up"));
     connect(m_toggleNotificationFolding, &CicleIconButton::clicked, this, &NotifyCenterWidget::toggleNotificationFolding);
 
     m_settingBtn = new CicleIconButton(nullptr);
@@ -164,12 +165,15 @@ void NotifyCenterWidget::updateDisplayOfRemainingNotification()
     } else {
         const int rowCount = m_notifyWidget->model()->remainNotificationCount();
         if (rowCount > 0) {
-            if (m_bottomTipLayout->parentWidget()->isHidden())
+            if (m_bottomTipLayout->parentWidget()->isHidden()) {
                 m_bottomTipLayout->parentWidget()->show();
+                collapesNotificationFoldingImpl(false);
+            }
             m_expandRemaining->setText(tr("%1 more notifications").arg(QString::number(rowCount)));
             m_bottomTipLayout->setCurrentWidget(m_expandRemaining);
         } else {
             m_bottomTipLayout->parentWidget()->hide();
+            expandNotificationFoldingImpl(false);
         }
     }
 }
@@ -192,9 +196,14 @@ void NotifyCenterWidget::updateTabFocus()
 
 void NotifyCenterWidget::expandNotificationFolding()
 {
+    expandNotificationFoldingImpl(true);
+}
+
+void NotifyCenterWidget::expandNotificationFoldingImpl(const bool refreshData)
+{
     m_isCollapesNotificationFolding = false;
-    m_notifyWidget->model()->expandData();
-    m_toggleNotificationFolding->setIcon(DDciIcon::fromTheme("arrow_ordinary_up"));
+    if (refreshData)
+        m_notifyWidget->model()->expandData();
     Q_EMIT notificationFoldingChanged(m_isCollapesNotificationFolding);
     m_expandRemaining->hide();
     m_toggleNotificationFolding->show();
@@ -202,9 +211,14 @@ void NotifyCenterWidget::expandNotificationFolding()
 
 void NotifyCenterWidget::collapesNotificationFolding()
 {
+    collapesNotificationFoldingImpl(true);
+}
+
+void NotifyCenterWidget::collapesNotificationFoldingImpl(const bool refreshData)
+{
     m_isCollapesNotificationFolding = true;
-    m_notifyWidget->model()->collapseData();
-    m_toggleNotificationFolding->setIcon(DDciIcon::fromTheme("arrow_ordinary_down"));
+    if (refreshData)
+        m_notifyWidget->model()->collapseData();
     Q_EMIT notificationFoldingChanged(m_isCollapesNotificationFolding);
     m_expandRemaining->show();
     m_toggleNotificationFolding->hide();
