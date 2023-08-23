@@ -87,7 +87,7 @@ namespace Edit {
 
 namespace Display {
     static const QSize EditSize(140, 36);
-    static const int leftMargin = 0;
+    static const int leftMargin = 10;
     static const int rightMargin = 10;
     static const int topMargin = 0;
     static const int bottomMargin = 0;
