@@ -1,3 +1,13 @@
+dde-widgets (6.0.14) unstable; urgency=medium
+
+  * chore: Sync by https://github.com/linuxdeepin/.github/commit/559e91167d4919644f37bbcf123eb0651c1528ea(Influence: none)
+  * chore: adjust the include files in main.cpp
+  * fix: clock drawing error
+  * fix: widget's not in center(Issue: https://github.com/linuxdeepin/developer-center/issues/5256)
+  * fix: UI error on collapse mode(Issue: https://github.com/linuxdeepin/developer-center/issues/4642)
+
+ -- Deepin Packages Builder <packages@deepin.org>  Wed, 30 Aug 2023 10:59:26 +0800
+
 dde-widgets (6.0.13) unstable; urgency=medium
 
   * chore: Sync by https://github.com/linuxdeepin/.github/commit/2e5e092ba3f86b16d1aabbabcf0bfd2ae65b19c8(Influence: none)
