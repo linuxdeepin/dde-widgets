@@ -41,7 +41,7 @@
     </message>
     <message>
         <location filename="../worldclock/settingsview.cpp" line="48"/>
-        <source>Cancle</source>
+        <source>Cancel</source>
         <translation>取消</translation>
     </message>
     <message>
@@ -77,7 +77,7 @@
     </message>
     <message>
         <location filename="../worldclock/zonechooseview.cpp" line="262"/>
-        <source>Cancle</source>
+        <source>Cancel</source>
         <translation>取消</translation>
     </message>
     <message>

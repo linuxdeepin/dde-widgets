@@ -28,7 +28,7 @@ SettingsView::SettingsView(TimezoneModel *model, QWidget *parent)
     desc->setText(tr("Display clocks at different geographical locations"));
     addContent(desc, Qt::AlignHCenter);
     addSpacing(UI::edit::spacingTitle);
-    addButton(tr("Cancle"));
+    addButton(tr("Cancel"));
     addButton(tr("Save"));
 
     setFixedSize(UI::clock::settingsDialogSize);

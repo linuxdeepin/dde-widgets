@@ -240,7 +240,7 @@ ZoneChooseView::ZoneChooseView(QWidget *parent)
     addSpacing(UI::edit::spacingTitle);
     m_search = new DSearchEdit();
     addContent(m_search);
-    addButton(tr("Cancle"));
+    addButton(tr("Cancel"));
     const int okBtnIndex = addButton(tr("OK"));
     m_okBtn = getButton(okBtnIndex);
     m_okBtn->setEnabled(false);
