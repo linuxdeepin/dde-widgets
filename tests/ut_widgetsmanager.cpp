@@ -48,6 +48,8 @@ TEST_F(ut_WidgetManager, createWidget)
     ASSERT_FALSE(instanceId.isEmpty());
     auto replacedInstance = manager.createWidget(ExamplePluginId, IWidget::Large, instanceId);
     ASSERT_EQ(instanceId, replacedInstance->handler()->id());
+    instance->deleteLater();
+    replacedInstance->deleteLater();
 }
 
 TEST_F(ut_WidgetManager, removeWidget)
