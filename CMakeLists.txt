@@ -36,6 +36,7 @@ add_subdirectory(tests)
 add_subdirectory(notification)
 add_subdirectory(memorymonitor)
 add_subdirectory(worldclock)
+add_subdirectory(calendar)
 
 # Only build example when dde-widgets-dev in installed.
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")

@@ -34,6 +34,7 @@ License: GPL-3.0-or-later
 Files: worldclock/qrc/*.qrc worldclock/plugin.json
   notification/*.qrc notification/plugin.json
   memorymonitor/plugin.json
+  calendar/plugin.json
   example/plugin.json
 Copyright: None
 License: CC0-1.0
