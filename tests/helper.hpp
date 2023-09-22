@@ -6,7 +6,7 @@
 
 #include <QtGlobal>
 
-static const char *ExamplePluginId = "org.deepin.dde.widgets.ExampleCommonDate";
+static const char *ExamplePluginId = "org.deepin.dde.widgets.ExampleWidget";
 
 class EnvGuard {
 public:
