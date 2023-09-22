@@ -4,7 +4,9 @@
 
 #pragma once
 
+#include <QPointer>
 #include <widgetsinterface.h>
+#include <DCalendarWidget>
 
 WIDGETS_USE_NAMESPACE
 namespace dwclock {
@@ -12,11 +14,15 @@ class CalendarWidget : public QObject, public IWidget {
 public:
     virtual QWidget *view() override;
     virtual bool initialize(const QStringList &arguments) override;
+    virtual void showWidgets() override;
 
 public:
     virtual bool eventFilter(QObject *watched, QEvent *event) override;
 
     static void showDDECalendar();
+
+private:
+    QPointer<DTK_WIDGET_NAMESPACE::DCalendarWidget> m_calendar;
 };
 
 class CalendarWidgetPlugin : public IWidgetPlugin

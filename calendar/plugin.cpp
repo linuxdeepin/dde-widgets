@@ -8,7 +8,6 @@
 #include <QMouseEvent>
 #include <QVBoxLayout>
 
-#include <DCalendarWidget>
 #include <DClipEffectWidget>
 #include <DDBusSender>
 #include <DFrame>
@@ -46,6 +45,7 @@ QWidget *CalendarWidget::view()
     DCalendarWidget *calendar = new DCalendarWidget();
     layout->addWidget(calendar, 0, Qt::AlignCenter);
     frame->installEventFilter(this);
+    m_calendar = calendar;
     return frame;
 }
 
@@ -56,6 +56,13 @@ bool CalendarWidget::initialize(const QStringList &arguments) {
         hasLoaded = BuildinWidgetsHelper::instance()->loadTranslator("dde-widgets-calendar_");
 
     return true;
+}
+
+void CalendarWidget::showWidgets()
+{
+    if (m_calendar) {
+        m_calendar->setSelectedDate(QDate::currentDate());
+    }
 }
 
 bool CalendarWidget::eventFilter(QObject *watched, QEvent *event)
