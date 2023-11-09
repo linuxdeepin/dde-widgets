@@ -58,10 +58,10 @@ void AnimationViewContainer::unRegisterRegion()
     }
 }
 
-void AnimationViewContainer::regionMonitorHide(const QPoint &p)
+void AnimationViewContainer::regionMonitorHide(const QPoint &p, const int flag)
 {
     // avoid to being hiden when app still is active.
-    if (qApp->activeWindow())
+    if (qApp->activeWindow() || flag >= DRegionMonitor::Wheel_Up)
         return;
 
     auto m_scale = qApp->primaryScreen()->devicePixelRatio();

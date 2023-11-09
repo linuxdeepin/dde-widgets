@@ -29,7 +29,7 @@ Q_SIGNALS:
     void outsideAreaReleased();
 
 private Q_SLOTS:
-    void regionMonitorHide(const QPoint & p);
+    void regionMonitorHide(const QPoint & p, const int flag);
 
 private:
     int currentX() const;
