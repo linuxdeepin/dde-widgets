@@ -213,7 +213,7 @@ QVector<Instance *> WidgetManager::initialize(const QVector<Instance *> &instanc
         m_widgets[instance->handler()->id()] = instance;
 
         qDebug(dwLog()) << "delayInitialize widget." << instance->handler()->pluginId() << instance->handler()->id();
-        futures << QtConcurrent::run(instance, &Instance::delayInitialize);
+        futures << QtConcurrent::run([instance]() { instance->delayInitialize(); });
     }
     // TODO delay those blocking.
     for (auto item : futures) {

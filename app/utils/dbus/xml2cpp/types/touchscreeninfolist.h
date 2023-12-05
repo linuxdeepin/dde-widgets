@@ -15,7 +15,8 @@ struct TouchscreenInfo {
     QString deviceNode;
     QString serialNumber;
 
-    bool operator ==(const TouchscreenInfo& info);
+    bool operator!=(const TouchscreenInfo& info) const;
+    bool operator==(const TouchscreenInfo& info) const;
 };
 
 typedef QList<TouchscreenInfo> TouchscreenInfoList;

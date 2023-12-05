@@ -97,14 +97,14 @@ bool ZoneProxyModel::filterAcceptsRow(int source_row, const QModelIndex &source_
 
     const QString &display = sourceModel()->data(rowIndex).toString();
 
-    if (filterRegExp().isEmpty())
+    if (filterRegularExpression().isValid())
         return true;
 
-    if (display.contains(filterRegExp()))
+    if (display.contains(filterRegularExpression()))
         return true;
 
     if (isChineseSystem()) {
-        if (toChinesePinyin(display).contains(filterRegExp()))
+        if (toChinesePinyin(display).contains(filterRegularExpression()))
             return true;
     }
     return false;
@@ -299,7 +299,7 @@ QString ZoneChooseView::currentZone() const
 
 void ZoneChooseView::onSearchTextChanged(const QString &text)
 {
-    m_proxyModel->setFilterRegExp(text);
+    m_proxyModel->setFilterRegularExpression(text);
     for (auto section : m_sections) {
         bool shouldShow = section->rowCount() > 0;
         if (shouldShow == section->isVisible())

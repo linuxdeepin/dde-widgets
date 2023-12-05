@@ -41,7 +41,7 @@ QWidget *CalendarWidget::view()
     frame->setFixedSize(handler()->size());
     frame->setFrameRounded(true);
     auto layout = new QVBoxLayout(frame);
-    layout->setMargin(0);
+    layout->setContentsMargins(0, 0, 0, 0);
     DCalendarWidget *calendar = new DCalendarWidget();
     layout->addWidget(calendar, 0, Qt::AlignCenter);
     frame->installEventFilter(this);

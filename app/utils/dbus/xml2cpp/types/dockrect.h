@@ -14,6 +14,9 @@ public:
     DockRect();
     operator QRect() const;
 
+    bool operator!=(const DockRect &other);
+    bool operator==(const DockRect &other);
+
     friend QDebug operator<<(QDebug debug, const DockRect &rect);
     friend const QDBusArgument &operator>>(const QDBusArgument &arg, DockRect &rect);
     friend QDBusArgument &operator<<(QDBusArgument &arg, const DockRect &rect);

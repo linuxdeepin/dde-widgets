@@ -5,11 +5,9 @@
 PROJECT(dde-notificationwidget-plugin)
 CMAKE_MINIMUM_REQUIRED(VERSION 3.10)
 
-set(REQUIRED_QT_VERSION 5.11.3)
-find_package(Qt5 ${REQUIRED_QT_VERSION} REQUIRED COMPONENTS Core Gui Widgets DBus Concurrent Svg X11Extras)
-find_package(DtkCore REQUIRED)
-find_package(DtkGui REQUIRED)
-find_package(DtkWidget REQUIRED)
+set(REQUIRED_QT_VERSION 6.0.0)
+find_package(Qt6 ${REQUIRED_QT_VERSION} REQUIRED COMPONENTS Core Gui Widgets DBus Concurrent) # Svg X11Extras
+find_package(Dtk6 REQUIRED COMPONENTS Core Gui Widget)
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
@@ -48,22 +46,22 @@ add_library(${PROJECT_NAME} SHARED
 )
 
 set(COMMON_LIBS
-    Qt5::Core
-    Qt5::Gui
-    Qt5::Widgets
-    Qt5::DBus
-    Qt5::Concurrent
-    Qt5::Svg
-    Qt5::X11Extras
+    Qt6::Core
+    Qt6::Gui
+    Qt6::Widgets
+    Qt6::DBus
+    Qt6::Concurrent
+    # Qt5::Svg
+    # Qt5::X11Extras
     ${DtkWidget_LIBRARIES}
 )
 
 target_link_libraries(${PROJECT_NAME} PUBLIC ${COMMON_LIBS})
 
 target_include_directories(${PROJECT_NAME} PUBLIC
-    Qt5::Concurrent
-    Qt5::Svg
-    Qt5::X11Extras
+    Qt6::Concurrent
+    Qt6::Svg
+    Qt6::X11Extras
     ${CMAKE_CURRENT_BINARY_DIR}
     ${CMAKE_SOURCE_DIR}
     ${DtkWidget_INCLUDE_DIRS}

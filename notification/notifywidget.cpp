@@ -27,7 +27,7 @@ NotifyWidget::NotifyWidget(QWidget *parent, AbstractPersistence *database)
 
     mainVBLayout->addWidget(m_mainList);
     mainVBLayout->addWidget(m_noNotify);
-    mainVBLayout->setMargin(0);
+    mainVBLayout->setContentsMargins(0, 0, 0, 0);
     setLayout(mainVBLayout);
 }
 

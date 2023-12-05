@@ -13,6 +13,16 @@ ScreenRect::ScreenRect()
 
 }
 
+bool ScreenRect::operator!=(const ScreenRect &other)
+{
+    return !(*this == other);
+}
+
+bool ScreenRect::operator==(const ScreenRect &other)
+{
+    return (x == other.x) && (y == other.y) && (w == other.w) && (h == other.h); 
+}
+
 QDebug operator<<(QDebug debug, const ScreenRect &rect)
 {
     debug << QString("ScreenRect(%1, %2, %3, %4)").arg(rect.x)

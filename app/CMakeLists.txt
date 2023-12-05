@@ -5,11 +5,9 @@
 PROJECT(frame)
 CMAKE_MINIMUM_REQUIRED(VERSION 3.10)
 
-set(REQUIRED_QT_VERSION 5.11.3)
-find_package(Qt5 ${REQUIRED_QT_VERSION} REQUIRED COMPONENTS Core Gui Widgets DBus Concurrent)
-find_package(DtkCore REQUIRED)
-find_package(DtkGui REQUIRED)
-find_package(DtkWidget REQUIRED)
+set(REQUIRED_QT_VERSION 6.0.0)
+find_package(Qt6 REQUIRED ${EQUIRED_QT_VERSION} COMPONENTS Core Gui Widgets DBus Concurrent)
+find_package(Dtk6 REQUIRED COMPONENTS Core Gui Widget)
 
 find_package(PkgConfig REQUIRED)
 
@@ -70,11 +68,12 @@ ADD_EXECUTABLE(${PROJECT_NAME}
 SET_TARGET_PROPERTIES(${PROJECT_NAME} PROPERTIES OUTPUT_NAME dde-widgets)
 
 set(COMMON_LIBS
-    Qt5::Core
-    Qt5::Gui
-    Qt5::Widgets
-    Qt5::DBus
-    Qt5::Concurrent
+    Qt6::Core
+    Qt6::Gui
+    Qt6::GuiPrivate
+    Qt6::Widgets
+    Qt6::DBus
+    Qt6::Concurrent
     ${DtkWidget_LIBRARIES}
 )
 
@@ -83,7 +82,7 @@ target_link_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_BINARY_DIR}/../in
 target_link_libraries(${PROJECT_NAME} PRIVATE dde-widgets)
 
 target_include_directories(${PROJECT_NAME} PUBLIC
-    Qt5::Concurrent
+    Qt6::Concurrent
     ${CMAKE_CURRENT_BINARY_DIR}
     ${CMAKE_SOURCE_DIR}
     ${DtkWidget_INCLUDE_DIRS}

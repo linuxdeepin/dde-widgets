@@ -16,10 +16,10 @@
 #include <QPushButton>
 #include <QPainter>
 #include <QPaintEvent>
-#include <QSvgRenderer>
 #include <QStyleOption>
 #include <QVBoxLayout>
 #include <DFontSizeManager>
+#include <qt5/QtGui/qevent.h>
 
 ButtonContent::ButtonContent(QWidget *parent)
     : DWidget(parent)
@@ -155,7 +155,7 @@ void ButtonMenu::paintEvent(QPaintEvent *event)
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
     QStyleOption opt;
-    opt.init(this);
+    opt.initFrom(this);
 
     opt.rect.setX(MenuPadding);
     opt.rect.setY((height() - MenuHeight) / 2);
@@ -191,7 +191,7 @@ Button::Button(QWidget *parent)
 
     QHBoxLayout *layout = new QHBoxLayout;
     layout->setSpacing(0);
-    layout->setMargin(0);
+    layout->setContentsMargins(0, 0, 0, 0);
     layout->addWidget(m_button);
     layout->addWidget(m_menuArea);
     setLayout(layout);
@@ -312,7 +312,7 @@ void Button::paintEvent(QPaintEvent *event)
     return QWidget::paintEvent(event);
 }
 
-void Button::enterEvent(QEvent *event)
+void Button::enterEvent(QEnterEvent *event)
 {
     setHoverState(true);
 

@@ -59,7 +59,7 @@ bool CopyFolder(const QString &src_dir, const QString& dest_dir,
 
   // Walk through source folder.
   while (ok && iter.hasNext()) {
-    QFileInfo src_info = iter.next();
+    QFileInfo src_info = iter.nextFileInfo();
     const QString dest_filepath = iter.filePath().replace(src_dir, dest_dir);
     if (src_info.isDir()) {
       if (!QDir(dest_filepath).exists()) {

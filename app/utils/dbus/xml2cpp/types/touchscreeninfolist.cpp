@@ -22,7 +22,12 @@ const QDBusArgument &operator>>(const QDBusArgument &arg, TouchscreenInfo &info)
     return arg;
 }
 
-bool TouchscreenInfo::operator==(const TouchscreenInfo &info)
+bool TouchscreenInfo::operator!=(const TouchscreenInfo &info) const
+{
+    return !(*this == info);
+}
+
+bool TouchscreenInfo::operator==(const TouchscreenInfo &info) const
 {
     return id == info.id && name == info.name && deviceNode == info.deviceNode && serialNumber == info.serialNumber;
 }
