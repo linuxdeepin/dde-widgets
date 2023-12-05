@@ -14,6 +14,9 @@
 #include <QLabel>
 #include <DWindowManagerHelper>
 #include <QPointer>
+#include <qeventpoint.h>
+#include <private/qeventpoint_p.h>
+
 DGUI_USE_NAMESPACE
 
 WIDGETS_FRAME_BEGIN_NAMESPACE
@@ -182,7 +185,8 @@ bool LongPressEventFilter::eventFilter(QObject *obj, QEvent *event)
                 qDebug() << "LongPressEventFilter() send LongPressDrag" << target;
                 auto pos = target->mapFromGlobal(me->globalPos());
                 LongPressDragEvent le(*me);
-                le.setLocalPos(pos);
+                /* le.setPosition(pos); */
+                QMutableEventPoint::setPosition(me->point(0), pos);
                 qApp->sendEvent(target, &le);
             }
         }

@@ -10,7 +10,7 @@
 #include "style.h"
 #include "helper.hpp"
 
-#include <QDesktopWidget>
+/* #include <QDesktopWidget> */
 #include <QBoxLayout>
 #include <QDBusInterface>
 #include <QPalette>
@@ -81,7 +81,7 @@ void NotifyCenterWidget::initUI()
 //    m_clearButton->setFocusPolicy(Qt::StrongFocus);
 
     QHBoxLayout *head_Layout = new QHBoxLayout;
-    head_Layout->setMargin(0);
+    head_Layout->setContentsMargins(0, 0, 0, 0);
     head_Layout->addWidget(title_label, 0, Qt::AlignLeft | Qt::AlignBottom);
     head_Layout->addStretch();
     head_Layout->addWidget(m_toggleNotificationFolding, 0, Qt::AlignRight | Qt::AlignTop);

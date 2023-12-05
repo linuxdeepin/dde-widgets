@@ -10,9 +10,9 @@
 #include <QDebug>
 #include <QDir>
 #include <QProcess>
-#include <QX11Info>
+/* #include <QX11Info> */
 #include <QSettings>
-#include <QTextCodec>
+/* #include <QTextCodec> */
 
 #include <DDesktopEntry>
 

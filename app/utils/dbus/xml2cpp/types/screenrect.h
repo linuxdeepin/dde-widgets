@@ -16,6 +16,9 @@ public:
     ScreenRect();
     operator QRect() const;
 
+    bool operator!=(const ScreenRect &other);
+    bool operator==(const ScreenRect &other);
+
     friend QDebug operator<<(QDebug debug, const ScreenRect &rect);
     friend const QDBusArgument &operator>>(const QDBusArgument &arg, ScreenRect &rect);
     friend QDBusArgument &operator<<(QDBusArgument &arg, const ScreenRect &rect);

@@ -14,6 +14,16 @@ DockRect::DockRect()
 
 }
 
+bool DockRect::operator!=(const DockRect &other)
+{
+    return !(*this == other);
+}
+
+bool DockRect::operator==(const DockRect &other)
+{
+    return (x == other.x) && (y == other.y) && (w == other.w) && (h == other.h); 
+}
+
 QDebug operator<<(QDebug debug, const DockRect &rect)
 {
     debug << QString("DockRect(%1, %2, %3, %4)").arg(rect.x)

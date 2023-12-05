@@ -6,6 +6,7 @@
 
 #include "global.h"
 #include "utils.h"
+#include <qt5/QtGui/qevent.h>
 #include <widgetsinterface.h>
 
 #include <DBlurEffectWidget>
@@ -57,7 +58,7 @@ Q_SIGNALS:
 
 protected:
     virtual void startDrag(const QPoint &pos) override;
-    virtual void enterEvent(QEvent *event) override;
+    virtual void enterEvent(QEnterEvent *event) override;
     virtual void leaveEvent(QEvent *event) override;
 
     virtual void timerEvent(QTimerEvent *event) override;

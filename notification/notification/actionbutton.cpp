@@ -118,13 +118,13 @@ void ActionButton::initUI()
     m_menuButton->hide();
 
     m_layout = new QHBoxLayout;
-    m_layout->setMargin(0);
+    m_layout->setContentsMargins(0, 0, 0, 0);
     m_layout->setSpacing(10);
     m_layout->setAlignment(Qt::AlignRight);
 
     QHBoxLayout *layout = new QHBoxLayout;
     layout->setSpacing(10);
-    layout->setMargin(0);
+    layout->setContentsMargins(0, 0, 0, 0);
     layout->addLayout(m_layout);
     layout->addWidget(m_menuButton);
 
@@ -138,7 +138,7 @@ QSize ActionButton::contentSize(const QString &text, bool is_menu) const
     const QFontMetrics fm(appNamefont);
 
     if (m_showStyle == OSD::BUBBLEWINDOW) {
-        int text_width = fm.width(text) + 15;
+        int text_width = fm.horizontalAdvance(text) + 15;
         int max_width = qMax(text_width, OSD::ButtonSize(m_showStyle).width());
         if (is_menu) {
             max_width = qMax(MenuWidth + 2 * MenuPadding + text_width, OSD::ButtonSize(m_showStyle).width());

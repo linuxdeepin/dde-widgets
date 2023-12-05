@@ -24,6 +24,7 @@
 #include <DFontSizeManager>
 #include <DButtonBox>
 #include <DClipEffectWidget>
+#include <qt5/QtGui/qevent.h>
 
 WIDGETS_FRAME_BEGIN_NAMESPACE
 WidgetStore::WidgetStore(WidgetManager *manager, QWidget *parent)
@@ -302,7 +303,7 @@ void WidgetStoreCell::startDrag(const QPoint &pos)
     }
 }
 
-void WidgetStoreCell::enterEvent(QEvent *event)
+void WidgetStoreCell::enterEvent(QEnterEvent *event)
 {
     Q_EMIT enterChanged(true);
     QWidget::enterEvent(event);
