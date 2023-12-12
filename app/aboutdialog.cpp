@@ -34,6 +34,7 @@ InstanceAboutDialog::InstanceAboutDialog(QWidget *parent)
     addContent(m_contributor, Qt::AlignHCenter);
 
     m_description = new DTipLabel();
+    m_description->DLabel::setForegroundRole(QPalette::WindowText);
     m_description->setWordWrap(true);
     DFontSizeManager::instance()->bind(m_description, DFontSizeManager::T9);
     addSpacing(UI::About::descriptionSpacing);
