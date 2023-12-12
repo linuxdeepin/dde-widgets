@@ -63,6 +63,9 @@ QRect GeometryHandler::getGeometry(const int expectedWidth, const bool reduceDoc
     DTK_CORE_NAMESPACE::DDBusInterface dockInterface(m_dockDeamonInter->service(), m_dockDeamonInter->path(),
                                  m_dockDeamonInter->interface());
     QRect dockRect = qdbus_cast<DockRect>(dockInterface.property("FrontendWindowRect"));
+    qreal ratio = qApp->primaryScreen()->devicePixelRatio();
+    auto drect = QRect(dockRect.x(), dockRect.y(),
+                        dockRect.width() / ratio, dockRect.height() / ratio);
 
     auto displayRect = calcDisplayRect(dockRect);
 
@@ -72,10 +75,10 @@ QRect GeometryHandler::getGeometry(const int expectedWidth, const bool reduceDoc
     int height = displayRect.height() - Geo::CenterMargin * 2;
     if (dockPos == Geo::DockPosition::Top || dockPos == Geo::DockPosition::Bottom) {
         if (reduceDockHeight)
-            height = displayRect.height() - Geo::CenterMargin * 2 - dockRect.height();
+            height -= drect.height();
 
         if(dockMode == Geo::DockModel::Fashion) {
-            if (dockRect.height() != 0) {
+            if (drect.height() != 0) {
                 height -= Geo::DockMargin * 2;
             }
         }
@@ -84,21 +87,21 @@ QRect GeometryHandler::getGeometry(const int expectedWidth, const bool reduceDoc
     int x = displayRect.x() + displayRect.width() - expectedWidth - Geo::CenterMargin;
     if (dockPos == Geo::DockPosition::Right) {
         if(dockMode == Geo::DockModel::Fashion) {
-            x =  displayRect.x() + displayRect.width() - (expectedWidth + dockRect.width() + Geo::DockMargin * 2 + Geo::CenterMargin);
-            if (dockRect.width() == 0) {
+            x =  displayRect.x() + displayRect.width() - (expectedWidth + drect.width() + Geo::DockMargin * 2 + Geo::CenterMargin);
+            if (drect.width() == 0) {
                 x += Geo::DockMargin * 2;
             }
         } else {
-            x =  displayRect.x() + displayRect.width() - (expectedWidth + dockRect.width() + Geo::CenterMargin);
+            x =  displayRect.x() + displayRect.width() - (expectedWidth + drect.width() + Geo::CenterMargin);
         }
     }
 
     int y = displayRect.y() + Geo::CenterMargin;
     if (dockPos == Geo::DockPosition::Top) {
         if(dockMode == Geo::DockModel::Fashion) {
-            y = displayRect.y() + Geo::CenterMargin + dockRect.height() + Geo::DockMargin * 2;
+            y = displayRect.y() + Geo::CenterMargin + drect.height() + Geo::DockMargin * 2;
         } else {
-            y = displayRect.y() + Geo::CenterMargin + dockRect.height();
+            y = displayRect.y() + Geo::CenterMargin + drect.height();
         }
     }
 
