@@ -1,3 +1,12 @@
+dde-widgets (6.0.15) unstable; urgency=medium
+
+  * release 6.0.15
+  * fix: dde-widgets height error(#5703)
+  * fix: description text color error(#2340)
+  * feat: Add calendar widget
+
+ -- Deepin Packages Builder <packages@deepin.org>  Thu, 14 Dec 2023 13:17:28 +0800
+
 dde-widgets (6.0.14) unstable; urgency=medium
 
   * chore: Sync by https://github.com/linuxdeepin/.github/commit/559e91167d4919644f37bbcf123eb0651c1528ea(Influence: none)
