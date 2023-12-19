@@ -28,6 +28,11 @@ int main(int argc, char *argv[])
     a.setOrganizationName("deepin");
     a.setApplicationName("dde-widgets");
 
+    // fixed font size(qt5integration/pull/199)
+    QFont f = a.font();
+    f.setPointSize(11);
+    a.setFont(f);
+
     QCommandLineOption showOption(QStringList() << "s"
                                                 << "show",
                                   "Show dde-widgets(hide for default).");
