@@ -1,3 +1,10 @@
+dde-widgets (6.0.16) unstable; urgency=medium
+
+  * release 6.0.16
+  * fix #4907
+
+ -- Mike Chen <chenke@deepin.org>  Thu, 04 Jan 2024 11:17:10 +0800
+
 dde-widgets (6.0.15) unstable; urgency=medium
 
   * release 6.0.15
