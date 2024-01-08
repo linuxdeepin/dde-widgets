@@ -4,6 +4,7 @@
 
 #include "animationviewcontainer.h"
 #include "utils.h"
+#include "global.h"
 #include <widgetsinterface.h>
 
 #include <QTimer>
@@ -129,6 +130,8 @@ int AnimationViewContainer::currentX() const
 void AnimationViewContainer::setCurrentX(const int x)
 {
     auto rect = m_targetRect;
+    rect -= QMargins(0, UI::Widget::WindowMargin, 0, UI::Widget::WindowMargin);
+
     rect.setLeft(x);
     rect.setWidth(m_targetRect.right() - x);
     setFixedWidth(rect.width());
