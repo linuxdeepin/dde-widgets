@@ -45,6 +45,7 @@ namespace Control {
     static const QColor transparentButtonBackground(0, 0, 0, 0.1 * 255);
 }
 namespace Widget {
+    static constexpr int WindowMargin = 10;
     static const QSize SmallSize(170, 170);
     static const QSize StoreSmallSize(130, 130);
     static const QSize MiddleSize(360, 170);
