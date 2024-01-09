@@ -26,12 +26,13 @@
 #include <QMouseEvent>
 #include <QScroller>
 #include <QPainterPath>
+#include <QMenu>
 
 #include <DIconButton>
 #include <DStyleHelper>
 #include <DGuiApplicationHelper>
 #include <DFontSizeManager>
-#include <QMenu>
+#include <DIconTheme>
 
 AlphaWidget::AlphaWidget(QWidget *parent)
     : DWidget(parent)
@@ -398,7 +399,7 @@ BubbleBase::BubbleBase(QWidget *parent, EntityPtr entity)
 
     m_closeButton->setAccessibleName("CloseButton");
     m_closeButton->setObjectName(m_appName + "-CloseButton");
-    m_closeButton->setIcon(DDciIcon::fromTheme("notify_clear"));
+    m_closeButton->setIcon(DIconTheme::findQIcon("notify_clear"));
 }
 
 void BubbleBase::setParentModel(NotifyModel *model)
