@@ -19,11 +19,12 @@
 #include <QScreen>
 #include <QMenu>
 #include <QStackedLayout>
+#include <QPushButton>
 
 #include <DLabel>
 #include <DFontSizeManager>
 #include <DGuiApplicationHelper>
-#include <QPushButton>
+#include <DIconTheme>
 
 DWIDGET_USE_NAMESPACE
 
@@ -75,7 +76,7 @@ void NotifyCenterWidget::initUI()
 
     m_clearButton = new CicleIconButton;
     m_clearButton->setAccessibleName("ClearButton");
-    m_clearButton->setIcon(DDciIcon::fromTheme("notify_clear"));
+    m_clearButton->setIcon(DIconTheme::findQIcon("notify_clear"));
     m_clearButton->setFixedSize(UI::Panel::buttonSize);
     m_clearButton->setVisible(false);
 //    m_clearButton->setFocusPolicy(Qt::StrongFocus);
