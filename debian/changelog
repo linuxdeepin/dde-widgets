@@ -1,3 +1,11 @@
+dde-widgets (6.0.17) unstable; urgency=medium
+
+  * release 6.0.17
+  * fix: dde-widgets window margin error(#4400)
+  * update notify clear icon(#6367)
+
+ -- Mike Chen <chenke@deepin.org>  Tue, 09 Jan 2024 17:08:01 +0800
+
 dde-widgets (6.0.16) unstable; urgency=medium
 
   * release 6.0.16
