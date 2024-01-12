@@ -182,11 +182,14 @@ public slots:
     void setAppTopping(const QString &appName, bool isTopping);
     bool isCollapse() const;
     bool isCollapse(const QString &appName) const;
+    bool fullCollapsed() const;
+    void updateFullCollapsed();
 
 Q_SIGNALS:
     void dataChanged();                                 // 数据库有添加数据时发送该信号
     void removedNotif();                                // 删除通知完成信号
     void appCountChanged();
+    void fullCollapsedChanged(bool);
 
 private Q_SLOTS:
     void onReceivedAppInfoChanged(const QString &id, uint item, QVariant var);
@@ -209,6 +212,8 @@ private:
     QList<EntityPtr> m_cacheList;
     QTimer *m_freeTimer;
     bool m_isCollapse = true;
+    bool m_fullCollapsed = true;
+    QSet<QString> m_expandedApps;
     NotifySettingsObserver *m_settings = nullptr;
 };
 

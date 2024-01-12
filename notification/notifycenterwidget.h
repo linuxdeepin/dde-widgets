@@ -43,9 +43,6 @@ private:
     void initConnections();     //初始化信号槽连接
     void refreshTheme();        //系统主题改变时,刷新主题
 
-Q_SIGNALS:
-    void notificationFoldingChanged(bool isExpand);
-
 private Q_SLOTS:
     void CompositeChanged();   //用来设置是否开启窗口特效
     void updateDisplayOfRemainingNotification();
@@ -54,10 +51,10 @@ private Q_SLOTS:
     void expandNotificationFoldingImpl(const bool refreshData);
     void collapesNotificationFolding();
     void collapesNotificationFoldingImpl(const bool refreshData);
-    void toggleNotificationFolding();
     void showSettingMenu();
     void showNotificationModuleOfControlCenter();
     void updateClearButtonVisible();
+    void updateToggleNotificationFoldingButtonVisible();
 
 private:
     inline bool hasAppNotification() const;
