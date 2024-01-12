@@ -66,7 +66,8 @@ void NotifyCenterWidget::initUI()
     m_toggleNotificationFolding->setAccessibleName("ToggleNotificationFolding");
     m_toggleNotificationFolding->setFixedSize(UI::Panel::buttonSize);
     m_toggleNotificationFolding->setIcon(DDciIcon::fromTheme("arrow_ordinary_up"));
-    connect(m_toggleNotificationFolding, &CicleIconButton::clicked, this, &NotifyCenterWidget::toggleNotificationFolding);
+    connect(m_toggleNotificationFolding, &CicleIconButton::clicked, this, &NotifyCenterWidget::collapesNotificationFolding);
+    updateToggleNotificationFoldingButtonVisible();
 
     m_settingBtn = new CicleIconButton(nullptr);
     m_settingBtn->setIcon(DDciIcon::fromTheme("notify_more"));
@@ -143,6 +144,8 @@ void NotifyCenterWidget::initConnections()
     connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged, this, &NotifyCenterWidget::refreshTheme);
 
     connect(m_wmHelper, &DWindowManagerHelper::hasCompositeChanged, this, &NotifyCenterWidget::CompositeChanged, Qt::QueuedConnection);
+    connect(m_notifyWidget->model(), &NotifyModel::fullCollapsedChanged, this, &NotifyCenterWidget::updateToggleNotificationFoldingButtonVisible);
+    connect(m_notifyWidget->model(), &NotifyModel::appCountChanged, this, &NotifyCenterWidget::updateToggleNotificationFoldingButtonVisible);
 }
 
 void NotifyCenterWidget::refreshTheme()
@@ -168,13 +171,12 @@ void NotifyCenterWidget::updateDisplayOfRemainingNotification()
         if (rowCount > 0) {
             if (m_bottomTipLayout->parentWidget()->isHidden()) {
                 m_bottomTipLayout->parentWidget()->show();
-                collapesNotificationFoldingImpl(false);
+                m_expandRemaining->show();
             }
             m_expandRemaining->setText(tr("%1 more notifications").arg(QString::number(rowCount)));
             m_bottomTipLayout->setCurrentWidget(m_expandRemaining);
         } else {
             m_bottomTipLayout->parentWidget()->hide();
-            expandNotificationFoldingImpl(false);
         }
     }
 }
@@ -202,12 +204,9 @@ void NotifyCenterWidget::expandNotificationFolding()
 
 void NotifyCenterWidget::expandNotificationFoldingImpl(const bool refreshData)
 {
-    m_isCollapesNotificationFolding = false;
     if (refreshData)
         m_notifyWidget->model()->expandData();
-    Q_EMIT notificationFoldingChanged(m_isCollapesNotificationFolding);
     m_expandRemaining->hide();
-    m_toggleNotificationFolding->show();
 }
 
 void NotifyCenterWidget::collapesNotificationFolding()
@@ -217,21 +216,9 @@ void NotifyCenterWidget::collapesNotificationFolding()
 
 void NotifyCenterWidget::collapesNotificationFoldingImpl(const bool refreshData)
 {
-    m_isCollapesNotificationFolding = true;
     if (refreshData)
         m_notifyWidget->model()->collapseData();
-    Q_EMIT notificationFoldingChanged(m_isCollapesNotificationFolding);
     m_expandRemaining->show();
-    m_toggleNotificationFolding->hide();
-}
-
-void NotifyCenterWidget::toggleNotificationFolding()
-{
-    if (m_isCollapesNotificationFolding) {
-        expandNotificationFolding();
-    } else {
-        collapesNotificationFolding();
-    }
 }
 
 void NotifyCenterWidget::showNotificationModuleOfControlCenter()
@@ -244,6 +231,15 @@ void NotifyCenterWidget::updateClearButtonVisible()
     const bool changed = (m_clearButton->isVisible() != hasAppNotification());
     if (changed)
         m_clearButton->setVisible(!m_clearButton->isVisible());
+}
+
+void NotifyCenterWidget::updateToggleNotificationFoldingButtonVisible()
+{
+    if (hasAppNotification() && !m_notifyWidget->model()->fullCollapsed()) {
+        m_toggleNotificationFolding->show();
+    } else {
+        m_toggleNotificationFolding->hide();
+    }
 }
 
 bool NotifyCenterWidget::hasAppNotification() const

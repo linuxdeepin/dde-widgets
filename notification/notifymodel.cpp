@@ -164,6 +164,8 @@ void NotifyModel::expandDataByAppName(const QString &appName)
         const ListItemPtr &appGroup = m_notifications[i];
         if (appName.isEmpty() || appGroup->appName() == appName) {
             appGroup->toggleFolding(false);
+            m_expandedApps.insert(appName);
+            updateFullCollapsed();
         }
     }
     endResetModel();
@@ -179,12 +181,16 @@ void NotifyModel::expandData()
         appGroup->toggleFolding(true);
     }
     endResetModel();
+    m_expandedApps.clear();
+    updateFullCollapsed();
 }
 
 void NotifyModel::collapseData()
 {
     m_isCollapse = true;
     collapseDataByAppName(QString());
+    m_expandedApps.clear();
+    updateFullCollapsed();
 }
 
 void NotifyModel::collapseDataByAppName(const QString &appName)
@@ -194,6 +200,8 @@ void NotifyModel::collapseDataByAppName(const QString &appName)
         ListItemPtr &appGroup = m_notifications[i];
         if (appName.isEmpty() || appGroup->appName() == appName) {
             appGroup->toggleFolding(true);
+            m_expandedApps.remove(appName);
+            updateFullCollapsed();
         }
     }
     endResetModel();
@@ -282,6 +290,21 @@ void NotifyModel::setAppTopping(const QString &appName, bool isTopping)
 bool NotifyModel::isCollapse(const QString &appName) const
 {
     return getAppData(appName)->isCollapse();
+}
+
+bool NotifyModel::fullCollapsed() const
+{
+    return m_fullCollapsed;
+}
+
+void NotifyModel::updateFullCollapsed()
+{
+    auto value = m_isCollapse && m_expandedApps.empty();
+    if (value == m_fullCollapsed) {
+        return;
+    }
+    m_fullCollapsed = value;
+    Q_EMIT fullCollapsedChanged(value);
 }
 
 bool NotifyModel::isCollapse() const
