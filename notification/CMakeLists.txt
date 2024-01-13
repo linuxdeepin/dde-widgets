@@ -37,7 +37,7 @@ file(GLOB DBUS_INTERFACES "utils/dbus/xml2cpp/*.*")
 include(src.cmake)
 
 SET(LIBRARY_OUTPUT_PATH ../app/plugins)
-add_library(${PROJECT_NAME} SHARED
+add_library(${PROJECT_NAME} MODULE
     plugin.h
     plugin.cpp
     ${SOURCES}
@@ -58,9 +58,9 @@ set(COMMON_LIBS
     ${DtkWidget_LIBRARIES}
 )
 
-target_link_libraries(${PROJECT_NAME} PUBLIC ${COMMON_LIBS})
+target_link_libraries(${PROJECT_NAME} PRIVATE ${COMMON_LIBS})
 
-target_include_directories(${PROJECT_NAME} PUBLIC
+target_include_directories(${PROJECT_NAME} PRIVATE
     Qt5::Concurrent
     Qt5::Svg
     Qt5::X11Extras
