@@ -19,7 +19,7 @@ set(AUTOMOC_COMPILER_PREDEFINES ON)
 include(src.cmake)
 
 SET(LIBRARY_OUTPUT_PATH ../app/plugins)
-add_library(${PROJECT_NAME} SHARED plugin.h plugin.cpp ${SOURCES} ${HEADERS})
+add_library(${PROJECT_NAME} MODULE plugin.h plugin.cpp ${SOURCES} ${HEADERS})
 
 set(COMMON_LIBS
     Qt5::Core
@@ -29,9 +29,9 @@ set(COMMON_LIBS
     ${DtkWidget_LIBRARIES}
 )
 
-target_link_libraries(${PROJECT_NAME} PUBLIC ${COMMON_LIBS})
+target_link_libraries(${PROJECT_NAME} PRIVATE ${COMMON_LIBS})
 
-target_include_directories(${PROJECT_NAME} PUBLIC
+target_include_directories(${PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_BINARY_DIR}
     ${CMAKE_SOURCE_DIR}
     ${DtkWidget_INCLUDE_DIRS}
