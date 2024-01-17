@@ -23,6 +23,9 @@ public:
     QRect getGeometry(const int expectedWidth, const bool reduceDockHeight = false);
 
     QRect calcDisplayRect(const QRect &dockRect);
+
+Q_SIGNALS:
+    void geometryChanged();
 private:
     DisplayInter *m_displayInter = nullptr;
     DockInter *m_dockDeamonInter = nullptr;

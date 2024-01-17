@@ -55,6 +55,8 @@ Q_SIGNALS:
 
 private:
     int expectedWidth() const;
+private Q_SLOTS:
+    void refreshShownView();
 private:
     WidgetManager *m_manager = nullptr;
     WidgetStore *m_storeView;

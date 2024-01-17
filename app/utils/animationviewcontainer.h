@@ -23,6 +23,7 @@ public:
 
     void showView();
     void hideView();
+    void refreshView();
     void updateGeometry(const QRect &rect);
 
 Q_SIGNALS:
@@ -38,7 +39,6 @@ private:
     void unRegisterRegion();
 
 private:
-    QRect m_currRect;
     QRect m_targetRect;
     QPropertyAnimation *m_currentXAni = nullptr;
     DRegionMonitor *m_regionMonitor = nullptr;
