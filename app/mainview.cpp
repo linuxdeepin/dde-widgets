@@ -99,6 +99,7 @@ void MainView::init()
     m_displayModeView->init();
 
     connect(m_animationContainer, &AnimationViewContainer::outsideAreaReleased, this, &MainView::hideView);
+    QObject::connect(m_geometryHandler, &GeometryHandler::geometryChanged, this, &MainView::refreshShownView);
 }
 
 MainView::Mode MainView::displayMode() const
@@ -182,4 +183,18 @@ int MainView::expectedWidth() const
 {
     return m_mode == Edit ? UI::EditMode::width : UI::DisMode::width;
 }
+
+void MainView::refreshShownView()
+{
+    if (!isVisible())
+        return;
+
+    if (m_mode == Display) {
+        switchToDisplayMode();
+    } else {
+        switchToEditMode();
+    }
+    m_animationContainer->refreshView();
+}
+
 WIDGETS_FRAME_END_NAMESPACE

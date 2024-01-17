@@ -116,7 +116,7 @@ bool releaseMode()
 {
     static bool on = qEnvironmentVariableIsSet("DDE_WIDGETS_DBUG_MODE");
     if (on)
-        return true;
+        return qEnvironmentVariableIntValue("DDE_WIDGETS_DBUG_MODE") <= 0;
 
 #if (defined QT_DEBUG)
     return false;

@@ -42,6 +42,7 @@ GeometryHandler::GeometryHandler(QObject *parent)
                                           QDBusConnection::sessionBus(), this);
     m_dockDeamonInter = new DockInter(DockDaemonDBusServie, DockDaemonDBusPath,
                                       QDBusConnection::sessionBus(), this);
+    QObject::connect(m_displayInter, &DisplayInter::PrimaryRectChanged, this, &GeometryHandler::geometryChanged, Qt::UniqueConnection);
 }
 
 GeometryHandler::~GeometryHandler()
@@ -112,6 +113,9 @@ QRect GeometryHandler::calcDisplayRect(const QRect &dockRect)
 {
     qreal ratio = qApp->primaryScreen()->devicePixelRatio();
     QRect displayRect = m_displayInter->primaryRect();
+    displayRect = QRect(displayRect.x(), displayRect.y(),
+                        displayRect.width() / ratio, displayRect.height() / ratio);
+
     QList<QDBusObjectPath> screenList = m_displayInter->monitors();
 
     for (const auto &screen : screenList) {

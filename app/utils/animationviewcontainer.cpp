@@ -115,11 +115,22 @@ void AnimationViewContainer::hideView()
     connect(m_currentXAni, &QPropertyAnimation::finished, this, &AnimationViewContainer::hide, Qt::UniqueConnection);
 }
 
+void AnimationViewContainer::refreshView()
+{
+    if (m_currentXAni && m_currentXAni->state() == QAbstractAnimation::Running) {
+        m_currentXAni->stop();
+    }
+    if (isVisible()) {
+        showView();
+    } else {
+        hideView();
+    }
+}
+
 void AnimationViewContainer::updateGeometry(const QRect &rect)
 {
-    m_currRect = geometry();
     m_targetRect = rect;
-    qDebug() << "updateGeometry:" << m_currRect << m_targetRect;
+    qDebug() << "updateGeometry:" << geometry() << m_targetRect;
 }
 
 int AnimationViewContainer::currentX() const
