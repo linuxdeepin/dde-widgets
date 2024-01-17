@@ -1,3 +1,12 @@
+dde-widgets (6.0.18) unstable; urgency=medium
+
+  * fix: collapse button show when full collapsed(Issue: https://github.com/linuxdeepin/developer-center/issues/5362)
+  * fix: Fix "undefined reference" errors
+    Thanks to Hillwood Yang
+  * fix: wrong position when screen changed(Issue: https://github.com/linuxdeepin/developer-center/issues/6867)
+
+ -- YeShanShan <yeshanshan@deepin.org>  Wed, 17 Jan 2024 15:13:59 +0800
+
 dde-widgets (6.0.17) unstable; urgency=medium
 
   * release 6.0.17
