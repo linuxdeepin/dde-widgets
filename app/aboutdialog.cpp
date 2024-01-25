@@ -7,6 +7,7 @@
 #include <DTipLabel>
 #include <DFontSizeManager>
 #include <QCoreApplication>
+#include <QVBoxLayout>
 
 WIDGETS_FRAME_BEGIN_NAMESPACE
 
@@ -14,7 +15,7 @@ DWIDGET_USE_NAMESPACE
 InstanceAboutDialog::InstanceAboutDialog(QWidget *parent)
     : DDialog(parent)
 {
-    setFixedSize(UI::About::dialogSize);
+    setMinimumSize(UI::About::dialogSize);
     setContentLayoutContentsMargins(UI::About::margins);
 
     m_logo = new DLabel();
@@ -36,6 +37,7 @@ InstanceAboutDialog::InstanceAboutDialog(QWidget *parent)
     m_description = new DTipLabel();
     m_description->DLabel::setForegroundRole(QPalette::WindowText);
     m_description->setWordWrap(true);
+    m_description->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::MinimumExpanding);
     DFontSizeManager::instance()->bind(m_description, DFontSizeManager::T9);
     addSpacing(UI::About::descriptionSpacing);
     addContent(m_description, Qt::AlignHCenter);
@@ -65,4 +67,5 @@ void InstanceAboutDialog::setContributor(const QString &contributor)
 {
     m_contributor->setText(qApp->translate("InstanceAboutDialog", "contributor: %1").arg(contributor));
 }
+
 WIDGETS_FRAME_END_NAMESPACE
