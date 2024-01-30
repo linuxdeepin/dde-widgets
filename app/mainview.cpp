@@ -14,6 +14,8 @@
 #include <QDebug>
 #include <QHBoxLayout>
 #include <QScrollArea>
+#include <QApplication>
+#include <QWindow>
 #include <DFontManager>
 #include <DPlatformWindowHandle>
 DGUI_USE_NAMESPACE
@@ -100,6 +102,11 @@ void MainView::init()
 
     connect(m_animationContainer, &AnimationViewContainer::outsideAreaReleased, this, &MainView::hideView);
     QObject::connect(m_geometryHandler, &GeometryHandler::geometryChanged, this, &MainView::refreshShownView);
+    connect(qApp, &QApplication::focusWindowChanged, this, [this](QWindow *focus){
+        if (!focus) {
+            hideView();
+        }
+    });
 }
 
 MainView::Mode MainView::displayMode() const
