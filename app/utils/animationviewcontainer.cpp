@@ -89,6 +89,7 @@ void AnimationViewContainer::showView()
     const auto &rect = m_targetRect;
     qDebug(dwLog()) << "show view:" << rect;
     show();
+    activateWindow();
 
     registerRegion();
     m_currentXAni->setStartValue(rect.left());
