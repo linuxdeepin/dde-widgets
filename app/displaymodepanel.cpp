@@ -51,6 +51,7 @@ void DisplayModePanel::init()
     connect(button, &QPushButton::clicked, this, &DisplayModePanel::editClicked);
     layout->addSpacing(UI::Ins::button2FlowPanelTopMargin);
     layout->addWidget(button, 0, Qt::AlignHCenter);
+    layout->addSpacing(UI::Ins::button2FlowPanelTopMargin);
 
     layout->addStretch();
 }

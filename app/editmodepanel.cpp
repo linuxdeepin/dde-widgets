@@ -107,6 +107,7 @@ void EditModePanel::init()
     connect(button, &QPushButton::clicked, this, &EditModePanel::editCompleted);
     layout->addSpacing(UI::Ins::button2FlowPanelTopMargin);
     layout->addWidget(button, 0, Qt::AlignHCenter);
+    layout->addSpacing(UI::Ins::button2FlowPanelTopMargin);
 
     layout->addStretch();
 }
