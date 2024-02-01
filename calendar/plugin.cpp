@@ -11,6 +11,7 @@
 #include <DClipEffectWidget>
 #include <DDBusSender>
 #include <DFrame>
+#include <DFontSizeManager>
 
 DWIDGET_USE_NAMESPACE
 
@@ -43,6 +44,7 @@ QWidget *CalendarWidget::view()
     auto layout = new QVBoxLayout(frame);
     layout->setMargin(0);
     DCalendarWidget *calendar = new DCalendarWidget();
+    DFontSizeManager::instance()->bind(calendar, DFontSizeManager::T7);
     layout->addWidget(calendar, 0, Qt::AlignCenter);
     frame->installEventFilter(this);
     m_calendar = calendar;
