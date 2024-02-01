@@ -61,6 +61,7 @@ QScrollArea *WidgetStore::scrollView()
         auto scrollArea = new QScrollArea();
 
         scrollArea->setObjectName(QString("WidgetStore"));
+        scrollArea->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Expanding);
         scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         QPalette pt = scrollArea->palette();
         pt.setColor(QPalette::Window, Qt::transparent);
