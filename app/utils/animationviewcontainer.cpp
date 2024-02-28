@@ -22,7 +22,7 @@ AnimationViewContainer::AnimationViewContainer(QWidget *parent)
 {
     setBlurEnabled(false);
     setAttribute(Qt::WA_TranslucentBackground);
-    setFixedWidth(0);
+    resize(0, 0); // Should set size explicitly for region monitor to work correctly.
     setWindowFlags(Qt::Tool);
 }
 
@@ -33,13 +33,6 @@ AnimationViewContainer::~AnimationViewContainer()
 void AnimationViewContainer::registerRegion()
 {
     if (!m_regionMonitor) {
-        QDBusInterface interface("org.deepin.dde.XEventMonitor1", "/org/deepin/dde/XEventMonitor1",
-                                 "org.deepin.dde.XEventMonitor1",
-                                 QDBusConnection::sessionBus());
-        if (!interface.isValid()) {
-            qWarning(dwLog()) << "registerRegion error." << interface.lastError().message();
-            return;
-        }
         m_regionMonitor = new DRegionMonitor(this);
         m_regionMonitor->setCoordinateType(DRegionMonitor::Original);
         connect(m_regionMonitor, &DRegionMonitor::buttonRelease, this, &AnimationViewContainer::regionMonitorHide, Qt::UniqueConnection);
@@ -146,7 +139,6 @@ void AnimationViewContainer::setCurrentX(const int x)
 
     rect.setLeft(x);
     rect.setWidth(m_targetRect.right() - x);
-    setFixedWidth(rect.width());
     setGeometry(rect);
 }
 WIDGETS_FRAME_END_NAMESPACE
