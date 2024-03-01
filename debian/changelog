@@ -1,3 +1,11 @@
+dde-widgets (6.0.20) unstable; urgency=medium
+
+  * fix: scroll bar covers the content(Issue: https://github.com/linuxdeepin/developer-center/issues/6744)
+  * fix: calendar show incomplete in dde-wigdet
+  * fix: slide out animation blinking(Issue: https://github.com/linuxdeepin/developer-center/issues/7177)
+
+ -- Wang Yixue <wangyixue@deepin.org>  Fri, 01 Mar 2024 09:58:03 +0800
+
 dde-widgets (6.0.19) unstable; urgency=medium
 
   * fix: description text is clipped
