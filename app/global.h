@@ -59,7 +59,7 @@ namespace Widget {
 namespace Store {
     static const QSize TypeBtnSize(28, 24);
     static const QSize TypeBoxSize(TypeBtnSize.width() * SizeType, 24);
-    static const QSize AddIconSize(17, 17);
+    static const QSize AddIconSize(16, 16);
     static const int leftMargin = 0;
     static const int rightMargin = 0;
     static const int topMargin = 18;
@@ -77,7 +77,7 @@ namespace Ins {
 }
 namespace Edit {
     static const QSize CompleteSize(140, 36);
-    static const QSize DeleteIconSize(17, 17);
+    static const QSize DeleteIconSize(16, 16);
     static const int leftMargin = 0;
     static const int rightMargin = 10;
     static const int topMargin = 0;
