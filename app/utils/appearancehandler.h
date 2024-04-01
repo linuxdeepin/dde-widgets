@@ -21,7 +21,7 @@ public:
 
     void addTargetWidget(DBlurEffectWidget *target);
 
-    int aplpha() const;
+    int alpha() const;
 
 private:
     Appearance *m_appearance = nullptr;
