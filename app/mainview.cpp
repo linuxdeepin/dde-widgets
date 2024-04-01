@@ -103,7 +103,7 @@ void MainView::init()
     connect(m_animationContainer, &AnimationViewContainer::outsideAreaReleased, this, &MainView::hideView);
     QObject::connect(m_geometryHandler, &GeometryHandler::geometryChanged, this, &MainView::refreshShownView);
     connect(qApp, &QApplication::focusWindowChanged, this, [this](QWindow *focus){
-        if (!focus) {
+        if (!focus && releaseMode()) {
             hideView();
         }
     });

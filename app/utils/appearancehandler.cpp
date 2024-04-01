@@ -30,14 +30,14 @@ Appearancehandler::~Appearancehandler()
 
 void Appearancehandler::addTargetWidget(DBlurEffectWidget *target)
 {
-    target->setMaskAlpha(aplpha());
+    target->setMaskAlpha(alpha());
     connect(m_appearance, &Appearance::OpacityChanged, target, [this, target](double  value) {
         target->setMaskAlpha(static_cast<quint8>(value * 255));
     });
     m_targets.append(target);
 }
 
-int Appearancehandler::aplpha() const
+int Appearancehandler::alpha() const
 {
     const double value = m_appearance->opacity();
     return static_cast<quint8>(value * 255);
