@@ -77,9 +77,10 @@ void MemoryWidget::paintEvent(QPaintEvent *e)
     QPainter painter;
     painter.begin(this);
 
+    painter.setRenderHint(QPainter::Antialiasing);
     //裁剪绘制区域
     QPainterPath path;
-    path.addRoundedRect(rect(), 8, 8);
+    path.addRoundedRect(rect(), roundedCornerRadius(), roundedCornerRadius());
     painter.setClipPath(path);
     //背景
     QRect contentRect(rect());
@@ -171,4 +172,17 @@ void MemoryWidget::changeFont(const QFont &font)
     m_memTxtFont.setFamily("SourceHanSansSC");
     m_memTxtFont.setWeight(QFont::ExtraLight);
     m_memTxtFont.setPointSizeF(m_memTxtFont.pointSizeF()-2 );
+}
+
+int MemoryWidget::roundedCornerRadius() const
+{
+    return m_roundedCornerRadius;
+}
+
+void MemoryWidget::setRoundedCornerRadius(int newRoundedCornerRadius)
+{
+    if (m_roundedCornerRadius == newRoundedCornerRadius)
+        return;
+    m_roundedCornerRadius = newRoundedCornerRadius;
+    emit roundedCornerRadiusChanged();
 }

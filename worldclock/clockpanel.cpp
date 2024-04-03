@@ -239,6 +239,24 @@ void ClockPanel::paintEvent(QPaintEvent *event)
     color.setAlpha(100);
 
     QPainter painter(this);
-    painter.fillRect(rect(), color);
+    painter.setRenderHint(QPainter::Antialiasing);
+    painter.setBrush(color);
+    painter.setPen(Qt::NoPen);
+    auto radius = roundedCornerRadius();
+    painter.drawRoundedRect(rect(), radius, radius);
 }
+
+int ClockPanel::roundedCornerRadius() const
+{
+    return m_roundedCornerRadius;
+}
+
+void ClockPanel::setRoundedCornerRadius(int newRoundedCornerRadius)
+{
+    if (m_roundedCornerRadius == newRoundedCornerRadius)
+        return;
+    m_roundedCornerRadius = newRoundedCornerRadius;
+    emit roundedCornerRadiusChanged();
+}
+
 }

@@ -20,16 +20,11 @@ WIDGETS_USE_NAMESPACE
 class WidgetContainer : public QWidget {
     Q_OBJECT
 public:
-    explicit WidgetContainer(QWidget *view, bool isCustom, QWidget *parent = nullptr);
+    explicit WidgetContainer(QWidget *view, QWidget *parent = nullptr);
     virtual ~WidgetContainer() override;
-    void setIsUserAreaInstance(const bool isUserAreaInstance);
 
-    static QPainterPath clipPathOfRound(const QRect &rect, const bool isUserAreaInstance);
 protected:
-    virtual void resizeEvent(QResizeEvent *event) override;
-    bool m_isUserAreaInstance = false;
     QPointer<QWidget> m_view = nullptr;
-    DTK_WIDGET_NAMESPACE::DClipEffectWidget *m_clipView = nullptr;
 };
 
 class PlaceholderWidget : public QWidget {
@@ -58,8 +53,6 @@ public:
     void aboutToShutdown();
     void settings();
     bool enableSettings();
-
-    bool isUserAreaInstance() const;
 
 private:
     QScopedPointer<IWidget> m_impl;

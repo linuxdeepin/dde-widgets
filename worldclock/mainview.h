@@ -17,7 +17,7 @@ class ViewManager : public QObject
 public:
     explicit ViewManager (QObject *parent = nullptr);
     virtual ~ViewManager() override;
-    ClockPanel *clockPanel() const;
+    ClockPanel *clockPanel(int roundedCornerRadius) const;
     SettingsView *settingsView() const;
     TimezoneModel *model() const;
     void updateModel(const QStringList &timezones);

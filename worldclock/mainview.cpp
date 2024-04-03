@@ -21,10 +21,11 @@ ViewManager::~ViewManager()
     m_model = nullptr;
 }
 
-ClockPanel *ViewManager::clockPanel() const
+ClockPanel *ViewManager::clockPanel(int roundedCornerRadius) const
 {
     if (!m_clockPanel) {
         m_clockPanel = new ClockPanel();
+        m_clockPanel->setRoundedCornerRadius(roundedCornerRadius);
         m_clockPanel->view()->setModel(m_model);
     }
     return m_clockPanel;

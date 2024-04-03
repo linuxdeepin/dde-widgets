@@ -157,6 +157,11 @@ public:
      * @brief 组件应该设置的大小
      */
     virtual QSize size() const = 0;
+
+    /**
+     * @brief 组件应该设置的圆角半径
+     */
+    virtual int roundedCornerRadius() const = 0;
 };
 
 /**

@@ -32,7 +32,7 @@ IWidget *WorldClockWidgetPlugin::createWidget()
 
 QWidget *WorldClockWidget::view()
 {
-    return m_viewManager->clockPanel();
+    return m_viewManager->clockPanel(handler()->roundedCornerRadius());
 }
 
 bool WorldClockWidget::initialize(const QStringList &arguments) {
@@ -58,7 +58,7 @@ void WorldClockWidget::delayInitialize()
 
 void WorldClockWidget::typeChanged(const IWidget::Type type)
 {
-    auto clockPanel = m_viewManager->clockPanel();
+    auto clockPanel = m_viewManager->clockPanel(handler()->roundedCornerRadius());
     clockPanel->setFixedSize(handler()->size());
 
     clockPanel->setSmallType(type == IWidget::Small);
@@ -77,7 +77,7 @@ bool WorldClockWidget::enableSettings()
 void WorldClockWidget::settings()
 {
     auto settingsView = m_viewManager->settingsView();
-    auto pw = m_viewManager->clockPanel();
+    auto pw = m_viewManager->clockPanel(handler()->roundedCornerRadius());
 
     settingsView->move(pw->mapToGlobal(pw->geometry().bottomLeft()));
     if (QDialog::Accepted == settingsView->exec()) {

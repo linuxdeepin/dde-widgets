@@ -12,12 +12,19 @@ class MemoryWidget : public QWidget
 {
     Q_OBJECT
 
+    Q_PROPERTY(int roundedCornerRadius READ roundedCornerRadius WRITE setRoundedCornerRadius NOTIFY roundedCornerRadiusChanged FINAL)
 public:
     explicit MemoryWidget(QWidget *parent = nullptr);
     virtual ~MemoryWidget() override;
 
     void updateMemoryInfo(const QString &memPercent,
                           const QString &swapPercent);
+
+    int roundedCornerRadius() const;
+    void setRoundedCornerRadius(int newRoundCornerRadius);
+
+signals:
+    void roundedCornerRadiusChanged();
 
 protected:
     virtual void paintEvent(QPaintEvent *event) override;
@@ -50,4 +57,5 @@ private:
     QString m_memPercent;
     //交换内存
     QString m_swapPercent;
+    int m_roundedCornerRadius;
 };
