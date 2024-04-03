@@ -54,6 +54,7 @@ bool MemoryMonitorWidget::initialize(const QStringList &arguments) {
         hasLoaded = BuildinWidgetsHelper::instance()->loadTranslator("dde-widgets-memorymonitor_");
 
     m_view = new MemoryWidget();
+    m_view->setRoundedCornerRadius(handler()->roundedCornerRadius());
     m_timer.reset(new QBasicTimer());
     m_view->installEventFilter(this);
 

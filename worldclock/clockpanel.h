@@ -43,15 +43,24 @@ private:
 
 class ClockPanel : public QWidget {
     Q_OBJECT
+
+    Q_PROPERTY(int roundedCornerRadius READ roundedCornerRadius WRITE setRoundedCornerRadius NOTIFY roundedCornerRadiusChanged FINAL)
 public:
     explicit ClockPanel(QWidget *parent = nullptr);
     ClockView *view() const;
 
     void setSmallType(const bool isSmallType);
+    int roundedCornerRadius() const;
+    void setRoundedCornerRadius(int newRoundedCornerRadius);
+
+signals:
+    void roundedCornerRadiusChanged();
+
 protected:
     virtual void paintEvent(QPaintEvent *event) override;
 private:
     ClockView *m_view = nullptr;
     QVBoxLayout *m_layout = nullptr;
+    int m_roundedCornerRadius;
 };
 }

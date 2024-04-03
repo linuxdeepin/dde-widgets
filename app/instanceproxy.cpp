@@ -32,9 +32,7 @@ InstanceProxy::~InstanceProxy()
 QWidget *InstanceProxy::view() const
 {
     if (!m_containerView) {
-        const bool isCustom = WidgetHandlerImpl::get(m_impl->handler())->isCustom();
-        m_containerView = new WidgetContainer(m_impl->view(), isCustom);
-        m_containerView->setIsUserAreaInstance(isUserAreaInstance());
+        m_containerView = new WidgetContainer(m_impl->view());
     }
 
     return m_containerView;
@@ -85,20 +83,13 @@ bool InstanceProxy::enableSettings()
     return m_impl->enableSettings();
 }
 
-bool InstanceProxy::isUserAreaInstance() const
-{
-    return WidgetHandlerImpl::get(m_impl->handler())->m_isUserAreaInstance;
-}
-
-WidgetContainer::WidgetContainer(QWidget *view,  bool isCustom, QWidget *parent)
+WidgetContainer::WidgetContainer(QWidget *view, QWidget *parent)
     : QWidget(parent)
     , m_view(view)
 {
     Q_ASSERT(m_view);
     auto layout = new QVBoxLayout(this);
     layout->setContentsMargins(UI::defaultMargins);
-    if (!isCustom)
-        m_clipView = new DClipEffectWidget(m_view);
 
     layout->addWidget(m_view);
 }
@@ -111,30 +102,6 @@ WidgetContainer::~WidgetContainer()
         m_view->setParent(nullptr);
         m_view->deleteLater();
     }
-}
-
-void WidgetContainer::setIsUserAreaInstance(const bool isUserAreaInstance)
-{
-    m_isUserAreaInstance = isUserAreaInstance;
-}
-
-QPainterPath WidgetContainer::clipPathOfRound(const QRect &rect, const bool isUserAreaInstance)
-{
-    QPainterPath path;
-    const qreal radius = isUserAreaInstance ? UI::RoundedRectRadius : UI::DataStoreRoundedRectRadius;
-    path.addRoundedRect(rect, radius, radius);
-    return path;
-}
-
-void WidgetContainer::resizeEvent(QResizeEvent *event)
-{
-    if (event->oldSize() == event->size())
-        return QWidget::resizeEvent(event);
-
-    if (m_clipView)
-        m_clipView->setClipPath(clipPathOfRound(rect(), m_isUserAreaInstance));
-
-    return QWidget::resizeEvent(event);
 }
 
 PlaceholderWidget::PlaceholderWidget(QWidget *view, QWidget *parent)
@@ -150,8 +117,6 @@ void PlaceholderWidget::paintEvent(QPaintEvent *event)
     QPainter painter(this);
 
     painter.setRenderHint(QPainter::Antialiasing);
-    painter.setCompositionMode(QPainter::CompositionMode_Source);
-    painter.setClipPath(WidgetContainer::clipPathOfRound(rect(), false));
     painter.drawPixmap(rect(), pixmap);
 
     return QWidget::paintEvent(event);

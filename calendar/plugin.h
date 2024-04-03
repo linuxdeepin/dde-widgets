@@ -10,6 +10,26 @@
 
 WIDGETS_USE_NAMESPACE
 namespace dwclock {
+
+class CalendarContainer : public QWidget
+{
+    Q_OBJECT
+    Q_PROPERTY(int roundedCornerRadius READ roundedCornerRadius WRITE setRoundedCornerRadius NOTIFY roundedCornerRadiusChanged FINAL)
+public:
+    CalendarContainer(QWidget *parent = nullptr);
+    int roundedCornerRadius() const;
+    void setRoundedCornerRadius(int newRadius);
+
+signals:
+    void roundedCornerRadiusChanged();
+
+protected:
+    void paintEvent(QPaintEvent *event) override;
+
+private:
+    int m_roundedCornerRadius;
+};
+
 class CalendarWidget : public QObject, public IWidget {
 public:
     virtual QWidget *view() override;

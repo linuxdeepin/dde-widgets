@@ -17,13 +17,14 @@ public:
 
     virtual void setValue(const QString &key, const QVariant &value) override;
     virtual QVariant value(const QString &key, const QVariant &defaultValue = QVariant()) const override;
-    virtual void resetValue(const QString &key);
+    virtual void resetValue(const QString &key) override;
     virtual void removeValue(const QString &key) override;
     virtual bool containsValue(const QString &key) override;
     virtual QString id() const override;
     virtual QString pluginId() const override { return m_pluginId;}
     virtual IWidget::Type type() const override { return m_type;}
     virtual QSize size() const override;
+    int roundedCornerRadius() const override;
     static QSize size(const IWidget::Type type, const bool instance = true);
     QString typeString() const;
     static QString typeString(const Widgets::IWidget::Type type);

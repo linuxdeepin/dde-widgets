@@ -15,6 +15,11 @@ QSize WidgetHandlerImpl::size() const
     return size(m_type, true);
 }
 
+int WidgetHandlerImpl::roundedCornerRadius() const
+{
+    return UI::RoundedRectRadius;
+}
+
 QSize WidgetHandlerImpl::size(const IWidget::Type type, const bool instance)
 {
     switch (type) {
