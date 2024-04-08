@@ -87,21 +87,17 @@ void MemoryWidget::paintEvent(QPaintEvent *e)
     painter.fillRect(contentRect, QBrush(backgroundBase));
 
     int sectionSize = 6;
+    bool drawSwapControl = !m_swapPercent.isEmpty();
 
     QString memoryContent = QString("%1 (%2%)")
                           .arg(tr("Memory"))//Memory
                           .arg(m_memPercent);
 
     QString swapContent;
-    if (m_swapPercent.isEmpty()) {
-        // After the memory and swap space text, add a space before the brackets
-        swapContent = QString("%1 (%2)")
-                    .arg(tr("SW Memory"))//Swap
-                    .arg(tr("Unabled"));
-    } else {
+    if (drawSwapControl) {
         swapContent = QString("%1 (%2%)")
-                              .arg(tr("SW Memory"))//Memory
-                              .arg(m_swapPercent);
+                            .arg(tr("SW Memory"))
+                            .arg(m_swapPercent);
     }
 
     QFontMetrics fmMemTxt(m_memTxtFont);
@@ -133,14 +129,15 @@ void MemoryWidget::paintEvent(QPaintEvent *e)
     QRectF swapIndicatorRect(swapTxtRect.x() - margin, swapTxtRect.y() + qCeil((swapTxtRect.height() - sectionSize) / 2.),
                              sectionSize, sectionSize);
 
+    if (drawSwapControl) {
+        QPainterPath section2;
+        section2.addEllipse(swapIndicatorRect);
+        painter.fillPath(section2, swapColor);
 
-    QPainterPath section2;
-    section2.addEllipse(swapIndicatorRect);
-    painter.fillPath(section2, swapColor);
-
-    painter.setFont(m_memTxtFont);
-    painter.setPen(QPen(numberColor));
-    painter.drawText(swapTxtRect, Qt::AlignLeft | Qt::AlignVCenter, swapContent);
+        painter.setFont(m_memTxtFont);
+        painter.setPen(QPen(numberColor));
+        painter.drawText(swapTxtRect, Qt::AlignLeft | Qt::AlignVCenter, swapContent);
+    }
 
     const int outsideRingRadius = (contentRect.bottom() - swapTxtRect.bottom() - topMargin) / 2;
     const int insideRingRadius = outsideRingRadius - ringWidth - 1;
@@ -152,9 +149,11 @@ void MemoryWidget::paintEvent(QPaintEvent *e)
                     m_memPercent.toDouble()/100);
 
     // Draw swap ring.
-    drawLoadingRing(painter, ringCenter.x(), ringCenter.y(),
-                    insideRingRadius, ringWidth, 270, 270, swapForegroundColor,
-                    swapForegroundOpacity, swapBackgroundColor, swapBackgroundOpacity, m_swapPercent.toDouble()/100);
+    if (drawSwapControl) {
+        drawLoadingRing(painter, ringCenter.x(), ringCenter.y(),
+                        insideRingRadius, ringWidth, 270, 270, swapForegroundColor,
+                        swapForegroundOpacity, swapBackgroundColor, swapBackgroundOpacity, m_swapPercent.toDouble()/100);
+    }
 
     // Draw percent text.
     painter.setFont(m_memPercentFont);

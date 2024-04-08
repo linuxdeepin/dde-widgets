@@ -29,17 +29,25 @@ IWidget *MemoryMonitorWidgetPlugin::createWidget()
 
 void MemoryMonitorWidget::updateMemory()
 {
+    using namespace Utils;
+
     core::system::MemInfo info;
     info.readMemInfo();
 
-    using namespace Utils;
-    const auto &memPercent = QString::number((info.memTotal() - info.memAvailable()) * 1. / info.memTotal() * 100, 'f', 1);
+    Q_ASSERT(info.memTotal() > 0);
 
-    const auto &swapUsage = formatUnit((info.swapTotal() - info.swapFree()) << 10, B, 1);
-    auto swapPercent = QString::number((info.swapTotal() - info.swapFree()) * 1. / info.swapTotal() * 100, 'f', 1);
+    QString swapUsage("");
+    QString swapPercent("");
+
+    QString memPercent = QString::number((info.memTotal() - info.memAvailable()) * 1. / info.memTotal() * 100, 'f', 1);
+
+    if (info.swapTotal() > 0) {
+        swapUsage = formatUnit((info.swapTotal() - info.swapFree()) << 10, B, 1);
+        swapPercent = QString::number((info.swapTotal() - info.swapFree()) * 1. / info.swapTotal() * 100, 'f', 1);
+    }
     // This process is the same as `deepin-system-monitor-plugin`
     if (swapUsage.split(" ").size() != 2)
-        swapPercent = QString();
+        swapPercent = "";
 
     if (m_view) {
         m_view->updateMemoryInfo(memPercent, swapPercent);
