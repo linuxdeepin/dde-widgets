@@ -28,6 +28,8 @@ set(COMMON_LIBS
 )
 
 target_link_libraries(${PROJECT_NAME} PUBLIC ${COMMON_LIBS})
+target_link_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_BINARY_DIR}/../interface)
+target_link_libraries(${PROJECT_NAME} PRIVATE dde-widgets)
 
 target_include_directories(${PROJECT_NAME} PUBLIC
     ${CMAKE_CURRENT_BINARY_DIR}
