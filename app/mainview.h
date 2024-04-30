@@ -70,5 +70,7 @@ private:
     GeometryHandler *m_geometryHandler;
     Appearancehandler *m_appearancehandler = nullptr;
 
+    QTimer *m_trickTimer = nullptr;
+
 };
 WIDGETS_FRAME_END_NAMESPACE

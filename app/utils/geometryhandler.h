@@ -26,6 +26,8 @@ public:
 
 Q_SIGNALS:
     void geometryChanged();
+    void dockFrontendWindowRectChanged();
+
 private:
     DisplayInter *m_displayInter = nullptr;
     DockInter *m_dockDeamonInter = nullptr;
