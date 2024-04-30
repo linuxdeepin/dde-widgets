@@ -43,6 +43,7 @@ GeometryHandler::GeometryHandler(QObject *parent)
     m_dockDeamonInter = new DockInter(DockDaemonDBusServie, DockDaemonDBusPath,
                                       QDBusConnection::sessionBus(), this);
     QObject::connect(m_displayInter, &DisplayInter::PrimaryRectChanged, this, &GeometryHandler::geometryChanged, Qt::UniqueConnection);
+    QObject::connect(m_dockDeamonInter, &DockInter::FrontendWindowRectChanged, this, &GeometryHandler::dockFrontendWindowRectChanged, Qt::UniqueConnection);
 }
 
 GeometryHandler::~GeometryHandler()
@@ -59,11 +60,7 @@ GeometryHandler::~GeometryHandler()
 
 QRect GeometryHandler::getGeometry(const int expectedWidth, const bool reduceDockHeight)
 {
-    // TODO value of returned `frontendWindowRect()` is invalid, it's maybe a bug in dtkcore.
-//    QRect dockRect = m_dockDeamonInter->frontendWindowRect();
-    DTK_CORE_NAMESPACE::DDBusInterface dockInterface(m_dockDeamonInter->service(), m_dockDeamonInter->path(),
-                                 m_dockDeamonInter->interface());
-    QRect dockRect = qdbus_cast<DockRect>(dockInterface.property("FrontendWindowRect"));
+    QRect dockRect = m_dockDeamonInter->frontendWindowRect();
     qreal ratio = qApp->primaryScreen()->devicePixelRatio();
     auto drect = QRect(dockRect.x(), dockRect.y(),
                         dockRect.width() / ratio, dockRect.height() / ratio);

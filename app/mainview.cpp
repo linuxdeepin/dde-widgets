@@ -28,6 +28,7 @@ MainView::MainView( WidgetManager *manager, QWidget *parent)
     , m_instanceModel(new InstanceModel(m_manager, this))
     , m_geometryHandler(new GeometryHandler())
     , m_appearancehandler(new Appearancehandler(this))
+    , m_trickTimer(new QTimer(this))
 {
     setParent(m_animationContainer);
     m_appearancehandler->addTargetWidget(m_animationContainer);
@@ -62,6 +63,22 @@ MainView::MainView( WidgetManager *manager, QWidget *parent)
     connect(m_editModeView, &EditModePanel::editCompleted, this, [this] () {
         switchToDisplayMode();
         m_animationContainer->showView();
+    });
+
+    // 使用定时器限制Geometry的更新间隔，防止过快更新造成画面撕裂
+    m_trickTimer->setInterval(8);
+    m_trickTimer->setSingleShot(true);
+
+    connect(m_geometryHandler, &GeometryHandler::dockFrontendWindowRectChanged, this, [this](){
+        if (!m_trickTimer->isActive()) {
+            m_trickTimer->start();
+        }
+    });
+
+    connect(m_trickTimer, &QTimer::timeout, this, [this](){
+        auto targetRect = m_geometryHandler->getGeometry(expectedWidth(), true);
+        resize(targetRect.size());
+        m_animationContainer->updateGeometry(targetRect);
     });
 
     m_displayModeView = new DisplayModePanel(m_manager);
@@ -139,7 +156,7 @@ void MainView::switchToEditMode()
     m_mode = Edit;
     setContentsMargins(UI::EditMode::leftMargin, UI::topMargin, UI::EditMode::rightMargin, UI::bottomMargin);
 
-    const auto targetRect = m_geometryHandler->getGeometry(expectedWidth());
+    const auto targetRect = m_geometryHandler->getGeometry(expectedWidth(), true);
     updateGeometry(targetRect);
 
     m_storeView->scrollView()->setVisible(true);

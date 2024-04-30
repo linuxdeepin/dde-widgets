@@ -124,6 +124,10 @@ void AnimationViewContainer::refreshView()
 void AnimationViewContainer::updateGeometry(const QRect &rect)
 {
     m_targetRect = rect;
+    if (isVisible()) {
+        QRect geometry = rect - QMargins(0, UI::Widget::WindowMargin, 0, UI::Widget::WindowMargin);
+        setGeometry(geometry);
+    }
     qDebug() << "updateGeometry:" << geometry() << m_targetRect;
 }
 
