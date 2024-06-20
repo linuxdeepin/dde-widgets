@@ -13,17 +13,57 @@
 #include <QScreen>
 #include <QDBusInterface>
 #include <QPropertyAnimation>
+#include <QPainter>
+
+static QColor outerBorderColor = QColor(0, 0, 0, static_cast<int>(0.15 * 255));
+static QColor innerBorderColor = QColor(255, 255, 255, static_cast<int>(0.2 * 255));
+#define ALPHA_OFFSET 10
 
 WIDGETS_USE_NAMESPACE
 DGUI_USE_NAMESPACE
 WIDGETS_FRAME_BEGIN_NAMESPACE
 AnimationViewContainer::AnimationViewContainer(QWidget *parent)
     : DBlurEffectWidget (parent)
+    , m_windowHandle(new DPlatformWindowHandle(this, this))
 {
-    setBlurEnabled(false);
-    setAttribute(Qt::WA_TranslucentBackground);
     resize(0, 0); // Should set size explicitly for region monitor to work correctly.
     setWindowFlags(Qt::Tool);
+    m_cornerRadius = m_windowHandle->windowRadius();
+    m_themeType= DGuiApplicationHelper::instance()->themeType();
+    m_windowHandle->setBorderWidth(1);
+
+    auto setOuterBorderColor = [this]() {
+        auto outerBorderNewColor = outerBorderColor;
+        if (m_themeType == DGuiApplicationHelper::ColorType::DarkType) {
+            outerBorderNewColor.setAlpha(maskAlpha() + ALPHA_OFFSET * 2);
+        }
+
+        m_windowHandle->setBorderColor(outerBorderNewColor);
+    };
+
+    connect(this, &DBlurEffectWidget::maskAlphaChanged, [this, setOuterBorderColor]() {
+        setOuterBorderColor();
+        update();
+    });
+
+    connect(m_windowHandle, &DPlatformWindowHandle::windowRadiusChanged, this, [this](){
+        if (m_cornerRadius == m_windowHandle->windowRadius())
+            return;
+
+        m_cornerRadius = m_windowHandle->windowRadius();
+        update();
+    });
+
+    connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged, this, [this, setOuterBorderColor](DGuiApplicationHelper::ColorType type){
+        if (!m_windowHandle || type == m_themeType)
+            return;
+
+        m_themeType = type;
+        setOuterBorderColor();
+        update();
+    });
+
+    setOuterBorderColor();
 }
 
 AnimationViewContainer::~AnimationViewContainer()
@@ -145,4 +185,24 @@ void AnimationViewContainer::setCurrentX(const int x)
     rect.setWidth(m_targetRect.right() - x);
     setGeometry(rect);
 }
+
+void AnimationViewContainer::paintEvent(QPaintEvent *e)
+{
+    DBlurEffectWidget::paintEvent(e);
+
+    QPainter p(this);
+    p.setRenderHint(QPainter::Antialiasing);
+    QPen pen;
+    pen.setWidth(1);
+
+    auto innerBorderNewColor = innerBorderColor;
+    if (m_themeType != DGuiApplicationHelper::DarkType) {
+        innerBorderNewColor.setAlpha(maskAlpha() + ALPHA_OFFSET);
+    }
+
+    pen.setColor(innerBorderNewColor);
+    p.setPen(pen);
+    p.drawRoundedRect(rect(), m_cornerRadius, m_cornerRadius);
+}
+
 WIDGETS_FRAME_END_NAMESPACE

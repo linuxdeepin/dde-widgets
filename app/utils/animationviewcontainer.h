@@ -8,6 +8,8 @@
 #include <QWidget>
 #include <DRegionMonitor>
 #include <DBlurEffectWidget>
+#include <DGuiApplicationHelper>
+#include <DPlatformWindowHandle>
 
 class QPropertyAnimation;
 DGUI_USE_NAMESPACE
@@ -26,6 +28,9 @@ public:
     void refreshView();
     void updateGeometry(const QRect &rect);
 
+protected:
+    void paintEvent(QPaintEvent *e) override;
+
 Q_SIGNALS:
     void outsideAreaReleased();
 
@@ -42,5 +47,9 @@ private:
     QRect m_targetRect;
     QPropertyAnimation *m_currentXAni = nullptr;
     DRegionMonitor *m_regionMonitor = nullptr;
+
+    DGuiApplicationHelper::ColorType m_themeType;
+    int m_cornerRadius;
+    DPlatformWindowHandle *m_windowHandle = nullptr;
 };
 WIDGETS_FRAME_END_NAMESPACE
