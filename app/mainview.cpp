@@ -21,7 +21,7 @@
 DGUI_USE_NAMESPACE
 WIDGETS_FRAME_BEGIN_NAMESPACE
 MainView::MainView( WidgetManager *manager, QWidget *parent)
-    : DBlurEffectWidget (parent)
+    : QWidget (parent)
     , m_manager(manager)
     , m_animationContainer(new AnimationViewContainer(parent))
     , m_layout(new QHBoxLayout(this))
@@ -31,6 +31,7 @@ MainView::MainView( WidgetManager *manager, QWidget *parent)
     , m_trickTimer(new QTimer(this))
 {
     setParent(m_animationContainer);
+    setAttribute(Qt::WA_TranslucentBackground);
     m_appearancehandler->addTargetWidget(m_animationContainer);
 
     // don't display tray in Dock
@@ -45,7 +46,6 @@ MainView::MainView( WidgetManager *manager, QWidget *parent)
         handler.setEnableSystemMove(false);
     }
 
-    setBlendMode(DBlurEffectWidget::BehindWindowBlend);
     setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
 
     m_layout->setContentsMargins(UI::defaultMargins);
@@ -91,10 +91,6 @@ MainView::MainView( WidgetManager *manager, QWidget *parent)
     });
 
     m_layout->addStretch();
-
-    DPlatformWindowHandle handler(parentWidget());
-    handler.setBorderWidth(0);
-    handler.setShadowRadius(0);
 }
 
 MainView::~MainView()

@@ -22,7 +22,7 @@ class GeometryHandler;
 class Appearancehandler;
 DWIDGET_USE_NAMESPACE
 
-class MainView : public DBlurEffectWidget
+class MainView : public QWidget
 {
     Q_OBJECT
 
