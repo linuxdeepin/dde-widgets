@@ -103,7 +103,7 @@ QRect GeometryHandler::getGeometry(const int expectedWidth, const bool reduceDoc
         }
     }
 
-    return QRect(x, y, expectedWidth, height);
+    return QRect(x - UI::Widget::WindowMargin, y, expectedWidth, height);
 }
 
 QRect GeometryHandler::calcDisplayRect(const QRect &dockRect)
