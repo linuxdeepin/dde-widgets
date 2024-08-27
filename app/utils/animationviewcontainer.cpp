@@ -24,6 +24,7 @@ DGUI_USE_NAMESPACE
 WIDGETS_FRAME_BEGIN_NAMESPACE
 AnimationViewContainer::AnimationViewContainer(QWidget *parent)
     : DBlurEffectWidget (parent)
+    , m_currentXAni(new QPropertyAnimation(this, "currentX"))
     , m_windowHandle(new DPlatformWindowHandle(this, this))
 {
     resize(0, 0); // Should set size explicitly for region monitor to work correctly.
@@ -31,6 +32,9 @@ AnimationViewContainer::AnimationViewContainer(QWidget *parent)
     m_cornerRadius = m_windowHandle->windowRadius();
     m_themeType= DGuiApplicationHelper::instance()->themeType();
     m_windowHandle->setBorderWidth(1);
+
+    m_currentXAni->setDuration(300);
+    m_currentXAni->setEasingCurve(QEasingCurve::OutQuart);
 
     auto setOuterBorderColor = [this]() {
         auto outerBorderNewColor = outerBorderColor;
@@ -109,44 +113,16 @@ void AnimationViewContainer::regionMonitorHide(const QPoint &p, const int flag)
 
 void AnimationViewContainer::showView()
 {
-    if (m_currentXAni && (m_currentXAni->state() == QAbstractAnimation::Running))
-        return;
-
-    if (!m_currentXAni) {
-        m_currentXAni = new QPropertyAnimation(this, "currentX");
-        const int AnimationTime = 300;
-        m_currentXAni->setEasingCurve(QEasingCurve::Linear);
-        m_currentXAni->setDuration(AnimationTime);
-    }
-
-    const auto &rect = m_targetRect;
-    qDebug(dwLog()) << "show view:" << rect;
+    setCurrentX(m_targetRect.left());
     show();
     activateWindow();
-
     registerRegion();
-    m_currentXAni->setStartValue(rect.left());
-    m_currentXAni->setEndValue(rect.right());
-    m_currentXAni->setDirection(QAbstractAnimation::Backward);
-    m_currentXAni->start();
-    disconnect(m_currentXAni, &QPropertyAnimation::finished, this, &AnimationViewContainer::hide);
 }
 
 void AnimationViewContainer::hideView()
 {
-    Q_ASSERT(m_currentXAni);
-    if (m_currentXAni->state() == QAbstractAnimation::Running)
-        return;
-
-    const auto &rect = m_targetRect;
-    qDebug(dwLog()) << "hide view" << rect;
-
     unRegisterRegion();
-    m_currentXAni->setStartValue(rect.left());
-    m_currentXAni->setEndValue(rect.right());
-    m_currentXAni->setDirection(QAbstractAnimation::Forward);
-    m_currentXAni->start();
-    connect(m_currentXAni, &QPropertyAnimation::finished, this, &AnimationViewContainer::hide, Qt::UniqueConnection);
+    hide();
 }
 
 void AnimationViewContainer::refreshView()
@@ -163,27 +139,30 @@ void AnimationViewContainer::refreshView()
 
 void AnimationViewContainer::updateGeometry(const QRect &rect)
 {
+    m_currentXAni->stop();
+    m_currentXAni->setStartValue(m_targetRect.left());
+    m_currentXAni->setEndValue(rect.left());
     m_targetRect = rect;
     if (isVisible()) {
-        QRect geometry = rect - QMargins(0, UI::Widget::WindowMargin, 0, UI::Widget::WindowMargin);
-        setGeometry(geometry);
+        m_currentXAni->start();
+    } else {
+
     }
-    qDebug() << "updateGeometry:" << geometry() << m_targetRect;
 }
 
-int AnimationViewContainer::currentX() const
+qreal AnimationViewContainer::currentX() const
 {
     return QWidget::x();
 }
 
-void AnimationViewContainer::setCurrentX(const int x)
+void AnimationViewContainer::setCurrentX(const qreal x)
 {
     auto rect = m_targetRect;
     rect -= QMargins(0, UI::Widget::WindowMargin, 0, UI::Widget::WindowMargin);
 
     rect.setLeft(x);
     rect.setWidth(m_targetRect.right() - x);
-    setGeometry(rect);
+    setGeometry(rect.toRect());
 }
 
 void AnimationViewContainer::paintEvent(QPaintEvent *e)

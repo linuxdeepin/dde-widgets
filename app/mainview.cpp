@@ -62,7 +62,6 @@ MainView::MainView( WidgetManager *manager, QWidget *parent)
 
     connect(m_editModeView, &EditModePanel::editCompleted, this, [this] () {
         switchToDisplayMode();
-        m_animationContainer->showView();
     });
 
     // 使用定时器限制Geometry的更新间隔，防止过快更新造成画面撕裂
@@ -87,7 +86,6 @@ MainView::MainView( WidgetManager *manager, QWidget *parent)
 
     connect(m_displayModeView, &DisplayModePanel::editClicked, this, [this] () {
         switchToEditMode();
-        m_animationContainer->showView();
     });
 
     m_layout->addStretch();
