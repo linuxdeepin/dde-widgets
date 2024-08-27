@@ -18,7 +18,7 @@ DWIDGET_USE_NAMESPACE
 class AnimationViewContainer : public DBlurEffectWidget
 {
     Q_OBJECT
-    Q_PROPERTY(int currentX READ currentX WRITE setCurrentX)
+    Q_PROPERTY(qreal currentX READ currentX WRITE setCurrentX)
 public:
     explicit AnimationViewContainer (QWidget *parent = nullptr);
     virtual ~AnimationViewContainer() override;
@@ -38,13 +38,13 @@ private Q_SLOTS:
     void regionMonitorHide(const QPoint & p, const int flag);
 
 private:
-    int currentX() const;
-    void setCurrentX(const int x);
+    qreal currentX() const;
+    void setCurrentX(const qreal x);
     void registerRegion();
     void unRegisterRegion();
 
 private:
-    QRect m_targetRect;
+    QRectF m_targetRect;
     QPropertyAnimation *m_currentXAni = nullptr;
     DRegionMonitor *m_regionMonitor = nullptr;
 
