@@ -145,8 +145,6 @@ void AnimationViewContainer::updateGeometry(const QRect &rect)
     m_targetRect = rect;
     if (isVisible()) {
         m_currentXAni->start();
-    } else {
-
     }
 }
 
