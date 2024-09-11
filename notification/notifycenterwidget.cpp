@@ -142,7 +142,6 @@ void NotifyCenterWidget::initUI()
 void NotifyCenterWidget::initConnections()
 {
     connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged, this, &NotifyCenterWidget::refreshTheme);
-
     connect(m_wmHelper, &DWindowManagerHelper::hasCompositeChanged, this, &NotifyCenterWidget::CompositeChanged, Qt::QueuedConnection);
     connect(m_notifyWidget->model(), &NotifyModel::fullCollapsedChanged, this, &NotifyCenterWidget::updateToggleNotificationFoldingButtonVisible);
     connect(m_notifyWidget->model(), &NotifyModel::appCountChanged, this, &NotifyCenterWidget::updateToggleNotificationFoldingButtonVisible);

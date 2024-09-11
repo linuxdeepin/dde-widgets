@@ -15,6 +15,8 @@
 #include <QPropertyAnimation>
 #include <QPainter>
 
+#include <DPlatformTheme>
+
 static QColor outerBorderColor = QColor(0, 0, 0, static_cast<int>(0.15 * 255));
 static QColor innerBorderColor = QColor(255, 255, 255, static_cast<int>(0.2 * 255));
 #define ALPHA_OFFSET 10
@@ -56,6 +58,10 @@ AnimationViewContainer::AnimationViewContainer(QWidget *parent)
 
         m_cornerRadius = m_windowHandle->windowRadius();
         update();
+    });
+
+    connect(DGuiApplicationHelper::instance()->applicationTheme(), &DPlatformTheme::windowRadiusChanged, this, [this](int radius){
+        m_windowHandle->setWindowRadius(radius);
     });
 
     connect(DGuiApplicationHelper::instance(), &DGuiApplicationHelper::themeTypeChanged, this, [this, setOuterBorderColor](DGuiApplicationHelper::ColorType type){
