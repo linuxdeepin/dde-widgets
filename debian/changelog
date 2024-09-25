@@ -1,3 +1,9 @@
+dde-widgets (6.0.25) unstable; urgency=medium
+
+  * fix: window radius isn't changed
+
+ -- xionglinlin <xionglinlin@uniontech.com>  Wed, 25 Sep 2024 18:05:23 +0800
+
 dde-widgets (6.0.24) unstable; urgency=medium
 
   * fix: show hidden animation lag(Issue: https://github.com/linuxdeepin/developer-center/issues/9728)
